@@ -36,11 +36,11 @@ export default class Application extends Container implements ApplicationContrac
         this.instance('app', this);
     }
 
-    public bootstrapWith(bootstrappers: (new (...any: any[]) => Bootstrapper)[]):void {
+    public async bootstrapWith(bootstrappers: (new (...any: any[]) => Bootstrapper)[]): Promise<void> {
         this.hasBeenBootstrapped_ = true;
 
         for (const bootstrapper of bootstrappers) {
-            (new bootstrapper()).bootstrap(this);
+             await (new bootstrapper()).bootstrap(this);
         }
     }
 
@@ -97,21 +97,21 @@ export default class Application extends Container implements ApplicationContrac
         return path.join(this.environmentPath(), this.environmentFile());
     }
 
-    public registerConfiguredProviders(): void {
+    public async registerConfiguredProviders(): Promise<void> {
         const providers = this.make('config').get('app.providers');
 
         for (const provider of providers) {
-            this.register(new provider(this));
+            await this.register(new provider(this));
         }
     };
 
-    public register(provider: ServiceProvider): ServiceProvider {
+    public async register(provider: ServiceProvider): Promise<ServiceProvider> {
         this.serviceProviders.push(provider);
 
         provider.register();
 
         if (this.booted) {
-            provider.boot();
+            await provider.boot();
         }
 
         return provider;
@@ -121,13 +121,13 @@ export default class Application extends Container implements ApplicationContrac
         return this.booted;
     }
 
-    public boot(): void {
+    public async boot(): Promise<void> {
         if (this.booted) {
             return;
         }
 
         for (const provider of this.serviceProviders) {
-            provider.boot();
+            await provider.boot();
         }
 
         this.booted = true;

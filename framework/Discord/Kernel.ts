@@ -26,8 +26,6 @@ export default class Kernel implements KernelContract {
     constructor(app: Application, client: CommandoClient) {
         this.app = app;
         this.client = client;
-
-        this.bootstrap();
     }
 
     public startListening(): void {
@@ -53,9 +51,9 @@ export default class Kernel implements KernelContract {
         this.client.registry.registerDefaults();
     }
 
-    public bootstrap(): void {
+    public async bootstrap(): Promise<void> {
         if (!this.app.hasBeenBootstrapped()) {
-            this.app.bootstrapWith(this.bootstrappers());
+            await this.app.bootstrapWith(this.bootstrappers());
         }
 
         if (!this.commandsLoaded) {

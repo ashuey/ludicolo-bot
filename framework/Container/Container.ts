@@ -1,5 +1,4 @@
-import {default as ContainerContract} from "../Contracts/Container/Container"
-import Binding from "./Binding";
+import {default as ContainerContract, ConcreteBuildable, ConcreteClass} from "../Contracts/Container/Container"
 
 export default class Container implements ContainerContract {
     protected static instance: ContainerContract;
@@ -14,7 +13,7 @@ export default class Container implements ContainerContract {
         this.aliases[alias] = abstract_;
     }
 
-    bind(abstract_: string, concrete: { new(...any: any[]): {} }, ...dependency: string[]): void {
+    bind(abstract_: string, concrete: ConcreteBuildable, ...dependency: string[]): void {
         this.dropStaleInstances(abstract_);
 
         this.bindings[abstract_] = {
@@ -90,7 +89,7 @@ export default class Container implements ContainerContract {
         return abstract_ in this.instances;
     }
 
-    singleton(abstract_: string, concrete: { new(...any: any[]): {} }, ...dependency: string[]): void {
+    singleton(abstract_: string, concrete: ConcreteBuildable, ...dependency: string[]): void {
         this.dropStaleInstances(abstract_);
 
         this.bindings[abstract_] = {
@@ -110,11 +109,20 @@ export default class Container implements ContainerContract {
 
         const resolvedParameters = resolved.concat(parameters);
 
-        return new binding.concrete(...resolvedParameters);
+        if (this.isConcreteClass(binding.concrete)) {
+            return new binding.concrete(...resolvedParameters);
+        }
+
+        return binding.concrete(...resolvedParameters);
     }
 
     protected resolveDependencies(dependencies: string[]) {
         return dependencies.map(dependency => this.resolve(dependency));
+    }
+
+    // noinspection JSMethodCanBeStatic
+    protected isConcreteClass(f: ConcreteBuildable): f is ConcreteClass {
+        return typeof f === 'function' && /^\s*class\s+/.test(f.toString());
     }
 
     /**
@@ -135,4 +143,10 @@ export default class Container implements ContainerContract {
     public static setInstance(container: ContainerContract = null) {
         Container.instance = container;
     }
+}
+
+interface Binding {
+    concrete: ConcreteBuildable;
+    shared: boolean;
+    dependencies: string[];
 }

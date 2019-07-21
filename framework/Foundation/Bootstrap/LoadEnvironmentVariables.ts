@@ -3,7 +3,7 @@ import Application from "../../Contracts/Foundation/Application";
 import * as dotenv from 'dotenv'
 
 export default class LoadEnvironmentVariables implements Bootstrapper {
-    bootstrap(app: Application) {
+    async bootstrap(app: Application) {
         dotenv.config({
             path: app.environmentFilePath()
         })

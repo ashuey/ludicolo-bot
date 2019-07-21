@@ -7,7 +7,7 @@ import * as path from "path";
 import * as _ from "lodash";
 
 export default class LoadConfiguration implements Bootstrapper {
-    public bootstrap(app: Application) {
+    public async bootstrap(app: Application) {
         const config = new Repository();
 
         app.instance('config', config);

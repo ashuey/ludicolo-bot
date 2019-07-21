@@ -1,22 +1,24 @@
 import Command from "../../../../framework/Discord/Command";
-import {Message, RichEmbed, Role} from "discord.js";
+import * as _ from 'lodash'
 import {CommandMessage} from "discord.js-commando";
-import * as _ from "lodash";
+import {Message, RichEmbed, Role} from "discord.js";
 
 export default class AddSARCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'iamnot',
+            name: 'add-sar',
+            aliases: ['asar'],
             group: 'roles',
-            memberName: 'iamnot',
-            description: 'Leaves a self-assignable role',
+            memberName: 'add-sar',
+            description: 'Add a self-assignable role',
             guildOnly: true,
             clientPermissions: ['MANAGE_ROLES'],
+            userPermissions: ['MANAGE_ROLES'],
 
             args: [
                 {
                     key: 'role',
-                    prompt: 'What role would you like to leave?',
+                    prompt: 'What role would you like to add?',
                     type: 'role'
                 }
             ]
@@ -28,22 +30,24 @@ export default class AddSARCommand extends Command {
 
         const guildSAR = await msg.guild.settings.get('sar');
 
-        if (!_.includes(guildSAR, roleId)) {
+        if (_.includes(guildSAR, roleId)) {
             return this.sendFailedResponse(msg, args.role);
         }
 
-        await msg.member.removeRole(args.role);
+        guildSAR.push(roleId);
+
+        await msg.guild.settings.set('sar', guildSAR);
 
         return this.sendSuccessResponse(msg, args.role);
     }
 
     // noinspection JSMethodCanBeStatic
     sendSuccessResponse(msg: CommandMessage, role: Role): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** you no longer have the **${role.name}** role.`));
+        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`Role **${role.name}** has been added to the list of self-assignable roles.`));
     }
 
     // noinspection JSMethodCanBeStatic
     sendFailedResponse(msg: CommandMessage, role: Role): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('RED').setTitle(`The role **${role.name}** is not self-assignable`));
+        return msg.embed(new RichEmbed().setColor('RED').setTitle(`The role **${role.name}** is already self-assignable`));
     }
 }

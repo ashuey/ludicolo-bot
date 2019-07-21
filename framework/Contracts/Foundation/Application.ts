@@ -3,7 +3,7 @@ import Container from "../Container/Container";
 import ServiceProvider from "../../Support/ServiceProvider";
 
 export default interface Application extends Container {
-    bootstrapWith(bootstrappers: (new (...any: any[]) => Bootstrapper)[]): void;
+    bootstrapWith(bootstrappers: (new (...any: any[]) => Bootstrapper)[]): Promise<void>;
 
     hasBeenBootstrapped(): boolean;
 
@@ -27,11 +27,11 @@ export default interface Application extends Container {
 
     environmentFilePath(): string;
 
-    registerConfiguredProviders(): void;
+    registerConfiguredProviders(): Promise<void>;
 
-    register(provider: ServiceProvider): ServiceProvider;
+    register(provider: ServiceProvider): Promise<ServiceProvider>;
 
     isBooted(): boolean;
 
-    boot(): void;
+    boot(): Promise<void>;
 }

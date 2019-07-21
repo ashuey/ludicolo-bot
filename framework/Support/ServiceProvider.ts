@@ -11,7 +11,7 @@ export default abstract class ServiceProvider {
         //
     }
 
-    boot() {
+    async boot(): Promise<void> {
         //
     }
 }
