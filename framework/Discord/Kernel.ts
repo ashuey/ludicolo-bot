@@ -23,9 +23,8 @@ export default class Kernel implements KernelContract {
         BootProviders
     ];
 
-    constructor(app: Application, client: CommandoClient) {
+    constructor(app: Application) {
         this.app = app;
-        this.client = client;
     }
 
     public startListening(): void {
@@ -55,6 +54,8 @@ export default class Kernel implements KernelContract {
         if (!this.app.hasBeenBootstrapped()) {
             await this.app.bootstrapWith(this.bootstrappers());
         }
+
+        this.client = this.app.make('discord.client');
 
         if (!this.commandsLoaded) {
             this.client.registry.registerGroups(this.groups());

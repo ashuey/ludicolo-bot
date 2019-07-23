@@ -1,8 +1,9 @@
 import DatabaseServiceProvider from "../framework/Database/DatabaseServiceProvider";
+import DiscordServiceProvider from "../framework/Discord/DiscordServiceProvider";
 
 export default {
-    'name': 'buttz',
     'providers': [
+        DiscordServiceProvider,
         DatabaseServiceProvider
     ]
 }

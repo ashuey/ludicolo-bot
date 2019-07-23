@@ -1,12 +1,17 @@
 import ServiceProvider from "../Support/ServiceProvider";
 import { CommandoClient } from "discord.js-commando"
 import DatabaseSettingProvider from "./DatabaseSettingProvider";
+import {config} from "../Support/helpers";
 
 export default class DiscordServiceProvider extends ServiceProvider {
     register() {
-        this.app.singleton('discord.client', CommandoClient);
+        this.app.singleton('discord.client', () => {
+            return new CommandoClient({
+                owner: config('services.discord.owner')
+            });
+        });
         this.app.singleton('database_setting_provider', DatabaseSettingProvider, 'db');
-        this.app.make('discord.client').on('debug', msg => console.log(msg));
+        //this.app.make('discord.client').on('debug', msg => console.log(msg));
     }
 
     async boot(): Promise<void> {
