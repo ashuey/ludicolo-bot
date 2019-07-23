@@ -11,7 +11,7 @@ export default class DiscordServiceProvider extends ServiceProvider {
             });
         });
         this.app.singleton('database_setting_provider', DatabaseSettingProvider, 'db');
-        //this.app.make('discord.client').on('debug', msg => console.log(msg));
+        this.app.make('discord.client').on('commandError', (command, err) => console.log(err));
     }
 
     async boot(): Promise<void> {
