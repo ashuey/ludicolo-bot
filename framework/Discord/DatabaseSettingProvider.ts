@@ -27,12 +27,13 @@ export default class DatabaseSettingProvider extends SettingProvider {
         this.db.table('settings').where('guild', guildId).del();
     }
 
-    async destroy(): Promise<void> {}
+    async destroy(): Promise<void> {
+    }
 
     async get(guild: Guild | string, key: string, defVal?: any): Promise<any> {
         const guildId: string = SettingProvider.getGuildID(guild);
 
-        const result = await this.db.select('value').from('settings').where('guild', guildId).limit(1);
+        const result = await this.db.select('value').from('settings').where('guild', guildId).where('key', key).limit(1);
 
         if (result.length > 0) {
             return JSON.parse(result[0].value);
@@ -53,7 +54,7 @@ export default class DatabaseSettingProvider extends SettingProvider {
         await updateOrInsert('settings', {
             guild: guildId,
             key: key
-        },{
+        }, {
             value: JSON.stringify(val)
         })
     }
@@ -76,13 +77,13 @@ export default class DatabaseSettingProvider extends SettingProvider {
         this.listeners
             .set('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
             .set('ready', () => this.initializeExistingGuilds());
-        for(const [event, listener] of this.listeners) this.client.on(event, listener);
+        for (const [event, listener] of this.listeners) this.client.on(event, listener);
     }
 
     protected async initializeExistingGuilds(): Promise<void> {
         const guildPrefixes = await this.db.table('settings').where('key', 'prefix');
 
-        for(const guildPrefix of guildPrefixes) {
+        for (const guildPrefix of guildPrefixes) {
             // @ts-ignore
             const guild: GuildExtension = this.client.guilds.get(guildPrefix.guild);
             guild.commandPrefix = JSON.parse(guildPrefix.value);
