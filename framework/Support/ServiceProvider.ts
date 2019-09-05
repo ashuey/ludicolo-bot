@@ -1,4 +1,5 @@
 import Application from "../Contracts/Foundation/Application";
+import { default as ConsoleManager } from "../Console/ConsoleManager";
 
 export default abstract class ServiceProvider {
     protected app: Application;
@@ -7,11 +8,17 @@ export default abstract class ServiceProvider {
         this.app = app;
     }
 
-    register() {
+    public register() {
         //
     }
 
-    async boot(): Promise<void> {
+    public async boot(): Promise<void> {
         //
+    }
+
+    public commands(...commands: string[]): void {
+        ConsoleManager.starting((consoleApplication: ConsoleManager) => {
+            consoleApplication.resolve(commands);
+        })
     }
 }

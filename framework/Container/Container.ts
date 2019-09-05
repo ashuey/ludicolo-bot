@@ -1,4 +1,5 @@
 import {default as ContainerContract, ConcreteBuildable, ConcreteClass} from "../Contracts/Container/Container"
+import BindingResolutionError from "./BindingResolutionError";
 
 export default class Container implements ContainerContract {
     protected static instance: ContainerContract;
@@ -70,6 +71,10 @@ export default class Container implements ContainerContract {
 
         if (abstract_ in this.instances) {
             return this.instances[abstract_];
+        }
+
+        if (!(abstract_ in this.bindings)) {
+            throw new BindingResolutionError(`Target ${abstract_} is not instantiable.`)
         }
 
         const binding = this.bindings[abstract_];

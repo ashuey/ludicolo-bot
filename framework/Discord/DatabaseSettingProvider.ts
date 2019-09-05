@@ -17,7 +17,6 @@ export default class DatabaseSettingProvider extends SettingProvider {
 
     async init(client: CommandoClient): Promise<void> {
         this.client = client;
-        this.initializeSchema();
         this.initializeListeners();
     }
 
@@ -57,19 +56,6 @@ export default class DatabaseSettingProvider extends SettingProvider {
         }, {
             value: JSON.stringify(val)
         })
-    }
-
-    protected initializeSchema(): void {
-        this.db.schema.hasTable('settings').then(exists => {
-            if (!exists) {
-                return this.db.schema.createTable('settings', t => {
-                    t.increments('id').primary();
-                    t.string('guild').index();
-                    t.string('key').index();
-                    t.text('value');
-                });
-            }
-        });
     }
 
     protected initializeListeners(): void {

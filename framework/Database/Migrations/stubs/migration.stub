@@ -1,0 +1,22 @@
+exports.up = function(knex) {
+    <% if (d.create) { %>
+    return knex.schema.createTable("<%= d.table %>", function(t) {
+        t.increments();
+        t.timestamps();
+    });
+    <% } else if (d.table) { %>
+    return knex.schema.table("<%= d.table %>", function(t) {
+
+    });
+    <% } %>
+};
+
+exports.down = function(knex) {
+    <% if (d.create) { %>
+    return knex.schema.dropTable("<%= d.table %>");
+    <% } else if (d.table) { %>
+    return knex.schema.table("<%= d.table %>", function(t) {
+
+    });
+    <% } %>
+};

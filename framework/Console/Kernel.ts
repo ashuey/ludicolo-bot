@@ -1,20 +1,17 @@
 import Application from "../Contracts/Foundation/Application";
-import {CommandoClient} from "discord.js-commando";
-import {default as KernelContract} from "../Contracts/Discord/Kernel"
-import * as _ from "lodash";
 import Bootstrapper from "../Contracts/Foundation/Bootstrapper";
-import LoadConfiguration from "../Foundation/Bootstrap/LoadConfiguration";
 import LoadEnvironmentVariables from "../Foundation/Bootstrap/LoadEnvironmentVariables";
+import LoadConfiguration from "../Foundation/Bootstrap/LoadConfiguration";
 import RegisterProviders from "../Foundation/Bootstrap/RegisterProviders";
 import BootProviders from "../Foundation/Bootstrap/BootProviders";
-import {config} from "../Support/helpers";
+import ConsoleManager from "./ConsoleManager"
 
-export default class Kernel implements KernelContract {
+export default class Kernel {
     protected app: Application;
 
-    protected client: CommandoClient;
-
     protected commandsLoaded: boolean = false;
+
+    protected consoleApplication: ConsoleManager;
 
     protected bootstrappers_: (new (...any: any[]) => Bootstrapper)[] = [
         LoadEnvironmentVariables,
@@ -27,27 +24,16 @@ export default class Kernel implements KernelContract {
         this.app = app;
     }
 
-    public startListening(): void {
-        this.client.login(config('services.discord.token'));
-    }
-
-    // noinspection JSMethodCanBeStatic
-    protected groups(): string[][] {
-        return [];
+    public handle(argv: string[]): void {
+        this.getConsoleManager().run(argv);
     }
 
     protected commands() {
         //
     }
 
-    protected load(paths: string | string[]) {
-        _(paths).castArray().forEach(path => {
-            this.client.registry.registerCommandsIn(path)
-        });
-    }
-
-    protected registerDefaults() {
-        this.client.registry.registerDefaults();
+    protected load(paths: string | string[]): void {
+        //
     }
 
     public async bootstrap(): Promise<void> {
@@ -55,16 +41,23 @@ export default class Kernel implements KernelContract {
             await this.app.bootstrapWith(this.bootstrappers());
         }
 
-        this.client = await this.app.make('discord.client');
-
         if (!this.commandsLoaded) {
-            this.client.registry.registerGroups(this.groups());
             this.commands();
             this.commandsLoaded = true;
         }
     }
 
+    protected getConsoleManager(): ConsoleManager {
+        if (!this.consoleApplication) {
+            this.consoleApplication = new ConsoleManager(this.app);
+        }
+
+        return this.consoleApplication;
+    }
+
     protected bootstrappers(): (new (...any: any[]) => Bootstrapper)[] {
         return this.bootstrappers_;
     }
+
+
 }

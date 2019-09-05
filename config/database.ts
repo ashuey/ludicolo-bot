@@ -2,6 +2,7 @@ import { env } from "../framework/Support/helpers";
 
 export default {
     'default': env('DB_CONNECTION', 'mysql'),
+
     connections: {
         mysql: {
             driver: 'mysql',
@@ -11,5 +12,7 @@ export default {
             password: env('DB_PASSWORD', ''),
             database: env('DB_DATABASE', 'bot')
         }
-    }
+    },
+
+    'migrations': 'migrations'
 }

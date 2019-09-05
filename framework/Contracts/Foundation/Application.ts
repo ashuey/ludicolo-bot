@@ -17,6 +17,10 @@ export default interface Application extends Container {
 
     configPath(...paths: string[]): string;
 
+    databasePath(...paths: string[]): string;
+
+    useDatabasePath(path: string): Application;
+
     environmentPath(): string;
 
     useEnvironmentPath(path: string): Application;

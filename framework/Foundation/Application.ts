@@ -3,7 +3,6 @@ import Container from "../Container/Container"
 import * as path from 'path'
 import Bootstrapper from "../Contracts/Foundation/Bootstrapper";
 import ServiceProvider from "../Support/ServiceProvider";
-import DiscordServiceProvider from "../Discord/DiscordServiceProvider";
 
 export default class Application extends Container implements ApplicationContract {
     protected basePath_: string;
@@ -15,6 +14,8 @@ export default class Application extends Container implements ApplicationContrac
     protected serviceProviders: ServiceProvider[] = [];
 
     protected appPath_: string;
+
+    protected databasePath_: string;
 
     protected environmentPath_: string;
 
@@ -71,6 +72,20 @@ export default class Application extends Container implements ApplicationContrac
 
     public configPath(...paths: string[]): string {
         return path.join(this.basePath_, 'config', ...paths);
+    }
+
+    public databasePath(...paths: string[]): string {
+        if (this.databasePath_) {
+            return path.join(this.databasePath_, ...paths);
+        }
+
+        return path.join(this.basePath_, 'database', ...paths);
+    }
+
+    public useDatabasePath(path: string): Application {
+        this.databasePath_ = path;
+
+        return this;
     }
 
     public environmentPath(): string {
