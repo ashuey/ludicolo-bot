@@ -7,7 +7,6 @@ app.singleton('kernel.console', Kernel, 'app');
 const kernel: Kernel = app.make('kernel.console');
 
 kernel.bootstrap().then(() => {
-    const t = new Quote();
-    t.testFunc();
-    kernel.handle(process.argv);
+    console.log(Quote.tableName);
+    //kernel.handle(process.argv);
 });

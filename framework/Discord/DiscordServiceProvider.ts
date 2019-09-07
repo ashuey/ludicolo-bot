@@ -16,6 +16,7 @@ export default class DiscordServiceProvider extends ServiceProvider {
             return client;
 
         }, 'database_setting_provider');
+
         this.app.singleton('database_setting_provider', DatabaseSettingProvider, 'db');
     }
 }

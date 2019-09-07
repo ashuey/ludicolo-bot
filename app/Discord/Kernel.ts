@@ -4,7 +4,9 @@ import * as path from 'path'
 export default class Kernel extends DiscordKernel {
     protected groups(): string[][] {
         return [
-            ['roles', 'Self-Assignable Roles']
+            ['roles', 'Self-Assignable Roles'],
+            ['quotes', 'Quote Database'],
+            ['pokemongo', 'Pokemon GO Info Commands']
         ]
     }
 
