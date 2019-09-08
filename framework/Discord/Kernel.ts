@@ -28,7 +28,7 @@ export default class Kernel implements KernelContract {
     }
 
     public startListening(): void {
-        this.client.login(config('services.discord.token'));
+        this.client.login(config('discord.token'));
     }
 
     // noinspection JSMethodCanBeStatic
