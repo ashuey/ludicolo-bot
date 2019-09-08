@@ -14,7 +14,7 @@ export default class ListSARCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async handle(msg, args) {
         const guildSAR = await msg.guild.settings.get('sar', []);
 
         const sarcount = guildSAR.length;

@@ -25,7 +25,7 @@ export default class RemoveSARCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async handle(msg, args) {
         const roleId = args.role.id;
 
         const guildSAR = await msg.guild.settings.get('sar', []);
