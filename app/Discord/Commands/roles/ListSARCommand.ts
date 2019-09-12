@@ -20,7 +20,12 @@ export default class ListSARCommand extends Command {
         const sarcount = guildSAR.length;
 
         const sars = _.map(guildSAR, sar => {
-            return msg.guild.roles.get(sar).name;
+            const role = msg.guild.roles.get(sar);
+            if (role) {
+                return role.name;
+            } else {
+                return "[DELETED ROLE]";
+            }
         });
 
         const sars_list = sars.join("\n");
