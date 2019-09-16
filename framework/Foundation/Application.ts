@@ -17,6 +17,8 @@ export default class Application extends Container implements ApplicationContrac
 
     protected databasePath_: string;
 
+    protected storagePath_: string;
+
     protected environmentPath_: string;
 
     protected environmentFile_: string = '.env';
@@ -84,6 +86,20 @@ export default class Application extends Container implements ApplicationContrac
 
     public useDatabasePath(path: string): Application {
         this.databasePath_ = path;
+
+        return this;
+    }
+
+    public storagePath(...paths: string[]): string {
+        if (this.storagePath_) {
+            return path.join(this.storagePath_, ...paths);
+        }
+
+        return path.join(this.basePath_, 'storage', ...paths)
+    }
+
+    public useStoragePath(path: string): Application {
+        this.storagePath_ = path;
 
         return this;
     }

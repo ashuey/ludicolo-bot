@@ -4,6 +4,7 @@ import * as Knex from "knex";
 import MigrateCommand from "./Console/Migrations/MigrateCommand";
 import Migrator from "./Migrations/Migrator";
 import MigrateMakeCommand from "./Console/Migrations/MigrateMakeCommand";
+import Model from "./Mapper/Model";
 
 export default class DatabaseServiceProvider extends ServiceProvider {
     register(): void {
@@ -14,11 +15,15 @@ export default class DatabaseServiceProvider extends ServiceProvider {
 
     protected registerConnectionServices(): void {
         this.app.singleton('db', app => {
-            return new Proxy(new DatabaseManager(app), {
+            const manager = new Proxy(new DatabaseManager(app), {
                 get(target: DatabaseManager, p: PropertyKey): DatabaseManager | Knex {
                     return p in target ? target[p] : target.connection()[p];
                 }
-            })
+            });
+
+            Model.knex(manager.connection());
+
+            return manager;
         }, 'app');
     }
 

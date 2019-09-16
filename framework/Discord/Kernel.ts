@@ -27,8 +27,9 @@ export default class Kernel implements KernelContract {
         this.app = app;
     }
 
-    public startListening(): void {
-        this.client.login(config('discord.token'));
+    public async startListening(): Promise<void> {
+        await this.client.login(config('discord.token'));
+        console.log(`Connected to gateway. Online and listening in ${this.client.guilds.size} guilds`);
     }
 
     // noinspection JSMethodCanBeStatic
