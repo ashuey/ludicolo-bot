@@ -18,19 +18,19 @@ export default {
 
     'redis': {
         'default': {
-            'url': env('REDIS_URL'),
+            'url': env('REDIS_URL', null),
             'host': env('REDIS_HOST', '127.0.0.1'),
             'password': env('REDIS_PASSWORD', null),
             'post': env('REDIS_PORT', 6379),
-            'database': env('REDIS_DB', 0)
+            'db': env('REDIS_DB', 0)
         },
 
         'ceche': {
-            'url': env('REDIS_URL'),
+            'url': env('REDIS_URL', null),
             'host': env('REDIS_HOST', '127.0.0.1'),
             'password': env('REDIS_PASSWORD', null),
             'post': env('REDIS_PORT', 6379),
-            'database': env('REDIS_CACHE_DB', 1)
+            'db': env('REDIS_DB', 1)
         }
     }
 }
