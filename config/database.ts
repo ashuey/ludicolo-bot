@@ -10,7 +10,8 @@ export default {
             'port': env('DB_PORT', '3306'),
             'user': env('DB_USERNAME', 'bot'),
             'password': env('DB_PASSWORD', ''),
-            'database': env('DB_DATABASE', 'bot')
+            'database': env('DB_DATABASE', 'bot'),
+            'charset': 'utf8mb4'
         }
     },
 
