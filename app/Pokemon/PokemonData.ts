@@ -10,15 +10,15 @@ export default class PokemonData {
     }
 
     public async bootstrap() {
-        const validCache = await this.cacheIsValid();
+        // const validCache = await this.cacheIsValid();s
 
-        if (!validCache) {
+        /*if (!validCache) {
             await this.update();
-        }
+        }*/
     }
 
     public async update() {
-        await this.fetchFile("https://fight.pokebattler.com/pokemon", this.app.storagePath('app', 'pokemon', 'pokemon.json'));
+        // await this.fetchFile("https://fight.pokebattler.com/pokemon", this.app.storagePath('app', 'pokemon', 'pokemon.json'));
     }
 
     protected hydrate() {
