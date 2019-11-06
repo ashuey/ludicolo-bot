@@ -1,9 +1,19 @@
 import {Snowflake, User} from "discord.js";
 import BitmojiUser from "../BitmojiUser";
 import BitmojiManagerUser from "./BitmojiManagerUser";
+import UrlSigner from "../Http/UrlSigner";
+import {app, config} from "@ashuey/ludicolo-framework/lib/Support/helpers";
+import * as url from 'url';
 
 export default class BitmojiManager {
     protected userCache: { [key: string]: BitmojiManagerUser } = {};
+
+    protected urlSigner: UrlSigner;
+
+    constructor() {
+        this.urlSigner = app<UrlSigner>('url_signer');
+    }
+
 
     /**
      * Retrieve a BitmojiManagerUser from the cache or false on cache miss.
@@ -66,5 +76,12 @@ export default class BitmojiManager {
         }
 
         return this.stashUser(bitmojiUser);
+    }
+
+    public async sendSetup(user: User): Promise<void> {
+        const dm = await user.createDM();
+        const baseUrl =  url.resolve(config('http.url'), `/auth/snapkit/login/${user.id}`);
+        const authUrl = this.urlSigner.sign(baseUrl);
+        await dm.send(`In order to use Bitmoji, you need to setup your account first. Click here to login:\n${authUrl}`);
     }
 }

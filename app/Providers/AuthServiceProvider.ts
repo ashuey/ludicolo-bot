@@ -6,6 +6,7 @@ import BitmojiManager from "../Bitmoji/BitmojiManager";
 import ServiceProvider from "@ashuey/ludicolo-framework/lib/Support/ServiceProvider";
 import {updateOrInsert} from "@ashuey/ludicolo-framework/lib/Database/util";
 import {config} from "@ashuey/ludicolo-framework/lib/Support/helpers";
+import * as url from 'url';
 
 export default class AuthServiceProvider extends ServiceProvider {
     register() {
@@ -23,7 +24,7 @@ export default class AuthServiceProvider extends ServiceProvider {
             tokenURL: 'https://accounts.snapchat.com/accounts/oauth2/token',
             clientID: config('services.snapchat.clientID'),
             clientSecret: config('services.snapchat.clientSecret'),
-            callbackURL: 'https://defluo.serveo.net/auth/snapkit/callback',
+            callbackURL: url.resolve(config('http.url'), '/auth/snapkit/callback'),
             scope: ['https://auth.snapchat.com/oauth2/api/user.display_name', 'https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar'],
             profileFields: ['id', 'displayName', 'bitmoji'],
             passReqToCallback: true

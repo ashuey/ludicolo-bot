@@ -1,3 +1,6 @@
+import {env} from "@ashuey/ludicolo-framework/lib/Support/helpers";
+
 export default {
-    port: 27166
+    'url': env('HTTP_URL', 'http://localhost'),
+    'port': 27166
 }

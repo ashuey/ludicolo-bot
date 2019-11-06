@@ -1,7 +1,6 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import BitmojiManager from "../../../Bitmoji/BitmojiManager";
 import {CommandMessage} from "discord.js-commando";
-import UrlSigner from "../../../Http/UrlSigner";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class BitmojiCommand extends Command {
@@ -21,7 +20,7 @@ export default class BitmojiCommand extends Command {
             args: [
                 {
                     key: 'name',
-                    label: 'Bitmoji Scene Name',
+                    label: 'name',
                     prompt: '',
                     type: 'string'
                 }
@@ -31,14 +30,11 @@ export default class BitmojiCommand extends Command {
 
     async handle(msg: CommandMessage, { name }) {
         const bitmojiManager = app<BitmojiManager>('bitmoji');
-        const urlSigner = app<UrlSigner>('url_signer');
 
         const bitmojiManagerUser = await bitmojiManager.getByDiscordUser(msg.author);
 
         if (!bitmojiManagerUser) {
-            const dm = await msg.author.createDM();
-            const authUrl = urlSigner.sign(`https://defluo.serveo.net/auth/snapkit/login/${msg.author.id}`);
-            await dm.send(`In order to use Bitmoji, you need to setup your account first. Click here to login:\n${authUrl}`);
+            await bitmojiManager.sendSetup(msg.author);
             return;
         }
 
