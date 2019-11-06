@@ -13,7 +13,6 @@
     "@types/lodash": "^4.14.144",
     "@types/node": "^12.11.7",
     "@types/passport": "^1.0.1",
-    "@types/passport-oauth2": "^1.4.8",
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
     "discord.js-commando": "^0.10.0",
@@ -22,8 +21,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "passport": "^0.4.0",
-    "passport-snapchat": "^1.0.0",
-    "signed": "^1.0.1"
+    "passport-snapchat": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^3.7.2"
