@@ -1,4 +1,4 @@
-import {env} from "../framework/Support/helpers";
+import {env} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default {
     'default': env('CACHE_DRIVER', 'redis'),

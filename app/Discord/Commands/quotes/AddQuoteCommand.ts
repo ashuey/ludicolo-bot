@@ -1,7 +1,7 @@
-import Command from "../../../../framework/Discord/Command";
 import Quote from "../../../Quote";
 import {CommandMessage} from "discord.js-commando";
 import {RichEmbed} from "discord.js";
+import Command from "@ashuey/ludicolo-discord/lib/Command";
 
 export default class AddQuoteCommand extends Command {
     constructor(client) {

@@ -1,5 +1,5 @@
-import ServiceProvider from "../../framework/Support/ServiceProvider";
 import PokemonData from "./PokemonData";
+import ServiceProvider from "@ashuey/ludicolo-framework/lib/Support/ServiceProvider";
 
 export default class PokemonServiceProvider extends ServiceProvider {
     register() {

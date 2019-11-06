@@ -1,4 +1,4 @@
-import Model from "../framework/Database/Mapper/Model";
+import Model from "@ashuey/ludicolo-framework/lib/Database/Mapper/Model";
 
 export default class Quote extends Model {
     public id: number;

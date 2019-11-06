@@ -1,4 +1,4 @@
-import Command from "../../../../framework/Discord/Command";
+import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {CommandMessage} from "discord.js-commando";
 import * as moment from 'moment'
 

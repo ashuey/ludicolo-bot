@@ -1,4 +1,7 @@
-import Command from "../../../../framework/Discord/Command";
+import Command from "@ashuey/ludicolo-discord/lib/Command";
+import CommunityEvent from "../../../CommunityEvent";
+import CommunityEventsManager from "../../../CommunityEvents/CommunityEventsManager";
+import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class CreateEventCommand extends Command {
     constructor(client) {
@@ -22,6 +25,15 @@ export default class CreateEventCommand extends Command {
     }
 
     async handle(msg, { name }) {
-        //
+        const eventManager: CommunityEventsManager = app('community_events');
+
+        const event = await CommunityEvent
+            .query()
+            .insert({
+                name: name,
+                guild: msg.guild.id
+            });
+
+        await eventManager.createCard(event, msg.channel);
     }
 }

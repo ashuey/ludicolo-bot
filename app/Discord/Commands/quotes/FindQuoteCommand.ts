@@ -1,4 +1,4 @@
-import Command from "../../../../framework/Discord/Command";
+import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
 import {CommandMessage} from "discord.js-commando";
 import {Message, RichEmbed} from "discord.js";

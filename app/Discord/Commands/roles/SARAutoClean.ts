@@ -1,4 +1,4 @@
-import Command from "../../../../framework/Discord/Command";
+import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {RichEmbed} from "discord.js";
 import * as _ from 'lodash';
 

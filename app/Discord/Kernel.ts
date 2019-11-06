@@ -1,4 +1,4 @@
-import { default as DiscordKernel } from "../../framework/Discord/Kernel"
+import { default as DiscordKernel } from "@ashuey/ludicolo-discord/lib/Kernel"
 import * as path from 'path'
 
 export default class Kernel extends DiscordKernel {
@@ -7,7 +7,8 @@ export default class Kernel extends DiscordKernel {
             ['events', 'Event Management'],
             ['roles', 'Self-Assignable Roles'],
             ['quotes', 'Quote Database'],
-            ['pokemongo', 'Pokemon GO Info Commands']
+            ['pokemongo', 'Pokemon GO Info Commands'],
+            ['bitmoji', 'Bitmoji']
         ]
     }
 

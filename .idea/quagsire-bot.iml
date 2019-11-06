@@ -6,6 +6,9 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
     </content>
+    <content url="file://$MODULE_DIR$/node_modules/ludicolo-discord" />
+    <content url="file://$MODULE_DIR$/node_modules/ludicolo-framework" />
+    <content url="file://$MODULE_DIR$/node_modules/ludicolo-web" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

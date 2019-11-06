@@ -1,6 +1,4 @@
-import * as fs from 'fs'
-import * as https from 'https'
-import Application from "../../framework/Contracts/Foundation/Application";
+import Application from "@ashuey/ludicolo-framework/lib/Contracts/Foundation/Application";
 
 export default class PokemonData {
     protected app: Application;
