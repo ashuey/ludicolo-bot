@@ -1,16 +1,17 @@
 import * as passport from "passport";
 import SnapchatStrategy from "passport-snapchat";
 import BitmojiUser from "../BitmojiUser";
-import {Strategy} from "passport";
 import BitmojiManager from "../Bitmoji/BitmojiManager";
 import ServiceProvider from "@ashuey/ludicolo-framework/lib/Support/ServiceProvider";
 import {updateOrInsert} from "@ashuey/ludicolo-framework/lib/Database/util";
 import {config} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 import * as url from 'url';
+import * as refresh from 'passport-oauth2-refresh';
+import OAuth2Strategy = require("passport-oauth2");
 
 export default class AuthServiceProvider extends ServiceProvider {
     register() {
-        super.register();
+        //
     }
 
     async boot(): Promise<void> {
@@ -19,7 +20,7 @@ export default class AuthServiceProvider extends ServiceProvider {
 
         // For some reason TS doesn't recognize SnapchatStrategy as a vaild Strategy.
         // We'll fix this here with a type assertion.
-        passport.use(<Strategy><unknown>(new SnapchatStrategy({
+        const authStrategy = <OAuth2Strategy><unknown>(new SnapchatStrategy({
             authorizationURL: 'https://accounts.snapchat.com/accounts/oauth2/auth',
             tokenURL: 'https://accounts.snapchat.com/accounts/oauth2/token',
             clientID: config('services.snapchat.clientID'),
@@ -50,6 +51,9 @@ export default class AuthServiceProvider extends ServiceProvider {
                 await bitmojiManager.stashUser(bitmojiUser);
                 cb(null, bitmojiUser);
             });
-        })));
+        }));
+
+        passport.use(authStrategy);
+        refresh.use(authStrategy);
     }
 }

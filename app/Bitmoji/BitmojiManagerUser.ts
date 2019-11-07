@@ -3,6 +3,7 @@ import Axios, {AxiosInstance} from "axios";
 import Sticker from "./types/Sticker";
 import * as Fuse from "fuse.js";
 import * as _ from 'lodash';
+import * as refresh from 'passport-oauth2-refresh';
 
 const bitmojiQuery = `{
     me{
@@ -37,12 +38,35 @@ export default class BitmojiManagerUser {
 
     public async bootstrap(): Promise<boolean> {
         try {
-            const responseData = await this.axios.post('/me', {
-                query: bitmojiQuery
-            });
-            console.log("[Bitmoji] Received response from bitmoji server");
-            const bitmojiData = JSON.parse(responseData.data.data.me.bitmoji.packs);
-            this.hydrate(bitmojiData);
+            await this.fetchData();
+            return true;
+        } catch (e) {
+            // Continue
+        }
+
+        console.log("[Bitmoji] Failed to fetch data, attempting refresh");
+        try {
+            const newToken: string = await (new Promise(((resolve, reject) => {
+                // @ts-ignore
+                refresh.requestNewAccessToken('snapchat', this.bitmojiUser.refresh_token, (err, accessToken, refreshToken) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    console.log("[Bitmoji] Got new token");
+                    resolve(accessToken);
+                });
+            })));
+
+            this.bitmojiUser = await BitmojiUser
+                .query()
+                .patchAndFetchById(this.bitmojiUser.user, {
+                    access_token: newToken
+                });
+
+            this.axios.defaults.headers.common['Authorization'] = `Bearer ${this.bitmojiUser.access_token}`;
+
+            await this.fetchData();
             return true;
         } catch (e) {
             console.log("[Bitmoji] Error while bootstrapping user:", e);
@@ -50,8 +74,24 @@ export default class BitmojiManagerUser {
         }
     }
 
-    public hydrate(bitmojiData) {
+    protected async fetchData(): Promise<void> {
+        const responseData = await this.axios.post('/me', {
+            query: bitmojiQuery
+        });
+        console.log("[Bitmoji] Received response from bitmoji server");
+        const bitmojiData = JSON.parse(responseData.data.data.me.bitmoji.packs);
+        await this.hydrate(bitmojiData);
+    }
+
+    public async hydrate(bitmojiData) {
         this.avatarId = bitmojiData.auth.avatar_id;
+
+        this.bitmojiUser = await BitmojiUser
+            .query()
+            .patchAndFetchById(this.bitmojiUser.user, {
+                bitmoji_id: this.avatarId
+            });
+
         const lastpack = bitmojiData.packs[bitmojiData.packs.length - 1];
         for (let sticker of lastpack.stickers) {
             this.stickers.push(sticker);
