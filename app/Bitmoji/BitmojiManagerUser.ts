@@ -58,13 +58,14 @@ export default class BitmojiManagerUser {
                 });
             })));
 
+            this.log("Re-saving user");
             this.bitmojiUser = await BitmojiUser
                 .query()
                 .patchAndFetchById(this.bitmojiUser.user, {
                     access_token: newToken
                 });
 
-            this.axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            this.axios.defaults.headers['authorization'] = `Bearer ${newToken}`;
 
             await new Promise(resolve => {
                 setTimeout(() => {
