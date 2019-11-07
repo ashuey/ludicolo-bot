@@ -13,7 +13,6 @@
     "@types/lodash": "^4.14.144",
     "@types/node": "^12.11.7",
     "@types/passport": "^1.0.1",
-    "@types/passport-oauth2-refresh": "^1.1.0",
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
     "discord.js-commando": "^0.10.0",
