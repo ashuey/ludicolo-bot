@@ -44,7 +44,7 @@ export default class BitmojiManagerUser {
             // Continue
         }
 
-        console.log("[Bitmoji] Failed to fetch data, attempting refresh");
+        this.log(`Failed to fetch data, attempting refresh`);
         try {
             const newToken: string = await (new Promise(((resolve, reject) => {
                 // @ts-ignore
@@ -53,7 +53,7 @@ export default class BitmojiManagerUser {
                         reject(err);
                     }
 
-                    console.log("[Bitmoji] Got new token");
+                    this.log("Got new token");
                     resolve(accessToken);
                 });
             })));
@@ -64,12 +64,18 @@ export default class BitmojiManagerUser {
                     access_token: newToken
                 });
 
-            this.axios.defaults.headers.common['Authorization'] = `Bearer ${this.bitmojiUser.access_token}`;
+            this.axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    resolve();
+                }, 10)
+            });
 
             await this.fetchData();
             return true;
         } catch (e) {
-            console.log("[Bitmoji] Error while bootstrapping user:", e);
+            this.log("Error while bootstrapping user:", e);
             return false;
         }
     }
@@ -78,12 +84,12 @@ export default class BitmojiManagerUser {
         const responseData = await this.axios.post('/me', {
             query: bitmojiQuery
         });
-        console.log("[Bitmoji] Received response from bitmoji server");
+        this.log("Received response from bitmoji server");
         const bitmojiData = JSON.parse(responseData.data.data.me.bitmoji.packs);
         await this.hydrate(bitmojiData);
     }
 
-    public async hydrate(bitmojiData) {
+    public async hydrate(bitmojiData):Promise<void> {
         this.avatarId = bitmojiData.auth.avatar_id;
 
         this.bitmojiUser = await BitmojiUser
@@ -113,7 +119,7 @@ export default class BitmojiManagerUser {
     public search(query: string): Sticker[] {
 
         const matches = this.fuse.search(query);
-        console.log("Did a search");
+        this.log("Did a search");
         return matches;
     }
 
@@ -141,5 +147,9 @@ export default class BitmojiManagerUser {
         return _(results).filter(s => {
             return s.capabilities.includes('FRIENDS');
         }).head();
+    }
+
+    protected log(...msg: string[]): void {
+        console.log(`[Bitmoji] {${this.bitmojiUser.display_name}}`, ...msg);
     }
 }
