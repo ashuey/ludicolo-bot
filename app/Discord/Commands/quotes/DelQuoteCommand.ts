@@ -1,7 +1,7 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
-import {CommandMessage} from "discord.js-commando";
-import {Message, RichEmbed, Role} from "discord.js";
+import {CommandoMessage} from "discord.js-commando";
+import {Message, MessageEmbed, Role} from "discord.js";
 
 export default class DelQuoteCommand extends Command {
     constructor(client) {
@@ -24,7 +24,7 @@ export default class DelQuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandMessage, { qid }) {
+    async handle(msg: CommandoMessage, { qid }) {
         const quote = await Quote.query().findById(qid);
 
         if (!quote) {
@@ -44,15 +44,15 @@ export default class DelQuoteCommand extends Command {
         return this.sendSuccessResponse(msg, quote);
     }
 
-    protected sendSuccessResponse(msg: CommandMessage, quote: Quote): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** Removed quote #${quote.id}: ${quote.name} from the database.`));
+    protected sendSuccessResponse(msg: CommandoMessage, quote: Quote): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** Removed quote #${quote.id}: ${quote.name} from the database.`));
     }
 
-    protected sendFailedResponse(msg: CommandMessage): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('RED').setTitle(`**${msg.author.username}** No quote with that ID exists`));
+    protected sendFailedResponse(msg: CommandoMessage): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('RED').setTitle(`**${msg.author.username}** No quote with that ID exists`));
     }
 
-    protected sendUnauthorizedResponse(msg: CommandMessage): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('RED').setTitle(`**${msg.author.username}** You are not authorized to delete that quote`));
+    protected sendUnauthorizedResponse(msg: CommandoMessage): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('RED').setTitle(`**${msg.author.username}** You are not authorized to delete that quote`));
     }
 }

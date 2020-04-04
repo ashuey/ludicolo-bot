@@ -8,7 +8,9 @@ export default class Kernel extends DiscordKernel {
             ['roles', 'Self-Assignable Roles'],
             ['quotes', 'Quote Database'],
             ['pokemongo', 'Pokemon GO Info Commands'],
-            ['bitmoji', 'Bitmoji']
+            ['bitmoji', 'Bitmoji'],
+            ['games', 'Games'],
+            ['administration', 'Administration']
         ]
     }
 

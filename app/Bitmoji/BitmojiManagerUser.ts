@@ -22,7 +22,7 @@ export default class BitmojiManagerUser {
 
     protected avatarId: string;
 
-    protected fuse: Fuse<Sticker>;
+    protected fuse: Fuse<Sticker, Fuse.FuseOptions<Sticker>>;
 
     constructor(bitmojiUser: BitmojiUser) {
         this.bitmojiUser = bitmojiUser;
@@ -118,8 +118,7 @@ export default class BitmojiManagerUser {
     }
 
     public search(query: string): Sticker[] {
-
-        const matches = this.fuse.search(query);
+        const matches = this.fuse.search<Sticker, false, false>(query);
         this.log("Did a search");
         return matches;
     }

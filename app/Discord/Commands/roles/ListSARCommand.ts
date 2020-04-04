@@ -1,5 +1,5 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import {RichEmbed} from "discord.js";
+import {MessageEmbed} from "discord.js";
 import * as _ from 'lodash';
 
 export default class ListSARCommand extends Command {
@@ -34,6 +34,6 @@ export default class ListSARCommand extends Command {
 
         const roles = sarcount == 1 ? 'role' : 'roles';
 
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`There ${are_is} ${sarcount} self assignable ${roles}`).setDescription(sars_list));
+        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`There ${are_is} ${sarcount} self assignable ${roles}`).setDescription(sars_list));
     }
 }

@@ -1,5 +1,5 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import {RichEmbed} from "discord.js";
+import {MessageEmbed} from "discord.js";
 import * as _ from 'lodash';
 
 export default class ListSARCommand extends Command {
@@ -29,6 +29,6 @@ export default class ListSARCommand extends Command {
 
         const roles = guildSARLength == 1 ? 'role' : 'roles';
 
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`Removed ${guildSARLength} deleted ${roles} from the self-assignable roles list`));
+        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`Removed ${guildSARLength} deleted ${roles} from the self-assignable roles list`));
     }
 }

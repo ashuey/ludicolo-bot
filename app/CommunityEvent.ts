@@ -1,5 +1,5 @@
 import Model from "@ashuey/ludicolo-framework/lib/Database/Mapper/Model";
-import {Channel, ChannelData, Guild, RichEmbed, Snowflake, TextChannel} from "discord.js";
+import {Channel, Guild, GuildCreateChannelOptions, MessageEmbed, Snowflake, TextChannel} from "discord.js";
 import EventCard from "./EventCard";
 import Attendee from "./Attendee";
 import * as _ from 'lodash';
@@ -51,9 +51,9 @@ export default class CommunityEvent extends Model {
         }
     };
 
-    public async $cardContent(interior: boolean = false): Promise<RichEmbed> {
+    public async $cardContent(interior: boolean = false): Promise<MessageEmbed> {
         const attendees = await this.$getAttendees();
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .setTitle(this.name)
             .addField('Participants', attendees, true);
 
@@ -87,7 +87,7 @@ export default class CommunityEvent extends Model {
         const client = await this.$getClient();
 
         if (!this.$guild_) {
-            this.$guild_ = client.guilds.get(this.guild);
+            this.$guild_ = client.guilds.resolve(this.guild);
         }
 
         return this.$guild_;
@@ -104,11 +104,11 @@ export default class CommunityEvent extends Model {
 
             const category_id: Snowflake | null = await settings_manager.get('event_category');
 
-            const channel_data: ChannelData = {
+            const channel_data: GuildCreateChannelOptions = {
                 type: "text",
                 permissionOverwrites: [
                     {
-                        id: guild.defaultRole,
+                        id: guild.roles.everyone,
                         deny: ['VIEW_CHANNEL']
                     }
                 ]
@@ -118,7 +118,7 @@ export default class CommunityEvent extends Model {
                 channel_data.parent = category_id;
             }
 
-            const channel = await guild.createChannel(channel_name, channel_data);
+            const channel = await guild.channels.create(channel_name, channel_data);
 
             if (!isTextChannel(channel)) {
                 throw new Error("Created Event Channel is not a Text Channel");
@@ -133,8 +133,8 @@ export default class CommunityEvent extends Model {
             this.channel = channel.id;
             this.$channel_ = channel;
         } else if (!this.$channel_) {
-            const guild = await this.$getGuild();
-            this.$channel_ = guild.channels.get(this.channel);
+            const client = await this.$getClient();
+            this.$channel_ = await client.channels.fetch(this.channel);
         }
 
         const channel: Channel = this.$channel_;

@@ -1,6 +1,6 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import {Message, RichEmbed, Role} from "discord.js";
-import {CommandMessage} from "discord.js-commando";
+import {Message, MessageEmbed, Role} from "discord.js";
+import {CommandoMessage} from "discord.js-commando";
 import * as _ from "lodash";
 
 export default class AddSARCommand extends Command {
@@ -38,12 +38,12 @@ export default class AddSARCommand extends Command {
     }
 
     // noinspection JSMethodCanBeStatic
-    sendSuccessResponse(msg: CommandMessage, role: Role): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** you no longer have the **${role.name}** role.`));
+    sendSuccessResponse(msg: CommandoMessage, role: Role): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** you no longer have the **${role.name}** role.`));
     }
 
     // noinspection JSMethodCanBeStatic
-    sendFailedResponse(msg: CommandMessage, role: Role): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('RED').setTitle(`The role **${role.name}** is not self-assignable`));
+    sendFailedResponse(msg: CommandoMessage, role: Role): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('RED').setTitle(`The role **${role.name}** is not self-assignable`));
     }
 }

@@ -11,13 +11,9 @@ export default class CommunityEventsManager {
 
     public beginTracking(message: Message, event: CommunityEvent) {
         const collector = message.createReactionCollector(card_react_filter);
-        collector.on('collect', async r => {
-            for (const user of r.users.values()) {
-                if (!user.bot) {
-                    await r.remove(user);
-                    await this.rsvp(event, user);
-                }
-            }
+        collector.on('collect', async (reaction, user) => {
+            await reaction.remove();
+            await this.rsvp(event, user);
         })
     }
 
@@ -40,9 +36,10 @@ export default class CommunityEventsManager {
         }
 
         const event_channel = await event.$getChannel();
-        await event_channel.overwritePermissions(user, {
-            'VIEW_CHANNEL': true
-        });
+        await event_channel.overwritePermissions([{
+            id: user,
+            allow: ['VIEW_CHANNEL']
+        }]);
         await event_channel.send(user.toString());
 
         await this.updateCards(event);

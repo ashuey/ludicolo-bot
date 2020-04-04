@@ -1,6 +1,6 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import BitmojiManager from "../../../Bitmoji/BitmojiManager";
-import {CommandMessage} from "discord.js-commando";
+import {CommandoMessage} from "discord.js-commando";
 import BitmojiUser from "../../../BitmojiUser";
 import {User} from "discord.js";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
@@ -36,7 +36,7 @@ export default class BitmojiCommand extends Command {
         })
     }
 
-    async handle(msg: CommandMessage, { friend, name }) {
+    async handle(msg: CommandoMessage, { friend, name }) {
         const bitmojiManager = app<BitmojiManager>('bitmoji');
 
         friend = <User>friend;

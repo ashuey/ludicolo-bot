@@ -37,7 +37,7 @@ export default class EventCard extends Model {
     public async $getChannel(): Promise<Channel> {
         if (!this.$channel_) {
             const discord: Client = await app('discord.client');
-            this.$channel_ = discord.channels.get(this.channel);
+            this.$channel_ = await discord.channels.fetch(this.channel);
         }
 
         return this.$channel_;
@@ -50,7 +50,7 @@ export default class EventCard extends Model {
                 throw new Error("Event Card Channel is not a TextChannel");
             }
 
-            this.$message_ = await channel.fetchMessage(this.message);
+            this.$message_ = await channel.messages.fetch(this.message);
         }
 
         return this.$message_;

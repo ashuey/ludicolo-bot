@@ -1,7 +1,7 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
-import {CommandMessage} from "discord.js-commando";
-import {Message, RichEmbed} from "discord.js";
+import {CommandoMessage} from "discord.js-commando";
+import {Message, MessageEmbed} from "discord.js";
 
 export default class QuoteCommand extends Command {
     constructor(client) {
@@ -25,7 +25,7 @@ export default class QuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandMessage, {name}) {
+    async handle(msg: CommandoMessage, {name}) {
         let query = Quote.query()
             .where('guild', msg.guild.id);
 
@@ -48,7 +48,7 @@ export default class QuoteCommand extends Command {
         return msg.say(`\`\`#${quotes[0].id}\`\` :mega: ${quotes['0'].text}`);
     }
 
-    protected sendFailedResponse(msg: CommandMessage): Promise<Message | Message[]> {
-        return msg.embed(new RichEmbed().setColor('RED').setTitle(`**${msg.author.username}** Could not find any quotes`));
+    protected sendFailedResponse(msg: CommandoMessage): Promise<Message | Message[]> {
+        return msg.embed(new MessageEmbed().setColor('RED').setTitle(`**${msg.author.username}** Could not find any quotes`));
     }
 }

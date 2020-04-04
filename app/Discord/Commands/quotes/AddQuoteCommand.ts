@@ -1,6 +1,6 @@
 import Quote from "../../../Quote";
-import {CommandMessage} from "discord.js-commando";
-import {RichEmbed} from "discord.js";
+import {CommandoMessage} from "discord.js-commando";
+import {MessageEmbed} from "discord.js";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 
 export default class AddQuoteCommand extends Command {
@@ -31,7 +31,7 @@ export default class AddQuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandMessage, { name, quote }) {
+    async handle(msg: CommandoMessage, { name, quote }) {
         await Quote.query().insert({
             guild: msg.guild.id,
             creator: msg.author.id,
@@ -39,6 +39,6 @@ export default class AddQuoteCommand extends Command {
             text: quote
         });
 
-        return msg.embed(new RichEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** Quote Added`));
+        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** Quote Added`));
     }
 }

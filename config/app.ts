@@ -9,6 +9,7 @@ import DiscordServiceProvider from "@ashuey/ludicolo-discord/lib/DiscordServiceP
 import DatabaseServiceProvider from "@ashuey/ludicolo-framework/lib/Database/DatabaseServiceProvider";
 import SessionServiceProvider from "@ashuey/ludicolo-web/lib/SessionServiceProvider";
 import HttpServiceProvider from "@ashuey/ludicolo-web/lib/HttpServiceProvider";
+import GameServiceProvider from "../app/Games/GameServiceProvider";
 
 export default {
     'key': env('APP_KEY'),
@@ -24,6 +25,7 @@ export default {
         RouteServiceProvider,
         UrlSignerServiceProvider,
         BitmojiServiceProvider,
-        AuthServiceProvider
+        AuthServiceProvider,
+        GameServiceProvider
     ]
 }
