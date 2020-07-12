@@ -30,7 +30,7 @@ export default class JoinGameCommand extends Command {
     }
 
     async handle(msg: CommandoMessage, { gameId }) {
-        const result = await this.gameManager.joinGame(msg.author, gameId);
+        const result = await this.gameManager.joinGame(msg.member, gameId);
 
         switch (result) {
             case JoinGameResult.INVALID_GAME_ID:

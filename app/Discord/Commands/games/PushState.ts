@@ -4,18 +4,20 @@ import GameManager from "../../../Games/GameManager";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 import JoinGameResult from "../../../Games/JoinGameResult";
 import FakeGuildMember from "../../../Games/FakeGuildMember";
+import * as stringifyObject from "stringify-object";
+import * as _ from "lodash";
+import Game from "../../../Games/Game";
 
 export default class FakeJoinGameCommand extends Command {
     protected gameManager: GameManager;
 
     constructor(client) {
         super(client, {
-            name: 'fake-join-game',
-            aliases: ['fakejoingame', 'fake'],
+            name: 'push-state',
+            aliases: ['pushstate'],
             group: 'games',
-            memberName: 'fake-join-game',
-            description: 'Adds a fake player to a game',
-            guildOnly: true,
+            memberName: 'push-state',
+            description: 'Pushes a new state on to the stack.',
             ownerOnly: true,
 
             args: [
@@ -26,11 +28,10 @@ export default class FakeJoinGameCommand extends Command {
                     type: 'integer'
                 },
                 {
-                    key: 'count',
-                    label: 'Number of fake users',
+                    key: 'state',
+                    label: 'State',
                     prompt: '',
-                    type: 'integer',
-                    default: 1
+                    type: 'string'
                 }
             ]
         });
@@ -38,17 +39,11 @@ export default class FakeJoinGameCommand extends Command {
         this.gameManager = app('games');
     }
 
-    async handle(msg: CommandoMessage, { gameId, count }) {
-        for (let i = 0; i < count; i++) {
-            const fakeUser = new FakeGuildMember(msg.member);
-            const result = await this.gameManager.joinGame(fakeUser, gameId);
+    async handle(msg: CommandoMessage, { gameId, state }) {
+        const game = this.gameManager.getGameById(gameId);
 
-            switch (result) {
-                case JoinGameResult.INVALID_GAME_ID:
-                    return msg.reply('That game does not exist.');
-                case JoinGameResult.LOBBY_FULL:
-                    return msg.reply('Sorry, that game lobby is already full.')
-            }
-        }
+        game.pushStateByName(state);
+
+        return msg.say(`Pushed state ${state} to game.`)
     }
 }

@@ -1,7 +1,7 @@
 import {GuildMember, PartialTextBasedChannelFields} from "discord.js";
 import JoinGameResult from "./JoinGameResult";
-import PartialUser from "./PartialUser";
 import Game, {GameStatic} from "./Game";
+import PartialGuildMember from "./PartialGuildMember";
 
 export default class GameManager {
     protected gameRegistry: { [key: string]: GameStatic } = {};
@@ -25,22 +25,26 @@ export default class GameManager {
         const gameInstance = new Game(host);
         const gameId = this.gameInstances.push(gameInstance);
         await gameInstance.setup(gameId);
-        await gameInstance.addPlayer(host.user);
+        await gameInstance.addPlayer(host);
         await gameInstance.announceIn(announcementChannel);
     }
 
-    public async joinGame(user: PartialUser, game_id: number): Promise<JoinGameResult> {
+    public async joinGame(member: PartialGuildMember, game_id: number): Promise<JoinGameResult> {
         if (game_id > this.gameInstances.length) {
             return JoinGameResult.INVALID_GAME_ID;
         }
 
-        const game = this.gameInstances[game_id - 1];
-        return game.addPlayer(user);
+        const game = this.getGameById(game_id);
+        return game.addPlayer(member);
     }
 
     public async deleteGame(game_id: number) {
-        const game = this.gameInstances[game_id - 1];
+        const game = this.getGameById(game_id);
         await game.cleanup();
         delete this.gameInstances[game_id - 1];
+    }
+
+    public getGameById(game_id: number): Game {
+        return this.gameInstances[game_id - 1];
     }
 }

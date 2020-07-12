@@ -1,8 +1,8 @@
 import ServiceProvider from "@ashuey/ludicolo-framework/lib/Support/ServiceProvider";
 import GameManager from "./GameManager";
 import {CommandoClient} from "discord.js-commando";
-import SecretHitler from "./SecretHitler/SecretHitler";
 import GameArgumentType from "./Types/GameArgumentType";
+import SecretHitler from "./SecretHitler";
 
 export default class GameServiceProvider extends ServiceProvider {
     register(): void {

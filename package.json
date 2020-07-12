@@ -13,16 +13,20 @@
     "@types/lodash": "^4.14.149",
     "@types/node": "^12.12.32",
     "@types/passport": "^1.0.3",
+    "@types/stringify-object": "^3.2.0",
     "axios": "^0.19.2",
     "discord.js": "^12.1.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "express": "^4.17.1",
     "fuse.js": "^3.6.1",
+    "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "passport": "^0.4.1",
     "passport-oauth2-refresh": "^1.1.0",
-    "passport-snapchat": "^1.0.0"
+    "passport-snapchat": "^1.0.0",
+    "stringify-object": "^3.3.0",
+    "timeit": "^0.1.1"
   },
   "devDependencies": {
     "typescript": "^3.8.3"

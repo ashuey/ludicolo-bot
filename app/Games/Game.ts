@@ -1,18 +1,26 @@
 import {
+    APIMessage,
     ColorResolvable,
     Guild,
     GuildMember,
-    Message,
-    MessageEmbed,
+    Message, MessageAdditions,
+    MessageEmbed, MessageOptions,
     PartialTextBasedChannelFields,
-    Snowflake,
+    Snowflake, SplitOptions, StringResolvable,
     TextChannel,
     VoiceChannel
 } from "discord.js";
-import PartialUser from "./PartialUser";
 import JoinGameResult from "./JoinGameResult";
+import PartialGuildMember from "./PartialGuildMember";
+import State from "./StateMachine/State";
+import LobbyState from "./LobbyState";
+import NullState from "./NullState";
+import StateMachine from "./StateMachine";
+import DebuggableStateMachine from "./StateMachine/DebuggableStateMachine";
 
-export interface GameStatic { new(host: GuildMember): Game }
+export interface GameStatic {
+    new(host: GuildMember): Game
+}
 
 interface GameConfig {
     title: string;
@@ -22,7 +30,7 @@ interface GameConfig {
     color: ColorResolvable;
 }
 
-export default abstract class Game {
+export default abstract class Game extends DebuggableStateMachine(StateMachine) implements PartialTextBasedChannelFields {
     protected guild: Guild;
 
     protected textChannel: TextChannel;
@@ -33,16 +41,18 @@ export default abstract class Game {
 
     protected host: GuildMember;
 
-    protected players = new Map<Snowflake, PartialUser>();
+    protected players = new Map<Snowflake, PartialGuildMember>();
 
     protected announcements: Message[] = [];
 
     protected readonly config: GameConfig;
 
     protected constructor(host: GuildMember, config: GameConfig) {
+        super(NullState);
         this.host = host;
         this.guild = host.guild;
         this.config = Object.freeze(config);
+        this.changeState(new LobbyState(this));
     }
 
     public async setup(id: number): Promise<void> {
@@ -84,20 +94,20 @@ export default abstract class Game {
             .setColor(this.config.color);
     }
 
-    public async addPlayer(user: PartialUser): Promise<JoinGameResult> {
-        if (this.players.has(user.id)) {
+    public async addPlayer(guildMember: PartialGuildMember): Promise<JoinGameResult> {
+        if (this.players.has(guildMember.user.id)) {
             return JoinGameResult.ALREADY_JOINED;
         }
 
-        this.players.set(user.id, user);
+        this.players.set(guildMember.user.id, guildMember);
 
-        if (!user.bot) {
-            await this.textChannel.createOverwrite(user.id, {
+        if (!guildMember.user.bot) {
+            await this.textChannel.createOverwrite(guildMember.user.id, {
                 VIEW_CHANNEL: true
             });
 
             if (this.voiceChannel) {
-                await this.voiceChannel.createOverwrite(user.id, {
+                await this.voiceChannel.createOverwrite(guildMember.user.id, {
                     VIEW_CHANNEL: true
                 });
             }
@@ -105,12 +115,12 @@ export default abstract class Game {
             await this.postStartMessage(this.textChannel);
         }
 
-        await this.textChannel.send(`${user} has joined the lobby.`);
+        await this.textChannel.send(`${guildMember.user} has joined the lobby.`);
 
         return JoinGameResult.SUCCESS;
     }
 
-    abstract start();
+    abstract getStartState(): State;
 
     public async cleanup() {
         if (this.textChannel) {
@@ -139,7 +149,8 @@ export default abstract class Game {
             }
 
             collector.stop();
-            await this.start();
+            this.emit('startGame');
+            return message.delete();
         })
     }
 
@@ -149,5 +160,73 @@ export default abstract class Game {
         }
 
         return true;
+    }
+
+    public async silence(voice: boolean = true): Promise<void> {
+        await this.textChannel.updateOverwrite(this.guild.roles.everyone, {
+            SEND_MESSAGES: false
+        });
+
+        if (voice && this.voiceChannel) {
+            await this.voiceChannel.updateOverwrite(this.guild.roles.everyone, {
+                SPEAK: false
+            })
+        }
+
+        await this.send('The room has been silenced.')
+    }
+
+    public async unsilence(): Promise<void> {
+        await this.textChannel.updateOverwrite(this.guild.roles.everyone, {
+            SEND_MESSAGES: null
+        });
+
+        if (this.voiceChannel) {
+            await this.voiceChannel.updateOverwrite(this.guild.roles.everyone, {
+                SPEAK: null
+            })
+        }
+
+        await this.send('The room has been unsilenced.');
+    }
+
+    public async clearChat(): Promise<void> {
+        let deletedMessages;
+
+        do {
+            deletedMessages = await this.textChannel.bulkDelete(100);
+        }
+        while (deletedMessages.size >= 90);
+
+    }
+
+    public dumpState(): object {
+        return {
+            state: this.currentState.constructor.name
+        }
+    }
+
+    get lastMessage(): Message | null {
+        return this.textChannel.lastMessage;
+    }
+
+    get lastMessageID(): Snowflake | null {
+        return this.textChannel.lastMessageID;
+    }
+
+    public getPlayers(): Map<Snowflake, PartialGuildMember> {
+        return this.players;
+    }
+
+    public getTextChannel(): TextChannel {
+        return this.textChannel;
+    }
+
+    send(options: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage): Promise<Message>;
+    send(options: (MessageOptions & { split: true | SplitOptions; content: StringResolvable }) | APIMessage): Promise<Message[]>;
+    send(content: StringResolvable, options?: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
+    send(content: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+    send(content: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage | (MessageOptions & { split: true | SplitOptions; content: StringResolvable }) | StringResolvable, options?: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | (MessageOptions & { split: true | SplitOptions })): Promise<Message> | Promise<Message[]> {
+        return this.textChannel.send(content, options);
     }
 }

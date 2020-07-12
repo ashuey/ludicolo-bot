@@ -3,3 +3,5 @@ enum SecretHitlerRole {
     FASCIST,
     HITLER
 }
+
+export default SecretHitlerRole;

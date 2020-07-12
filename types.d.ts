@@ -1,0 +1,1 @@
+type Constructor<T extends Object = Object> = new (...args: any[]) => T;

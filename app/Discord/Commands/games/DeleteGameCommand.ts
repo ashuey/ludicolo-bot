@@ -30,8 +30,10 @@ export default class DeleteGameCommand extends Command {
         this.gameManager = app('games');
     }
 
-    async handle(msg: CommandoMessage, { gameId }) {
+    async handle(msg: CommandoMessage, {gameId}) {
         await this.gameManager.deleteGame(gameId);
-        return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`Deleted game #${gameId}`));
+        if (!msg.channel.deleted) {
+            return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`Deleted game #${gameId}`));
+        }
     }
 }
