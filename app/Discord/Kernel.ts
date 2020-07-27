@@ -10,7 +10,8 @@ export default class Kernel extends DiscordKernel {
             ['pokemongo', 'Pokemon GO Info Commands'],
             ['bitmoji', 'Bitmoji'],
             ['games', 'Games'],
-            ['administration', 'Administration']
+            ['administration', 'Administration'],
+            ['misc', 'Miscellaneous']
         ]
     }
 

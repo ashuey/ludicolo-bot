@@ -33,6 +33,7 @@ export default class SecretHitler extends Game {
 
     initializeGameData() {
         this.data = {
+            drawnTiles: [],
             players: [],
             electedGovernment: new Government(this),
             nominatedGovernment: new Government(this),

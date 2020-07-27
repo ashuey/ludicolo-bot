@@ -10,6 +10,7 @@ import DatabaseServiceProvider from "@ashuey/ludicolo-framework/lib/Database/Dat
 import SessionServiceProvider from "@ashuey/ludicolo-web/lib/SessionServiceProvider";
 import HttpServiceProvider from "@ashuey/ludicolo-web/lib/HttpServiceProvider";
 import GameServiceProvider from "../app/Games/GameServiceProvider";
+import AppServiceProvider from "../app/Providers/AppServiceProvider";
 
 export default {
     'key': env('APP_KEY'),
@@ -22,6 +23,7 @@ export default {
         HttpServiceProvider,
         SessionServiceProvider,
 
+        AppServiceProvider,
         RouteServiceProvider,
         UrlSignerServiceProvider,
         BitmojiServiceProvider,
