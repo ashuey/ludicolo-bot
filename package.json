@@ -22,7 +22,7 @@
     "express": "^4.17.1",
     "fuse.js": "^3.6.1",
     "immutable": "^4.0.0-rc.12",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "passport": "^0.4.1",
     "passport-oauth2-refresh": "^1.1.0",
