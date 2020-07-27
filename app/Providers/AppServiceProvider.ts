@@ -3,6 +3,7 @@ import { CommandoClient, CommandoGuild } from "discord.js-commando";
 import { Guild, MessageEmbed } from "discord.js";
 import { isTextChannel } from "@ashuey/ludicolo-discord/lib/util";
 import { CronJob } from "cron";
+import UnownTradingService from "../Modules/PokemonTrading/Services/UnownTradingService";
 
 function isCommandoGuild(guild: Guild): guild is CommandoGuild {
     return guild.hasOwnProperty('settings');
@@ -11,7 +12,7 @@ function isCommandoGuild(guild: Guild): guild is CommandoGuild {
 export default class AppServiceProvider extends ServiceProvider {
 
     register() {
-        console.log('Registered covid CRON');
+        this.app.singleton('unown', UnownTradingService, 'db');
 
         new CronJob('00 09 * * *', async () => {
             console.log('Running COVID reminder');

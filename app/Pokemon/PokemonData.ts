@@ -8,7 +8,7 @@ export default class PokemonData {
     }
 
     public async bootstrap() {
-        // const validCache = await this.cacheIsValid();s
+        // const validCache = await this.cacheIsValid();
 
         /*if (!validCache) {
             await this.update();
