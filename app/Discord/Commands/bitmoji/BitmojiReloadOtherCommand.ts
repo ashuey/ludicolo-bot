@@ -1,10 +1,11 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import BitmojiManager from "../../../Bitmoji/BitmojiManager";
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
+import {User} from "discord.js";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class BitmojiCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'bitmoji-reload-other',
             aliases: ['bitmojireloadother'],
@@ -24,10 +25,10 @@ export default class BitmojiCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, {user}) {
+    async handle(msg: CommandoMessage, args: {user: User}) {
         const bitmojiManager = app<BitmojiManager>('bitmoji');
 
-        const bitmojiManagerUser = await bitmojiManager.getByDiscordUser(user);
+        const bitmojiManagerUser = await bitmojiManager.getByDiscordUser(args.user);
 
         if (!bitmojiManagerUser) {
             await msg.reply("Could not find that user");
@@ -36,6 +37,6 @@ export default class BitmojiCommand extends Command {
 
         await bitmojiManagerUser.bootstrap();
 
-        msg.reply(`Refreshed user ${user}`);
+        return msg.reply(`Refreshed user ${args.user}`);
     }
 }

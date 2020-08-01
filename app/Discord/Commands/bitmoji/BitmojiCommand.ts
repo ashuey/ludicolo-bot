@@ -1,6 +1,6 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import BitmojiManager from "../../../Bitmoji/BitmojiManager";
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class BitmojiCommand extends Command {
@@ -8,7 +8,7 @@ export default class BitmojiCommand extends Command {
         return false;
     }
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'bitmoji',
             aliases: [],
@@ -28,7 +28,7 @@ export default class BitmojiCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, { name }) {
+    async handle(msg: CommandoMessage, args: { name: string }) {
         const bitmojiManager = app<BitmojiManager>('bitmoji');
 
         const bitmojiManagerUser = await bitmojiManager.getByDiscordUser(msg.author);
@@ -38,17 +38,17 @@ export default class BitmojiCommand extends Command {
             return;
         }
 
-        const result = bitmojiManagerUser.findBitmoji(name);
+        const result = bitmojiManagerUser.findBitmoji(args.name);
 
         if (result) {
-            await msg.say({
+            return msg.say({
                 files: [{
                     attachment: result.url,
                     name: 'bitmoji.png'
                 }]
             });
-        } else {
-            await msg.reply("I couldn't find a Bitmoji that matches that query");
         }
+
+        return msg.reply("I couldn't find a Bitmoji that matches that query");
     }
 }

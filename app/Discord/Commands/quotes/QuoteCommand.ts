@@ -1,10 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import {Message, MessageEmbed} from "discord.js";
 
 export default class QuoteCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'quote',
             aliases: [],
@@ -25,17 +25,17 @@ export default class QuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, {name}) {
+    async handle(msg: CommandoMessage, args: {name: string}) {
         let query = Quote.query()
             .where('guild', msg.guild.id);
 
-        if (name) {
-            const nameIntVal = parseInt(name);
+        if (args.name) {
+            const nameIntVal = parseInt(args.name);
 
             if (nameIntVal >= 1) {
                 query = query.where('id', nameIntVal);
             } else {
-                query = query.where('name', name);
+                query = query.where('name', args.name);
             }
         }
 
@@ -45,7 +45,7 @@ export default class QuoteCommand extends Command {
             return this.sendFailedResponse(msg);
         }
 
-        return msg.say(`\`\`#${quotes[0].id}\`\` :mega: ${quotes['0'].text}`);
+        return msg.say(`\`\`#${quotes[0].id}\`\` :mega: ${quotes[0].text}`);
     }
 
     protected sendFailedResponse(msg: CommandoMessage): Promise<Message | Message[]> {

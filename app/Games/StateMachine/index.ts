@@ -22,7 +22,7 @@ export default class StateMachine extends EventEmitter {
         state.init();
     }
 
-    emit(event: string | symbol, ...args): boolean | undefined {
+    emit(event: string | symbol, ...args: any[]): boolean | undefined {
         if (this.running) {
             const gameEmit = super.emit(event, ...args)
             return this.currentState.emit(event, ...args) || gameEmit;

@@ -1,4 +1,4 @@
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import GameManager from "../../../Games/GameManager";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
@@ -8,7 +8,7 @@ import FakeGuildMember from "../../../Games/FakeGuildMember";
 export default class FakeJoinGameCommand extends Command {
     protected gameManager: GameManager;
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'fake-join-game',
             aliases: ['fakejoingame', 'fake'],
@@ -38,10 +38,10 @@ export default class FakeJoinGameCommand extends Command {
         this.gameManager = app('games');
     }
 
-    async handle(msg: CommandoMessage, { gameId, count }) {
-        for (let i = 0; i < count; i++) {
+    async handle(msg: CommandoMessage, args: { gameId: number, count: number }) {
+        for (let i = 0; i < args.count; i++) {
             const fakeUser = new FakeGuildMember(msg.member);
-            const result = await this.gameManager.joinGame(fakeUser, gameId);
+            const result = await this.gameManager.joinGame(fakeUser, args.gameId);
 
             switch (result) {
                 case JoinGameResult.INVALID_GAME_ID:

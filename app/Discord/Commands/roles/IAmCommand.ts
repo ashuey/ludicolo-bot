@@ -1,10 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {Message, MessageEmbed, Role} from "discord.js";
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import * as _ from "lodash";
 
 export default class AddSARCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'iam',
             group: 'roles',
@@ -23,7 +23,7 @@ export default class AddSARCommand extends Command {
         })
     }
 
-    async handle(msg, args) {
+    async handle(msg: CommandoMessage, args: { role: Role }) {
         const roleId = args.role.id;
 
         const guildSAR = await msg.guild.settings.get('sar', []);
@@ -32,7 +32,7 @@ export default class AddSARCommand extends Command {
             return this.sendFailedResponse(msg, args.role);
         }
 
-        await msg.member.addRole(args.role);
+        await msg.member.roles.add(args.role);
 
         return this.sendSuccessResponse(msg, args.role);
     }

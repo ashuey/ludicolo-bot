@@ -1,9 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {MessageEmbed} from "discord.js";
 import * as _ from 'lodash';
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 
 export default class ListSARCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'sar-auto-clean',
             group: 'roles',
@@ -14,13 +15,13 @@ export default class ListSARCommand extends Command {
         })
     }
 
-    async handle(msg, args) {
+    async handle(msg: CommandoMessage) {
         const guildSAR = await msg.guild.settings.get('sar', []);
 
         let guildSARLength = guildSAR.length;
 
         const newGuildSAR = _.filter(guildSAR, function (sar) {
-            return !!msg.guild.roles.get(sar);
+            return !!msg.guild.roles.resolve(sar);
         });
 
         await msg.guild.settings.set('sar', newGuildSAR);

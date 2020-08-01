@@ -1,10 +1,9 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import { CommandoMessage } from "discord.js-commando";
-import * as moment from 'moment'
+import { CommandoMessage, CommandoClient } from "discord.js-commando";
 import { app } from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class OfferUnownCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'resolve',
             group: 'administration',
@@ -21,8 +20,8 @@ export default class OfferUnownCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, {abstract}) {
-        const resolved = app(abstract);
+    async handle(msg: CommandoMessage, args: { abstract: string }) {
+        const resolved = app(args.abstract);
 
         if (typeof resolved === "object") {
             return msg.say(resolved.constructor.name);

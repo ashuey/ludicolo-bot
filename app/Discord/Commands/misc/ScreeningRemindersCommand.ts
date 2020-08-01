@@ -1,5 +1,5 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import { Role, TextChannel } from "discord.js";
 
 interface CommandArguments {
@@ -7,7 +7,7 @@ interface CommandArguments {
 }
 
 export default class ScreeningRemindersCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'screeningreminders',
             group: 'misc',

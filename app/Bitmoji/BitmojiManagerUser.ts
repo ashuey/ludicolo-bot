@@ -1,7 +1,7 @@
 import BitmojiUser from "../BitmojiUser";
 import Axios, {AxiosInstance} from "axios";
 import Sticker from "./types/Sticker";
-import * as Fuse from "fuse.js";
+import Fuse from "fuse.js";
 import * as _ from 'lodash';
 import * as refresh from 'passport-oauth2-refresh';
 
@@ -22,7 +22,7 @@ export default class BitmojiManagerUser {
 
     protected avatarId: string;
 
-    protected fuse: Fuse<Sticker, Fuse.FuseOptions<Sticker>>;
+    protected fuse: Fuse<Sticker>;
 
     constructor(bitmojiUser: BitmojiUser) {
         this.bitmojiUser = bitmojiUser;
@@ -90,7 +90,7 @@ export default class BitmojiManagerUser {
         await this.hydrate(bitmojiData);
     }
 
-    public async hydrate(bitmojiData):Promise<void> {
+    public async hydrate(bitmojiData: any):Promise<void> {
         this.avatarId = bitmojiData.auth.avatar_id;
 
         this.bitmojiUser = await BitmojiUser
@@ -109,7 +109,6 @@ export default class BitmojiManagerUser {
             threshold: 0.6,
             location: 0,
             distance: 100,
-            maxPatternLength: 32,
             minMatchCharLength: 1,
             keys: [
                 "tags"
@@ -118,9 +117,9 @@ export default class BitmojiManagerUser {
     }
 
     public search(query: string): Sticker[] {
-        const matches = this.fuse.search<Sticker, false, false>(query);
+        const matches = this.fuse.search(query);
         this.log("Did a search");
-        return matches;
+        return matches.map(r => r.item);
     }
 
     public findBitmoji(query: string): Sticker | undefined {

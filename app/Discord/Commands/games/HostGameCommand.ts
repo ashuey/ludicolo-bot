@@ -1,4 +1,4 @@
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import GameManager from "../../../Games/GameManager";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
@@ -6,7 +6,7 @@ import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
 export default class HostGameCommand extends Command {
     protected gameManager: GameManager;
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'hostgame',
             aliases: ['host-game', 'host'],
@@ -28,7 +28,9 @@ export default class HostGameCommand extends Command {
         this.gameManager = app('games');
     }
 
-    async handle(msg: CommandoMessage, { game }) {
-        await this.gameManager.hostNewGame(game, msg.member, msg.channel);
+    async handle(msg: CommandoMessage, args: { game: string }): Promise<null> {
+        await this.gameManager.hostNewGame(args.game, msg.member, msg.channel);
+
+        return null;
     }
 }

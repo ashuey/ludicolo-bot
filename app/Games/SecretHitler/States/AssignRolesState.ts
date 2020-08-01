@@ -50,8 +50,8 @@ export default class AssignRolesState extends State {
     }
 
     protected async sendRolesToPlayers(): Promise<void> {
-        let hitler;
-        let fascists = [];
+        let hitler: string;
+        let fascists: string[] = [];
 
         this.data.players.forEach(player => {
             if (player.getRole() === SecretHitlerRole.HITLER) {

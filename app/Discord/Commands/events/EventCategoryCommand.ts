@@ -1,8 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {isCategoryChannel} from "@ashuey/ludicolo-discord/lib/util";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
+import {GuildChannel} from "discord.js";
 
 export default class EventCategoryCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'event-category',
             aliases: ['eventcategory', 'eventcat', 'event-cat', 'set-event-category', 'event_category'],
@@ -23,15 +25,15 @@ export default class EventCategoryCommand extends Command {
         })
     }
 
-    async handle(msg, {category}) {
-        if (!isCategoryChannel(category)) {
-            return msg.reply(`**${category.name}** is not a valid category.`);
+    async handle(msg: CommandoMessage, args: {category: GuildChannel}) {
+        if (!isCategoryChannel(args.category)) {
+            return msg.reply(`**${args.category.name}** is not a valid category.`);
         }
 
-        const categoryId = category.id;
+        const categoryId = args.category.id;
 
         await msg.guild.settings.set('event_category', categoryId);
 
-        return msg.reply(`Set the event category to ${category.name}`);
+        return msg.reply(`Set the event category to ${args.category.name}`);
     }
 }

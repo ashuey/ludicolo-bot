@@ -1,10 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import {Message, MessageEmbed} from "discord.js";
 
 export default class FindQuoteCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'findquote',
             aliases: ['find-quote'],
@@ -24,10 +24,10 @@ export default class FindQuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, { query }) {
+    async handle(msg: CommandoMessage, args: { query: string }) {
         const quotes = await Quote.query()
             .where('guild', msg.guild.id)
-            .where('text', 'like', `%${query}%`)
+            .where('text', 'like', `%${args.query}%`)
             .limit(1)
             .orderByRaw('RAND()');
 
@@ -35,7 +35,7 @@ export default class FindQuoteCommand extends Command {
             return this.sendFailedResponse(msg);
         }
 
-        return msg.say(`\`\`#${quotes[0].id}\`\` :mega: ${quotes['0'].text}`);
+        return msg.say(`\`\`#${quotes[0].id}\`\` :mega: ${quotes[0].text}`);
     }
 
     protected sendFailedResponse(msg: CommandoMessage): Promise<Message | Message[]> {

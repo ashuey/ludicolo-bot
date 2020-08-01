@@ -1,10 +1,12 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import CommunityEvent from "../../../CommunityEvent";
 import CommunityEventsManager from "../../../CommunityEvents/CommunityEventsManager";
+import {CommandoMessage, CommandoClient} from "discord.js-commando"
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
+import { TextChannel } from "discord.js";
 
 export default class CreateEventCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'create-event',
             aliases: ['createevent'],
@@ -24,16 +26,18 @@ export default class CreateEventCommand extends Command {
         })
     }
 
-    async handle(msg, { name }) {
+    async handle(msg: CommandoMessage, args: { name: string }): Promise<null> {
         const eventManager: CommunityEventsManager = app('community_events');
 
         const event = await CommunityEvent
             .query()
             .insert({
-                name: name,
+                name: args.name,
                 guild: msg.guild.id
             });
 
-        await eventManager.createCard(event, msg.channel);
+        await eventManager.createCard(event, <TextChannel> msg.channel);
+
+        return null
     }
 }

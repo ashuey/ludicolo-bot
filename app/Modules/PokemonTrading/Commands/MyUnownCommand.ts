@@ -1,13 +1,12 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import { CommandoMessage } from "discord.js-commando";
-import * as moment from 'moment'
+import { CommandoMessage, CommandoClient } from "discord.js-commando";
 import UnownTradingService from "../Services/UnownTradingService";
 import { app } from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
 export default class MyUnownCommand extends Command {
     protected tradingService: UnownTradingService;
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'myunown',
             group: 'pogotrading',

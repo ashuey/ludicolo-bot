@@ -1,9 +1,9 @@
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import {fakeMembers} from "../../../Games/FakeGuildMember";
 
 export default class CleanupFakeUsersCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'cleanup-fake-users',
             aliases: ['cleanup-fake', 'cleanupfakeusers', 'cleanupfake'],
@@ -15,9 +15,11 @@ export default class CleanupFakeUsersCommand extends Command {
         });
     }
 
-    async handle(msg: CommandoMessage) {
+    async handle(msg: CommandoMessage): Promise<null> {
         await Promise.all(fakeMembers.map(async fakeGuildMember => {
             return fakeGuildMember.user.deleteDM();
         }));
+
+        return null;
     }
 }

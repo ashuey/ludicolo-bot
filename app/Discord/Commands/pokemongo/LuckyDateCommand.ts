@@ -1,9 +1,9 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import * as moment from 'moment'
 
 export default class LuckyDateCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'luckydate',
             group: 'pokemongo',
@@ -14,6 +14,6 @@ export default class LuckyDateCommand extends Command {
 
     async handle(msg: CommandoMessage) {
         const luckydate = moment().subtract(2, 'years');
-        msg.say(`Any Pokémon older than **${luckydate.format('l')}** has the highest chance to become lucky.`)
+        return msg.say(`Any Pokémon older than **${luckydate.format('l')}** has the highest chance to become lucky.`)
     }
 }

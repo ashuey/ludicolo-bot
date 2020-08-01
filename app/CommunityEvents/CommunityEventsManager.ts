@@ -1,10 +1,10 @@
 import CommunityEvent from "../CommunityEvent";
-import {Message, Snowflake, TextChannel, User} from "discord.js";
+import {Message, Snowflake, TextChannel, User, MessageReaction} from "discord.js";
 import EventCard from "../EventCard";
 import Attendee from "../Attendee";
 import CardType from "./CardType";
 
-const card_react_filter = (reaction, user) => user.bot !== true && (reaction.emoji.name === '✅' || reaction.emoji.name === '❌');
+const card_react_filter = (reaction: MessageReaction, user: User) => user.bot !== true && (reaction.emoji.name === '✅' || reaction.emoji.name === '❌');
 
 export default class CommunityEventsManager {
     protected hasBeenBootstrapped: boolean = false;

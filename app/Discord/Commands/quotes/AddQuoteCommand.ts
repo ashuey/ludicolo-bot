@@ -1,10 +1,10 @@
 import Quote from "../../../Quote";
-import {CommandoMessage} from "discord.js-commando";
+import {CommandoMessage, CommandoClient} from "discord.js-commando";
 import {MessageEmbed} from "discord.js";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 
 export default class AddQuoteCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'addquote',
             aliases: ['add-quote'],
@@ -19,7 +19,7 @@ export default class AddQuoteCommand extends Command {
                     label: 'Name',
                     prompt: '',
                     type: 'string',
-                    validate: val => isNaN(parseInt(val, 10))
+                    validate: (val: string) => isNaN(parseInt(val, 10))
                 },
                 {
                     key: 'quote',
@@ -31,12 +31,12 @@ export default class AddQuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, { name, quote }) {
+    async handle(msg: CommandoMessage, args: { name: string, quote: string }) {
         await Quote.query().insert({
             guild: msg.guild.id,
             creator: msg.author.id,
-            name: name,
-            text: quote
+            name: args.name,
+            text: args.quote
         });
 
         return msg.embed(new MessageEmbed().setColor('GREEN').setTitle(`**${msg.author.username}** Quote Added`));

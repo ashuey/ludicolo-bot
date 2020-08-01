@@ -1,6 +1,5 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
-import { CommandoMessage } from "discord.js-commando";
-import * as moment from 'moment'
+import { CommandoMessage, CommandoClient } from "discord.js-commando";
 import UnownTradingService from "../Services/UnownTradingService";
 import { app } from "@ashuey/ludicolo-framework/lib/Support/helpers";
 
@@ -11,7 +10,7 @@ interface CommandArguments {
 export default class DeleteOfferUnownCommand extends Command {
     protected tradingService: UnownTradingService;
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'deleteofferunown',
             group: 'pogotrading',
@@ -30,7 +29,7 @@ export default class DeleteOfferUnownCommand extends Command {
         this.tradingService = app('unown');
     }
 
-    async handle(msg: CommandoMessage, args) {
+    async handle(msg: CommandoMessage, args: CommandArguments) {
         const deletedCount = await this.tradingService.deleteOfferMany(msg.author, args.letters);
 
         return msg.reply(`Removed ${deletedCount} unown from your offers.`);

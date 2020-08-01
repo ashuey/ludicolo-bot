@@ -1,4 +1,4 @@
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import GameManager from "../../../Games/GameManager";
 import {app} from "@ashuey/ludicolo-framework/lib/Support/helpers";
@@ -11,7 +11,7 @@ import Game from "../../../Games/Game";
 export default class FakeJoinGameCommand extends Command {
     protected gameManager: GameManager;
 
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'dump-state',
             aliases: ['dumpstate'],
@@ -33,8 +33,8 @@ export default class FakeJoinGameCommand extends Command {
         this.gameManager = app('games');
     }
 
-    async handle(msg: CommandoMessage, { gameId }) {
-        const gameState = this.gameManager.getGameById(gameId).dumpState();
+    async handle(msg: CommandoMessage, args: { gameId: number }) {
+        const gameState = this.gameManager.getGameById(args.gameId).dumpState();
         const stateString = stringifyObject(gameState, {
             singleQuotes: false,
             filter(obj, prop) {
@@ -42,6 +42,7 @@ export default class FakeJoinGameCommand extends Command {
                 return typeof originalObject !== 'function';
             },
             transform(obj, prop, originalResult) {
+                // @ts-ignore
                 const originalObject = obj[prop];
                 if (originalObject instanceof Game) {
                     return "[Game]";

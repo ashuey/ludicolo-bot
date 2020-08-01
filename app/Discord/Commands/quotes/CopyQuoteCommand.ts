@@ -1,10 +1,10 @@
 import Command from "@ashuey/ludicolo-discord/lib/Command";
 import Quote from "../../../Quote";
-import {CommandoMessage} from "discord.js-commando";
+import { CommandoClient, CommandoMessage } from "discord.js-commando";
 import {Message, MessageEmbed, Role} from "discord.js";
 
 export default class DelQuoteCommand extends Command {
-    constructor(client) {
+    constructor(client: CommandoClient) {
         super(client, {
             name: 'copyquote',
             aliases: ['copy-quote'],
@@ -25,8 +25,8 @@ export default class DelQuoteCommand extends Command {
         })
     }
 
-    async handle(msg: CommandoMessage, { qid }) {
-        const quote = await Quote.query().findById(qid);
+    async handle(msg: CommandoMessage, args: { qid: number }) {
+        const quote = await Quote.query().findById(args.qid);
 
         if (!quote) {
             return this.sendFailedResponse(msg);

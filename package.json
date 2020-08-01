@@ -1,36 +1,30 @@
 {
-  "name": "quagsire-bot",
+  "name": "ludicolo-bot",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Alexander Shuey",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@ashuey/ludicolo-discord": "^1.1.0",
+    "@ashuey/ludicolo-discord": "^1.2.1",
     "@ashuey/ludicolo-framework": "^1.0.1",
     "@ashuey/ludicolo-web": "^1.0.0",
     "@types/cron": "^1.7.2",
-    "@types/express": "^4.17.3",
-    "@types/lodash": "^4.14.149",
-    "@types/node": "^12.12.32",
-    "@types/passport": "^1.0.3",
-    "@types/stringify-object": "^3.2.0",
+    "@types/passport": "^1.0.4",
+    "@types/passport-oauth2-refresh": "^1.1.1",
+    "@types/stringify-object": "^3.3.0",
     "axios": "^0.19.2",
     "cron": "^1.8.2",
-    "discord.js": "^12.1.1",
-    "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
-    "express": "^4.17.1",
-    "fuse.js": "^3.6.1",
+    "discord.js": "^12.2.0",
+    "discord.js-commando": "git+https://github.com/discordjs/Commando.git#bdbd84e2a978322f3af12c21e729eb7b7cd4a3dc",
+    "fuse.js": "^6.4.1",
     "immutable": "^4.0.0-rc.12",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
     "passport": "^0.4.1",
-    "passport-oauth2-refresh": "^1.1.0",
+    "passport-oauth2-refresh": "^2.0.0",
     "passport-snapchat": "^1.0.0",
-    "stringify-object": "^3.3.0",
-    "timeit": "^0.1.1"
+    "stringify-object": "^3.3.0"
   },
   "devDependencies": {
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   }
 }
