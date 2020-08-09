@@ -4,6 +4,9 @@ import { Guild, MessageEmbed } from "discord.js";
 import { isTextChannel } from "@ashuey/ludicolo-discord/lib/util";
 import { CronJob } from "cron";
 import UnownTradingService from "../Modules/PokemonTrading/Services/UnownTradingService";
+import * as url from 'url';
+import { app, config } from "@ashuey/ludicolo-framework/lib/Support/helpers";
+import UrlSigner from "../Http/UrlSigner";
 
 function isCommandoGuild(guild: Guild): guild is CommandoGuild {
     return guild.hasOwnProperty('settings');
@@ -43,5 +46,12 @@ export default class AppServiceProvider extends ServiceProvider {
                 }
             }));
         }, null, true, 'America/New_York');
+    }
+
+    async boot(): Promise<void> {
+        const urlSigner = this.app.make<UrlSigner>('url_signer')
+        const baseUrl =  url.resolve(config('http.url'), `/send_raid_command`);
+        const raidReportUrl = urlSigner.sign(`${baseUrl}?version=6LwK6Pk7`);
+        console.log(`Raid Reporting Webhook: ${raidReportUrl}`)
     }
 }
