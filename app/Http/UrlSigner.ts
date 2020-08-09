@@ -26,7 +26,7 @@ export default class UrlSigner {
 
         parsedUrl.searchParams.sort();
 
-        const signature = this.hash(parsedUrl.pathname);
+        const signature = this.hash(this.getHashableURL(parsedUrl));
 
         parsedUrl.searchParams.set('signature', signature);
 
@@ -45,7 +45,7 @@ export default class UrlSigner {
 
         url.searchParams.sort();
 
-        const expectedSignature = this.hash(url.pathname);
+        const expectedSignature = this.hash(this.getHashableURL(url));
 
         return providedSignature === expectedSignature;
     }
@@ -64,5 +64,9 @@ export default class UrlSigner {
         return crypto.createHmac(this.algorithm, this.key)
             .update(hashablePath)
             .digest('hex');
+    }
+
+    protected getHashableURL(url: URL): string {
+        return `${url.pathname}${url.search}`;
     }
 }
