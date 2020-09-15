@@ -21,6 +21,7 @@
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git#bdbd84e2a978322f3af12c21e729eb7b7cd4a3dc",
     "fuse.js": "^6.4.1",
     "immutable": "^4.0.0-rc.12",
+    "moment-timezone": "^0.5.31",
     "passport": "^0.4.1",
     "passport-oauth2-refresh": "^2.0.0",
     "passport-snapchat": "^1.0.0",

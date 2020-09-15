@@ -57,7 +57,7 @@ export default class UrlSigner {
 
         const expireVal = parseInt(url.searchParams.get('expires'));
 
-        return moment.unix(expireVal).isBefore();
+        return moment.unix(expireVal).isSameOrAfter();
     }
 
     protected hash(hashablePath: string): string {
