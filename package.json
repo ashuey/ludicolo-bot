@@ -14,7 +14,7 @@
     "@types/passport": "^1.0.4",
     "@types/passport-oauth2-refresh": "^1.1.1",
     "@types/stringify-object": "^3.3.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cron": "^1.8.2",
     "discord.js": "^12.2.0",
