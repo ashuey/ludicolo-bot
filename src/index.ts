@@ -18,12 +18,16 @@ import { getKnexConfig } from "@/database";
 import { Application as BaseApplication } from "@/common/Application";
 import { RuntimeError } from "@/common/RuntimeError";
 import { fmtError } from "@/helpers/formatters";
+import { EventsModule } from "@/modules/events";
+import { AirQualityModule } from "@/modules/airquality";
 
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
 
     readonly modules: Module[] = [
         new InspireModule(),
+        new EventsModule(),
+        new AirQualityModule(this),
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;

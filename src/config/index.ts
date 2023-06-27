@@ -16,5 +16,6 @@ function envOrThrow(key: string): string {
 export const config: Readonly<Configuration> = Object.freeze({
     discordToken: envOrThrow('DISCORD_TOKEN'),
     discordApplicationId: envOrThrow('DISCORD_APPLICATION_ID'),
-    dbUrl: '', // envOrThrow('DATABASE_URL')
+    dbUrl: '', // envOrThrow('DATABASE_URL'),
+    airNowApiKey: envOrThrow('AIR_NOW_API_KEY'),
 });
