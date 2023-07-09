@@ -1,12 +1,14 @@
 import { Command } from "@/common/Command";
-import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { bold, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { AirNowProvider } from "@/modules/airquality/AirNowProvider";
-import { fmtError } from "@/helpers/formatters";
 import { AirQualityColors } from "@/modules/airquality/airnow/colors";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { Forecast } from "@/modules/airquality/airnow/Forecast";
+import { Observation } from "@/modules/airquality/airnow/Observation";
+import { betterPollutantNames } from "@/modules/airquality/airnow/pollutants";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,31 +38,127 @@ export class AQICommand implements Command {
     async execute(interaction: ChatInputCommandInteraction) {
         const zip = interaction.options.getInteger('zip_code') ?? AQICommand.DEFAULT_ZIP;
 
-        const results = await this.module.airNow.currentObservation(String(zip));
-        const ob = results.find(o => o.ParameterName.toLowerCase().trim() === 'pm2.5');
+        const response = (new EmbedBuilder())
+            .setFooter({ text: "Data provided by AirNow.gov" });
 
-        if (!ob) {
-            return interaction.reply({
-                content: fmtError("No data available for that ZIP code"),
-                ephemeral: true,
-            });
+        const current = await this.getCurrentObservations(zip);
+        let now = dayjs();
+
+        if (current) {
+            now = now.tz(current.LocalTimeZone);
         }
 
-        const timestamp = dayjs.tz(
-            `${ob.DateObserved.trim()} ${ob.HourObserved}`,
-            'YYYY-MM-DD HH',
-            ob.LocalTimeZone
-        ).toDate();
+        const [today, tomorrow] = await Promise.all([
+            this.getForecast(zip, now),
+            this.getForecast(zip, now.add(1, 'day')),
+        ])
 
-        const response = (new EmbedBuilder())
-            .setTitle(`Current Air Quality in ${ob.ReportingArea}: ${ob.Category.Name}`)
-            .setFooter({ text: "Data provided by AirNow.gov" })
-            .setColor(AirQualityColors[ob.Category.Number] ?? null)
-            .setTimestamp(timestamp)
+        let title = "Air Quality";
+        let aqi = 'Unavailable';
+        let primaryPollutant = 'Unavailable';
+        let todayStr = 'Unavailable';
+        let tomorrowStr = 'Unavailable';
+        let currentCategory = 'Unavailable';
+
+        if (current) {
+            const color = AirQualityColors[current.Category.Number];
+
+            // Add location to the title
+            title = title + ` in ${current.ReportingArea}`;
+            currentCategory = `${color ? `${color[1]} ` : ''} ${current.Category.Name}`
+
+            // Get the timestamp of the observation
+            const timestamp = dayjs.tz(
+                `${current.DateObserved.trim()} ${current.HourObserved}`,
+                'YYYY-MM-DD HH',
+                current.LocalTimeZone
+            ).toDate();
+
+            const pollutantKey = current.ParameterName.toLowerCase().trim();
+
+            aqi = String(current.AQI);
+            primaryPollutant = betterPollutantNames[pollutantKey] ?? current.ParameterName;
+
+            response
+                .setTimestamp(timestamp)
+                .setColor(color ? color[0] : null);
+        }
+
+        if (today) {
+            const emoji = AirQualityColors[today.Category.Number];
+            todayStr = `${emoji ? emoji[1] : ''} ${today.Category.Name}`.trim();
+        }
+
+        if (tomorrow) {
+            const emoji = AirQualityColors[tomorrow.Category.Number];
+            tomorrowStr = `${emoji ? emoji[1] : ''} ${tomorrow.Category.Name}`.trim();
+        }
+
+        response
+            .setTitle(title)
+            .setDescription(currentCategory)
             .addFields(
-                { name: 'Air Quality Index', value: String(ob.AQI)}
+                {
+                    name: 'Air Quality Index',
+                    value: aqi,
+                    inline: true,
+                },
+                {
+                    name: 'Primary Pollutant',
+                    value: primaryPollutant,
+                    inline: true,
+                },
+                {
+                    name: 'Forecast',
+                    value: `${bold('Today:')} ${todayStr}\n${bold('Tomorrow:')} ${tomorrowStr}`,
+                },
             );
 
         return interaction.reply({embeds: [response]});
+    }
+
+    protected async getCurrentObservations(zip: number): Promise<Observation|null> {
+        const [obResult, observations] = await this.module.airNow.currentObservation(String(zip));
+
+        if (!obResult) {
+            console.warn(`Error getting air quality observations: ${observations}`);
+
+            return null;
+        }
+
+        let observation: Observation | null = null;
+
+        observations.forEach(o => {
+            if (observation === null || o.AQI > observation.AQI) {
+                observation = o;
+            }
+        })
+
+        return observation;
+    }
+
+    protected async getForecast(zip: number, date: dayjs.Dayjs): Promise<Forecast|null> {
+        const dateString = date.format('YYYY-MM-DD');
+        const [fResult, forecasts] = await this.module.airNow.forecasts(String(zip), dateString);
+
+        if (!fResult) {
+            console.warn(`Error getting air quality forecasts for ${dateString}: ${forecasts}`);
+
+            return null;
+        }
+
+        const forecastsForDate = forecasts.filter(f =>
+            f.DateForecast.toLowerCase().trim() === dateString
+        );
+
+        let forecast: Forecast | null = null;
+
+        forecastsForDate.forEach(f => {
+            if (forecast === null || f.AQI > forecast.AQI) {
+                forecast = f;
+            }
+        })
+
+        return forecast;
     }
 }

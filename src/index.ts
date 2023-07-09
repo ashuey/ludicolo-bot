@@ -20,6 +20,7 @@ import { RuntimeError } from "@/common/RuntimeError";
 import { fmtError } from "@/helpers/formatters";
 import { EventsModule } from "@/modules/events";
 import { AirQualityModule } from "@/modules/airquality";
+import { DJTriviaModule } from "@/modules/djtrivia";
 
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
@@ -28,6 +29,7 @@ export class Application implements BaseApplication {
         new InspireModule(),
         new EventsModule(),
         new AirQualityModule(this),
+        new DJTriviaModule(),
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;
