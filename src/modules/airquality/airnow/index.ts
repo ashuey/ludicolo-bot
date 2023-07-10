@@ -15,7 +15,8 @@ export class AirNow {
             params: {
                 'API_KEY': apiKey,
                 'format': 'application/json',
-            }
+            },
+            validateStatus: () => true,
         });
     }
 

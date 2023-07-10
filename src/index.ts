@@ -21,6 +21,7 @@ import { fmtError } from "@/helpers/formatters";
 import { EventsModule } from "@/modules/events";
 import { AirQualityModule } from "@/modules/airquality";
 import { DJTriviaModule } from "@/modules/djtrivia";
+import { MinecraftModule } from "@/modules/minecraft";
 
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
@@ -30,6 +31,7 @@ export class Application implements BaseApplication {
         new EventsModule(),
         new AirQualityModule(this),
         new DJTriviaModule(),
+        new MinecraftModule(this),
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;

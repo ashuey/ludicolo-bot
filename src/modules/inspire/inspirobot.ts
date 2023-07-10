@@ -8,7 +8,8 @@ export class InspiroBot {
 
     constructor() {
         this.http = axios.create({
-            timeout: 2000
+            timeout: 2000,
+            validateStatus: () => true,
         });
     }
 
