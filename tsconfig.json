@@ -16,6 +16,8 @@
         "allowUnusedLabels": false,
         "allowUnreachableCode": false,
         "inlineSourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "paths": {
             "@/*": [
                 "src/*"

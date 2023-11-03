@@ -16,22 +16,20 @@ import { Command } from "@/common/Command";
 import knex, { Knex } from "knex";
 import { getKnexConfig } from "@/database";
 import { Application as BaseApplication } from "@/common/Application";
-import { RuntimeError } from "@/common/RuntimeError";
+import { RuntimeError } from "@/common/errors/RuntimeError";
 import { fmtError } from "@/helpers/formatters";
-import { EventsModule } from "@/modules/events";
 import { AirQualityModule } from "@/modules/airquality";
 import { DJTriviaModule } from "@/modules/djtrivia";
-import { MinecraftModule } from "@/modules/minecraft";
+import { ArtPromptModule } from "@/modules/artprompts";
 
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
 
     readonly modules: Module[] = [
         new InspireModule(),
-        new EventsModule(),
         new AirQualityModule(this),
         new DJTriviaModule(),
-        new MinecraftModule(this),
+        new ArtPromptModule(),
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;
@@ -121,7 +119,7 @@ export class Application implements BaseApplication {
         } catch (error) {
             let message = 'There was an error while executing this command!';
 
-            if (error instanceof RuntimeError) {
+            if (error instanceof RuntimeError && error.isPublic) {
                 message = error.message;
             } else {
                 console.error(error);

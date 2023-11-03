@@ -18,8 +18,4 @@ export const config: Readonly<Configuration> = Object.freeze({
     discordApplicationId: envOrThrow('DISCORD_APPLICATION_ID'),
     dbUrl: '', // envOrThrow('DATABASE_URL'),
     airNowApiKey: envOrThrow('AIR_NOW_API_KEY'),
-    minecraftGuild: envOrThrow('MINECRAFT_GUILD'),
-    minecraftServer: envOrThrow('MINECRAFT_SERVER'),
-    whitelistrEndpoint: envOrThrow('WHITELISTR_ENDPOINT'),
-    whitelistrKey: envOrThrow('WHITELISTR_KEY'),
 });

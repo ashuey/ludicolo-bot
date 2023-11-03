@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Guild } from "discord.js";
-import { RuntimeError } from "@/common/RuntimeError";
+import { RuntimeError } from "@/common/errors/RuntimeError";
 
 export function mustGetGuild(interaction: ChatInputCommandInteraction): Guild {
     const guild = interaction.guild;
