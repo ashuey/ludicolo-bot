@@ -8,7 +8,7 @@ export const register = (new Command('register'))
 
         const commandData: unknown[] = [];
 
-        app.modules.forEach(module => {
+        app.modules.forEach(([, module]) => {
             module.commands.forEach(command => {
                 commandData.push(command.build().toJSON());
             });

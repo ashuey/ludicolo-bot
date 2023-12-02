@@ -18,4 +18,5 @@ export const config: Readonly<Configuration> = Object.freeze({
     discordApplicationId: envOrThrow('DISCORD_APPLICATION_ID'),
     dbUrl: '', // envOrThrow('DATABASE_URL'),
     airNowApiKey: envOrThrow('AIR_NOW_API_KEY'),
+    openAiApiKey: envOrThrow('OPENAI_API_KEY'),
 });

@@ -8,7 +8,7 @@ export class MigrationSource implements Knex.MigrationSource<Migration> {
     constructor(app: Application) {
         this.migrations = [];
 
-        app.modules.forEach(module => {
+        app.modules.forEach(([, module]) => {
             module.migrations.forEach(migration => {
                 this.migrations.push(migration);
             })

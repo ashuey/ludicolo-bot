@@ -3,4 +3,5 @@ export interface Configuration {
     discordApplicationId: string;
     dbUrl: string;
     airNowApiKey: string;
+    openAiApiKey: string;
 }

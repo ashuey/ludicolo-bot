@@ -1,5 +1,5 @@
 import { Command } from "@/common/Command";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, SlashCommandBuilder, ButtonStyle } from "discord.js";
 import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
 import curatedPrompts from "@/modules/artprompts/data/curated_prompts.json"
 import corpusSmall from "@/modules/artprompts/data/corpus_small.json";
@@ -41,7 +41,19 @@ export class ArtPromptCommand implements Command {
             }
             case SUBCOMMANDS.AI_LOW: {
                 const prompt = Markov.generate({ data: this.markov });
-                return interaction.reply(`Art Prompt: ${prompt}`);
+
+                const drawButton = new ButtonBuilder()
+                    .setCustomId('com://art_prompts/draw_prompt')
+                    .setLabel('Draw it for Me')
+                    .setStyle(ButtonStyle.Primary);
+
+                const row = new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(drawButton);
+
+                return interaction.reply({
+                    content: `Art Prompt: ${prompt}`,
+                    components: [row]
+                });
             }
             default:
                 throw new UnknownSubcommandError();
