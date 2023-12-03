@@ -197,10 +197,14 @@ export class Application implements BaseApplication {
             console.error(error);
         }
 
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({content: fmtError(message), ephemeral: true});
-        } else {
-            await interaction.reply({content: fmtError(message), ephemeral: true});
+        try {
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp({content: fmtError(message), ephemeral: true});
+            } else {
+                await interaction.reply({content: fmtError(message), ephemeral: true});
+            }
+        } catch (e) {
+            console.error(`Something went wrong while sending an error to the client: ${e}`);
         }
     }
 }

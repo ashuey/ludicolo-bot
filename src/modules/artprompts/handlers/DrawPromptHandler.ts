@@ -1,6 +1,10 @@
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { MessageComponentInteraction } from "discord.js";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
+import { APIError } from "openai";
+import { fmtError } from "@/helpers/formatters";
+
+const POLICY_VIOLATION_ERROR = "content_policy_violation";
 
 const artPromptRegex = /^Art Prompt: (.*)/;
 const noCanDoMsg = "Sorry, I don't think I can draw that.";
@@ -29,28 +33,43 @@ export class DrawPromptHandler implements ComponentHandler {
             return interaction.reply(noCanDoMsg);
         }
 
-        const prompt = messageMatch[1];
+        const prompt = 'Moonwalking Avocado Mafia'; //messageMatch[1];
 
         if (!prompt) {
             return interaction.reply(noCanDoMsg);
         }
 
-        const [, , response] = await Promise.all([
+        await Promise.all([
             interaction.message.edit({components: []}),
             interaction.deferReply(),
-            this.module.app.openai.images.generate({
+        ]);
+
+        let dataObj;
+
+        try {
+            const response = await this.module.app.openai.images.generate({
                 model: "dall-e-2",
                 prompt,
                 n: 1,
                 size: "1024x1024",
-            })
-        ]);
+            });
 
+            dataObj = response.data[0];
+        } catch (e) {
+            if (!(e instanceof APIError)) {
+                throw e;
+            }
 
-        const dataObj = response.data[0];
+            switch (e.code) {
+                case POLICY_VIOLATION_ERROR:
+                    return interaction.editReply(fmtError("Sorry, that prompt was rejected as a result of Open AI's safety system"));
+                default:
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+            }
+        }
 
         if (!dataObj || !dataObj.url) {
-            return interaction.editReply("Sorry, something went wrong");
+            return interaction.editReply(fmtError("Sorry, something went wrong"));
         }
 
         return interaction.editReply({
