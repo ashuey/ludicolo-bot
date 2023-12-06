@@ -33,11 +33,13 @@ export class DrawPromptHandler implements ComponentHandler {
             return interaction.reply(noCanDoMsg);
         }
 
-        const prompt = 'Moonwalking Avocado Mafia'; //messageMatch[1];
+        const prompt = messageMatch[1];
 
         if (!prompt) {
             return interaction.reply(noCanDoMsg);
         }
+
+        console.log(`Drawing '${prompt}' for ${interaction.user.username}`);
 
         await Promise.all([
             interaction.message.edit({components: []}),
@@ -59,6 +61,8 @@ export class DrawPromptHandler implements ComponentHandler {
             if (!(e instanceof APIError)) {
                 throw e;
             }
+
+            console.error(`Open AI error: ${e}`);
 
             switch (e.code) {
                 case POLICY_VIOLATION_ERROR:
