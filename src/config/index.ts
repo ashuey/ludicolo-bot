@@ -19,4 +19,5 @@ export const config: Readonly<Configuration> = Object.freeze({
     dbUrl: '', // envOrThrow('DATABASE_URL'),
     airNowApiKey: envOrThrow('AIR_NOW_API_KEY'),
     openAiApiKey: envOrThrow('OPENAI_API_KEY'),
+    huggingFaceApiKey: envOrThrow('HUGGING_FACE_API_KEY'),
 });

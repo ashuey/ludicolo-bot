@@ -23,6 +23,7 @@ import { DJTriviaModule } from "@/modules/djtrivia";
 import { ArtPromptModule } from "@/modules/artprompts";
 import OpenAI from "openai";
 import { ComponentHandler } from "@/common/ComponentHandler";
+import { AIModule } from "@/modules/ai";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -36,6 +37,7 @@ export class Application implements BaseApplication {
         ['air_quality', new AirQualityModule(this)],
         ['dj_trivia', new DJTriviaModule()],
         ['art_prompts', new ArtPromptModule(this)],
+        ['ai', new AIModule(this)],
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;
@@ -111,10 +113,12 @@ export class Application implements BaseApplication {
         const commands: [string, Command][] = [];
 
         this.modules.forEach(([, module])=> {
-            module.commands.forEach(command => {
-                commands.push([command.build().name, command]);
-            })
-        })
+            if (module.commands) {
+                module.commands.forEach(command => {
+                    commands.push([command.build().name, command]);
+                });
+            }
+        });
 
         return new Collection(commands);
     }

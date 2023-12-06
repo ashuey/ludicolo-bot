@@ -9,9 +9,11 @@ export const register = (new Command('register'))
         const commandData: unknown[] = [];
 
         app.modules.forEach(([, module]) => {
-            module.commands.forEach(command => {
-                commandData.push(command.build().toJSON());
-            });
+            if (module.commands) {
+                module.commands.forEach(command => {
+                    commandData.push(command.build().toJSON());
+                });
+            }
         });
 
         const response = await app.rest.put(

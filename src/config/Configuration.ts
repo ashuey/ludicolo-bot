@@ -4,4 +4,5 @@ export interface Configuration {
     dbUrl: string;
     airNowApiKey: string;
     openAiApiKey: string;
+    huggingFaceApiKey: string;
 }

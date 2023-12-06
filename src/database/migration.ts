@@ -9,10 +9,12 @@ export class MigrationSource implements Knex.MigrationSource<Migration> {
         this.migrations = [];
 
         app.modules.forEach(([, module]) => {
-            module.migrations.forEach(migration => {
-                this.migrations.push(migration);
-            })
-        })
+            if (module.migrations) {
+                module.migrations.forEach(migration => {
+                    this.migrations.push(migration);
+                });
+            }
+        });
     }
 
     async getMigration(migration: Migration): Promise<Knex.Migration> {
