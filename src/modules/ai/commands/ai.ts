@@ -1,5 +1,5 @@
 import { Command } from "@/common/Command";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
 import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
 import { fmtError } from "@/helpers/formatters";
@@ -8,6 +8,7 @@ import { Result } from "@/common/Result";
 
 enum SUBCOMMANDS {
     RECIPE = 'recipe',
+    SWEDISH_CHEF = 'swedish_chef',
 }
 
 export class AICommand implements Command {
@@ -24,6 +25,13 @@ export class AICommand implements Command {
             .addSubcommand(cmd => cmd
                 .setName(SUBCOMMANDS.RECIPE)
                 .setDescription('Generates a recipe from a title')
+                .addStringOption(option => option
+                    .setName('title')
+                    .setDescription('Title of the recipe')
+                    .setRequired(true)))
+            .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.SWEDISH_CHEF)
+                .setDescription('Generates a recipe from a title, as the swedish chef')
                 .addStringOption(option => option
                     .setName('title')
                     .setDescription('Title of the recipe')
@@ -58,6 +66,53 @@ export class AICommand implements Command {
                 prompt = `\`\`\`This content is AI-Generated\`\`\`\n# ${prompt}`
 
                 return interaction.editReply(prompt);
+            }
+            case SUBCOMMANDS.SWEDISH_CHEF: {
+                const recipeTitle = interaction.options.getString('title', true);
+                await interaction.deferReply();
+
+                console.log(`${interaction.user.username} requested a swedish-chef recipe for ${recipeTitle}`);
+
+                const response = await this.module.app.openai.chat.completions.create({
+                    model: "gpt-4",
+                    messages: [
+                        {
+                            "role": "system",
+                            "content": "You are the Swedish Chef from The Muppets"
+                        },
+                        {
+                            "role": "user",
+                            "content": `Create a recipe for ${recipeTitle}`
+                        }
+                    ],
+                    temperature: 1,
+                    max_tokens: 1900,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                });
+
+                const firstChoice = response.choices[0];
+
+                if (!firstChoice) {
+                    console.log(`Found ${response.choices.length} choices in response, expected 1`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                const messageContent = firstChoice.message.content;
+
+                if (!messageContent) {
+                    console.log(`Message content is null`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`Recipe for ${recipeTitle}`)
+                    .setAuthor({ name: 'This content is AI-Generated' })
+                    .setThumbnail('https://i.imgur.com/pWZxLsa.jpg')
+                    .setDescription(messageContent);
+
+                return interaction.editReply({ embeds: [embed] });
             }
             default:
                 throw new UnknownSubcommandError();
