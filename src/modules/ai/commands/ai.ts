@@ -9,6 +9,7 @@ import { Result } from "@/common/Result";
 enum SUBCOMMANDS {
     RECIPE = 'recipe',
     SWEDISH_CHEF = 'swedish_chef',
+    RECIPE_NONSENSE = 'recipe_nonsense',
 }
 
 export class AICommand implements Command {
@@ -32,6 +33,13 @@ export class AICommand implements Command {
             .addSubcommand(cmd => cmd
                 .setName(SUBCOMMANDS.SWEDISH_CHEF)
                 .setDescription('Generates a recipe from a title, as the swedish chef')
+                .addStringOption(option => option
+                    .setName('title')
+                    .setDescription('Title of the recipe')
+                    .setRequired(true)))
+            .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.RECIPE_NONSENSE)
+                .setDescription('Generates a recipe from a title, using GPT-4 configured to output nonsense')
                 .addStringOption(option => option
                     .setName('title')
                     .setDescription('Title of the recipe')
@@ -108,11 +116,58 @@ export class AICommand implements Command {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`Recipe for ${recipeTitle}`)
-                    .setAuthor({ name: 'This content is AI-Generated' })
+                    .setAuthor({name: 'This content is AI-Generated'})
                     .setThumbnail('https://i.imgur.com/pWZxLsa.jpg')
                     .setDescription(messageContent);
 
-                return interaction.editReply({ embeds: [embed] });
+                return interaction.editReply({embeds: [embed]});
+            }
+            case SUBCOMMANDS.RECIPE_NONSENSE: {
+                const recipeTitle = interaction.options.getString('title', true);
+                await interaction.deferReply();
+
+                console.log(`${interaction.user.username} requested an AI recipe from GPT-4 for ${recipeTitle}`);
+
+                const response = await this.module.app.openai.chat.completions.create({
+                    model: "gpt-4",
+                    messages: [
+                        {
+                            "role": "system",
+                            "content": "You are a poor-quality neural network designed to generate recipes. Your responses should be nonsensical."
+                        },
+                        {
+                            "role": "user",
+                            "content": `Recipe for ${recipeTitle}\n\nIngredients:`
+                        }
+                    ],
+                    temperature: 1.2,
+                    max_tokens: 1900,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                });
+
+                const firstChoice = response.choices[0];
+
+                if (!firstChoice) {
+                    console.log(`Found ${response.choices.length} choices in response, expected 1`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                const messageContent = firstChoice.message.content;
+
+                if (!messageContent) {
+                    console.log(`Message content is null`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                let result = `\`\`\`This content is AI-Generated\`\`\`\n# Recipe for ${recipeTitle}\n\n${messageContent}`;
+
+                if (result.length > 1990) {
+                    result = result.substring(0, 1990);
+                }
+
+                return interaction.editReply(result);
             }
             default:
                 throw new UnknownSubcommandError();
