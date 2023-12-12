@@ -10,6 +10,7 @@ enum SUBCOMMANDS {
     RECIPE = 'recipe',
     SWEDISH_CHEF = 'swedish_chef',
     RECIPE_NONSENSE = 'recipe_nonsense',
+    BEAKER = 'beaker',
 }
 
 export class AICommand implements Command {
@@ -43,6 +44,13 @@ export class AICommand implements Command {
                 .addStringOption(option => option
                     .setName('title')
                     .setDescription('Title of the recipe')
+                    .setRequired(true)))
+            .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.BEAKER)
+                .setDescription('Responds as beaker')
+                .addStringOption(option => option
+                    .setName('chat')
+                    .setDescription('Chat Message')
                     .setRequired(true)));
     }
 
@@ -168,6 +176,48 @@ export class AICommand implements Command {
                 }
 
                 return interaction.editReply(result);
+            }
+            case SUBCOMMANDS.BEAKER: {
+                const chatMessage = interaction.options.getString('chat', true);
+                await interaction.deferReply();
+
+                console.log(`${interaction.user.username} requested a message from beaker: ${chatMessage}`);
+
+                const response = await this.module.app.openai.chat.completions.create({
+                    model: "gpt-4",
+                    messages: [
+                        {
+                            "role": "system",
+                            "content": "You are Beaker from The Muppets"
+                        },
+                        {
+                            "role": "user",
+                            "content": chatMessage
+                        }
+                    ],
+                    temperature: 1,
+                    max_tokens: 1900,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                });
+
+                const firstChoice = response.choices[0];
+
+                if (!firstChoice) {
+                    console.log(`Found ${response.choices.length} choices in response, expected 1`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                const messageContent = firstChoice.message.content;
+
+                if (!messageContent) {
+                    console.log(`Message content is null`);
+                    return interaction.editReply(fmtError("Sorry, something went wrong"));
+                }
+
+                console.log(`Beaker responded to ${interaction.user.username}: ${messageContent}`);
+                return interaction.editReply(`Beaker: ${messageContent}`);
             }
             default:
                 throw new UnknownSubcommandError();
