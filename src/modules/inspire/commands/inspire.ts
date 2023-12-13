@@ -19,7 +19,7 @@ export class InspireCommand implements Command {
             });
         }
 
-        console.debug(`Bestowing inspiration upon ${interaction.user.username}`)
+        console.debug(`Bestowing inspiration upon ${interaction.user.username}: ${result}`);
 
         return interaction.reply({ files: [result] });
     }

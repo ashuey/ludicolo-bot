@@ -71,8 +71,10 @@ export class AICommand implements Command {
                         prompt = await this.completion(prompt);
                     }
 
-                    prompt = prompt.substring(0, 1960);
-                    prompt = prompt.substring(0, Math.min(prompt.length, prompt.lastIndexOf(" ")))
+                    if (prompt.length > 1960) {
+                        prompt = prompt.substring(0, 1960);
+                        prompt = prompt.substring(0, Math.min(prompt.length, prompt.lastIndexOf(" ")));
+                    }
 
                     prompt = `\`\`\`This content is AI-Generated\`\`\`\n# ${prompt}`
 
@@ -229,7 +231,7 @@ export class AICommand implements Command {
             inputs: input,
             parameters: {
                 //repetition_penalty: 2.0,
-                max_new_tokens: 150,
+                max_new_tokens: 250,
                 max_time: 60,
                 //top_k: 20,
                 //top_p: 20,
@@ -241,7 +243,12 @@ export class AICommand implements Command {
             use_cache: false
         });
 
-        const longest = result.reduce(
+        let candidates = result.filter(r => r.generated_text.length <= 1960);
+        if (candidates.length == 0) {
+            candidates = result;
+        }
+
+        const longest = candidates.reduce(
             (a, b) => a.generated_text.length > b.generated_text.length ? a : b
         );
 
