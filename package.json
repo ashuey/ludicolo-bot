@@ -8,6 +8,7 @@
         "@": "dist"
     },
     "dependencies": {
+        "@huggingface/inference": "^2.6.4",
         "async-lock": "^1.4.0",
         "axios": "^1.4.0",
         "bufferutil": "^4.0.7",

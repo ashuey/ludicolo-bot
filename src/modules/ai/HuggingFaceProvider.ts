@@ -1,5 +1,5 @@
-import { HuggingFace } from "@/modules/ai/huggingface";
+import { HfInference } from "@huggingface/inference";
 
 export interface HuggingFaceProvider {
-    huggingFace: HuggingFace;
+    huggingFace: HfInference;
 }

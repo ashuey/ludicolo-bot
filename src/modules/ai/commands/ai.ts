@@ -4,7 +4,7 @@ import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
 import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
 import { fmtError } from "@/helpers/formatters";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
-import { Result } from "@/common/Result";
+import { textGeneration } from "@/modules/ai/huggingFace";
 
 enum SUBCOMMANDS {
     RECIPE = 'recipe',
@@ -62,26 +62,25 @@ export class AICommand implements Command {
 
                 console.log(`${interaction.user.username} requested an AI recipe for ${recipeTitle}`);
 
-                let prompt = `Recipe for ${recipeTitle}\n\nIngredients:\n`
-                const iterations = 2;
+                try {
 
-                for (let i = 0; i < iterations; i++) {
-                    const [success, result] = await this.completion(prompt);
+                    let prompt = `Recipe for ${recipeTitle}\n\nIngredients:\n`
+                    const iterations = 2;
 
-                    if (!success) {
-                        console.log(`Text Generation error: ${result}`);
-                        return interaction.editReply(fmtError("An error occurred during text generation. Please try again."));
+                    for (let i = 0; i < iterations; i++) {
+                        prompt = await this.completion(prompt);
                     }
 
-                    prompt = result;
+                    prompt = prompt.substring(0, 1960);
+                    prompt = prompt.substring(0, Math.min(prompt.length, prompt.lastIndexOf(" ")))
+
+                    prompt = `\`\`\`This content is AI-Generated\`\`\`\n# ${prompt}`
+
+                    return interaction.editReply(prompt);
+                } catch (e) {
+                    console.log(`Text Generation error: ${2}`);
+                    return interaction.editReply(fmtError("An error occurred during text generation. Please try again."));
                 }
-
-                prompt = prompt.substring(0, 1960);
-                prompt = prompt.substring(0, Math.min(prompt.length, prompt.lastIndexOf(" ")))
-
-                prompt = `\`\`\`This content is AI-Generated\`\`\`\n# ${prompt}`
-
-                return interaction.editReply(prompt);
             }
             case SUBCOMMANDS.SWEDISH_CHEF: {
                 const recipeTitle = interaction.options.getString('title', true);
@@ -224,8 +223,9 @@ export class AICommand implements Command {
         }
     }
 
-    protected async completion(input: string): Promise<Result<string>> {
-        const [success, result] = await this.module.huggingFace.textGeneration('gpt2', {
+    protected async completion(input: string): Promise<string> {
+        const result = await textGeneration(this.module.huggingFace, {
+            model: 'gpt2',
             inputs: input,
             parameters: {
                 //repetition_penalty: 2.0,
@@ -236,20 +236,15 @@ export class AICommand implements Command {
                 num_return_sequences: 6,
                 do_sample: true,
                 temperature: 1.4
-            },
-            options: {
-                use_cache: false
             }
+        }, {
+            use_cache: false
         });
-
-        if (!success) {
-            return [success, result];
-        }
 
         const longest = result.reduce(
             (a, b) => a.generated_text.length > b.generated_text.length ? a : b
         );
 
-        return [true, longest.generated_text];
+        return longest.generated_text;
     }
 }
