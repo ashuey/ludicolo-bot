@@ -1,6 +1,7 @@
-import { ChatCompletionMessageParam } from "openai/src/resources/chat/completions";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
+import OpenAI from "openai";
+import ChatCompletionMessageParam = OpenAI.ChatCompletionMessageParam;
 
 export class OpenAIHelper {
     constructor(protected readonly module: ApplicationProvider) {}

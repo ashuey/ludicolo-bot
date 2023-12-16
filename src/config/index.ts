@@ -1,7 +1,4 @@
-import * as dotenv from "dotenv";
 import { Configuration } from "@/config/Configuration";
-
-dotenv.config();
 
 function envOrThrow(key: string): string {
     const value = process.env[key];

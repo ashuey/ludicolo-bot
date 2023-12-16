@@ -5,10 +5,12 @@ import { config } from "@/config";
 import {
     ChatInputCommandInteraction,
     Client,
-    Collection, CommandInteraction,
+    Collection,
+    CommandInteraction,
     Events,
     GatewayIntentBits,
-    Interaction, MessageComponentInteraction,
+    Interaction,
+    MessageComponentInteraction,
     REST,
 } from "discord.js";
 import { ReadonlyCollection } from "@discordjs/collection";
@@ -27,7 +29,7 @@ import { AIModule } from "@/modules/ai";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
-const componentInteractionRegex= /^com:\/\/(\w+\/\w+)$/;
+const componentInteractionRegex = /^com:\/\/(\w+\/\w+)$/;
 
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
@@ -112,7 +114,7 @@ export class Application implements BaseApplication {
     protected buildCommandCollection(): ReadonlyCollection<string, Command> {
         const commands: [string, Command][] = [];
 
-        this.modules.forEach(([, module])=> {
+        this.modules.forEach(([, module]) => {
             if (module.commands) {
                 module.commands.forEach(command => {
                     commands.push([command.build().name, command]);

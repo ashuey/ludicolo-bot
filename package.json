@@ -9,28 +9,26 @@
     },
     "dependencies": {
         "@huggingface/inference": "^2.6.4",
-        "async-lock": "^1.4.0",
-        "axios": "^1.4.0",
-        "bufferutil": "^4.0.7",
+        "axios": "^1.6.2",
+        "bufferutil": "^4.0.8",
         "cheerio": "^1.0.0-rc.12",
-        "commander": "^10.0.1",
-        "dayjs": "^1.11.8",
-        "discord.js": "^14.11.0",
-        "dotenv": "^16.0.3",
-        "knex": "^2.4.2",
-        "kurwov": "^3.2.4",
-        "module-alias": "^2.2.2",
-        "openai": "^4.20.1",
-        "pg": "^8.10.0",
+        "commander": "^11.1.0",
+        "dayjs": "^1.11.10",
+        "discord.js": "^14.14.1",
+        "knex": "^3.1.0",
+        "markov-strings": "^3.0.1",
+        "module-alias": "^2.2.3",
+        "openai": "^4.22.1",
         "utf-8-validate": "^6.0.3"
     },
     "devDependencies": {
-        "@tsconfig/node18": "^1.0.3",
-        "@types/async-lock": "^1.4.0",
-        "@typescript-eslint/eslint-plugin": "^5.59.5",
-        "@typescript-eslint/parser": "^5.59.5",
-        "eslint": "^8.40.0",
-        "sqlite3": "^5.1.6",
-        "typescript": "^4.9.5"
+        "@tsconfig/node20": "^20.1.2",
+        "@typescript-eslint/eslint-plugin": "^6.14.0",
+        "dotenv": "^16.3.1",
+        "eslint": "^8.56.0",
+        "typescript": "^5.3.3"
+    },
+    "engines": {
+        "node": ">=20.10.0 <20.11.0"
     }
 }

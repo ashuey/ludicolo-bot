@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { Result } from "@/common/Result";
 import { AtomFeed } from "@/modules/djtrivia/Atom";
 import dayjs from "dayjs";
@@ -13,7 +13,7 @@ export interface DJTriviaHint {
 export class DJTrivia {
     static readonly ENDPOINT = "https://cod.djtrivia.com/feeds/posts/default?alt=json";
 
-    protected readonly http;
+    protected readonly http: AxiosInstance;
 
     constructor() {
         this.http = axios.create({

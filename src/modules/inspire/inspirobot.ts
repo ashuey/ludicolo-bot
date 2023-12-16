@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { Result } from "@/common/Result";
 
 export class InspiroBot {
     static readonly ENDPOINT = "https://inspirobot.me/api?generate=true";
 
-    protected readonly http;
+    protected readonly http: AxiosInstance;
 
     constructor() {
         this.http = axios.create({

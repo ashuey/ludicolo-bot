@@ -5,5 +5,7 @@ export const start = (new Command('start'))
     .action(() => {
         const app = new Application();
 
-        app.login();
+        app.login().then(() => {
+            console.log("Discord connection lost. Closing...");
+        });
     });

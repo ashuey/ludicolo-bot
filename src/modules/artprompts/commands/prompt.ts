@@ -5,7 +5,7 @@ import curatedPrompts from "@/modules/artprompts/data/curated_prompts.json"
 import corpusSmall from "@/modules/artprompts/data/corpus_small.json";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { choose } from "@/helpers/random";
-import { Markov, MarkovData } from "kurwov";
+import Markov from 'markov-strings'
 
 enum SUBCOMMANDS {
     RANDOM = 'random',
@@ -13,10 +13,11 @@ enum SUBCOMMANDS {
 }
 
 export class ArtPromptCommand implements Command {
-    protected readonly markov: MarkovData;
+    protected readonly markov: Markov;
 
     constructor() {
-        this.markov = new MarkovData(corpusSmall);
+        this.markov = new Markov();
+        this.markov.addData(corpusSmall);
     }
     build() {
         return (new SlashCommandBuilder())
@@ -40,7 +41,7 @@ export class ArtPromptCommand implements Command {
                 return interaction.reply(`Art Prompt: ${prompt}`);
             }
             case SUBCOMMANDS.AI_LOW: {
-                const prompt = Markov.generate({ data: this.markov });
+                const prompt = this.markov.generate();
 
                 const drawButton = new ButtonBuilder()
                     .setCustomId('com://art_prompts/draw_prompt')
@@ -51,7 +52,7 @@ export class ArtPromptCommand implements Command {
                     .addComponents(drawButton);
 
                 return interaction.reply({
-                    content: `Art Prompt: ${prompt}`,
+                    content: `Art Prompt: ${prompt.string}`,
                     components: [row]
                 });
             }

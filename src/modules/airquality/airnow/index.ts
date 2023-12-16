@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { Observation } from "@/modules/airquality/airnow/Observation";
 import { Result } from "@/common/Result";
 import { Forecast } from "@/modules/airquality/airnow/Forecast";
@@ -6,7 +6,7 @@ import { Forecast } from "@/modules/airquality/airnow/Forecast";
 export class AirNow {
     static readonly URL_BASE = "https://www.airnowapi.org";
 
-    protected readonly http;
+    protected readonly http: AxiosInstance;
 
     constructor(apiKey: string) {
         this.http = axios.create({
@@ -24,26 +24,6 @@ export class AirNow {
         const result = await this.http.get<Observation[]>('aq/observation/zipCode/current', {
             params: {
                 'zipCode': zip,
-                'distance': distance,
-            }
-        });
-
-        if (result.status < 200 || result.status >= 300) {
-            return [false, new Error(`HTTP Error ${result.status}`)];
-        }
-
-        return [true, result.data];
-    }
-
-    public async historicalObservations(
-        zip: string,
-        date: string,
-        distance = 50
-    ): Promise<Result<Observation[]>> {
-        const result = await this.http.get<Observation[]>('aq/observation/zipCode/historical', {
-            params: {
-                'zipCode': zip,
-                'date': date,
                 'distance': distance,
             }
         });
