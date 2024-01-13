@@ -50,7 +50,7 @@ export class DrawPromptHandler implements ComponentHandler {
 
         try {
             const response = await this.module.app.openai.images.generate({
-                model: "dall-e-2",
+                model: "dall-e-3",
                 prompt,
                 n: 1,
                 size: "1024x1024",
