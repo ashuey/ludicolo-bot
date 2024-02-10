@@ -3,7 +3,6 @@ import { Module } from "@/common/Module";
 import { ReadonlyCollection } from "@discordjs/collection";
 import { Command } from "@/common/Command";
 import { Client, REST } from "discord.js";
-import { Knex } from "knex";
 import OpenAI from "openai";
 
 export interface Application {
@@ -12,6 +11,5 @@ export interface Application {
     readonly commands: ReadonlyCollection<string, Command>;
     readonly discord: Client;
     readonly rest: REST;
-    readonly db: Knex;
     readonly openai: OpenAI;
 }

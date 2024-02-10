@@ -15,8 +15,6 @@ import {
 } from "discord.js";
 import { ReadonlyCollection } from "@discordjs/collection";
 import { Command } from "@/common/Command";
-import knex, { Knex } from "knex";
-import { getKnexConfig } from "@/database";
 import { Application as BaseApplication } from "@/common/Application";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { fmtError } from "@/helpers/formatters";
@@ -50,8 +48,6 @@ export class Application implements BaseApplication {
 
     protected _rest: REST | undefined;
 
-    protected _db: Knex | undefined;
-
     protected _openai: OpenAI | undefined;
 
     constructor() {
@@ -77,14 +73,6 @@ export class Application implements BaseApplication {
         }
 
         return this._rest;
-    }
-
-    get db(): Knex {
-        if (!this._db) {
-            this._db = knex(getKnexConfig(this.config.dbUrl));
-        }
-
-        return this._db;
     }
 
     get openai(): OpenAI {
