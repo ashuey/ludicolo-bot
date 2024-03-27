@@ -1,0 +1,23 @@
+[tools]
+node = "20.10"
+flyctl = "latest"
+
+[tasks.clean]
+run = 'rm -rf dist'
+
+[tasks.build]
+run = 'node_modules/.bin/tsc --project tsconfig.json'
+sources = ['src/**/*']
+outputs = ['dist/**/*']
+
+[tasks.run]
+run = "node dist/cmd/index.js start"
+depends = ['build']
+alias = 'default'
+
+[tasks.register]
+run = "node dist/cmd/index.js register"
+depends = ['build']
+
+[tasks.test]
+run = "node_modules/.bin/jest"

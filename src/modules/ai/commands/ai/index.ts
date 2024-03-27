@@ -3,8 +3,8 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
 import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
-import { OpenAIHelper } from "@/modules/ai/commands/ai/OpenAIHelper";
-import { HuggingFaceHelper } from "@/modules/ai/commands/ai/HuggingFaceHelper";
+import { OpenAIHelper } from "@/modules/ai/helpers/OpenAIHelper";
+import { HuggingFaceHelper } from "@/modules/ai/helpers/HuggingFaceHelper";
 import { swedishChefEmbed } from "@/modules/ai/commands/ai/embeds";
 import { fmtAi, truncate } from "@/helpers/formatters";
 

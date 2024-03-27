@@ -5,7 +5,6 @@ export const start = (new Command('start'))
     .action(() => {
         const app = new Application();
 
-        app.login().then(() => {
-            console.log("Discord connection lost. Closing...");
-        });
+        // noinspection JSIgnoredPromiseFromCall
+        app.login();
     });

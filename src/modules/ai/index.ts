@@ -4,10 +4,12 @@ import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
 import { Application } from "@/common/Application";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
 import { HfInference } from "@huggingface/inference";
+import {XIVInspire} from "@/modules/ai/commands/XIVInspire";
 
 export class AIModule implements Module, HuggingFaceProvider, ApplicationProvider {
     readonly commands = [
         new AICommand(this),
+        new XIVInspire(this),
     ];
 
     readonly app: Application;
