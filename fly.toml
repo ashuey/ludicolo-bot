@@ -1,2 +1,19 @@
 app = "ludicolo-bot"
-primary_region = "ewr"
+primary_region = "yyz"
+
+[mounts]
+destination = "/pb/pb_data"
+source = "pb_data"
+
+[http_service]
+internal_port = 8080
+force_https = true
+auto_stop_machines = false
+auto_start_machines = false
+min_machines_running = 1
+processes = ['app']
+
+[[vm]]
+cpu_kind = 'shared'
+cpus = 1
+memory_mb = 1024
