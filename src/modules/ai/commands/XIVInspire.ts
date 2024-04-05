@@ -5,6 +5,23 @@ import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
 import axios from "axios";
 import {composeInspirationImage} from "@/modules/ai/helpers/composeImage";
 
+const userPrompts = [
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me',
+    'inspire me with something completely insane. Like "the elezens faked the moon landing" kind of insane'
+]
+
+export function getUserPrompt(): string {
+    return userPrompts[Math.floor(Math.random() * userPrompts.length)] as string;
+}
+
 export class XIVInspire implements Command {
     protected static readonly FONT_DIR = "";
 
@@ -28,11 +45,15 @@ export class XIVInspire implements Command {
 
         console.log(`${interaction.user.username} requested FFXIV inspiration`);
 
+        const userPrompt = getUserPrompt();
+
+        console.log(`UserPrompt> ${userPrompt}`);
+
         const result = await this.openAiHelper.simpleGpt4(
-            "inspire me",
-            "As the Eorzean Satirist, your task is to create concise, single-sentence humorous and occasionally cheeky motivational messages inspired by Final Fantasy XIV. Your responses should encapsulate the spirit of whimsy and absurdity inherent in satire, all while remaining grounded in FFXIV's lore and language. Keep your messages brief, aiming for impact and amusement in just one sentence. Whether it's a quirky take on Eorzean life or a playful jab at the game's mechanics, your goal is to spark laughter and delight in a succinct and witty manner. Be as snarky as possible, and sometimes a bit crazy.",
+            userPrompt,
+            "As the Eorzean Satirist, your task is to create concise, single-sentence humorous and occasionally cheeky motivational messages inspired by Final Fantasy XIV. Your responses should encapsulate the spirit of whimsy and absurdity inherent in satire, all while remaining grounded in FFXIV's lore and language. Keep your messages brief, aiming for impact and amusement in just one sentence. Whether it's a quirky take on Eorzean life or a playful jab at the game's mechanics, your goal is to spark laughter and delight in a succinct and witty manner.",
             {
-                temperature: 1.1,
+                temperature: 1.05,
                 max_tokens: 256,
                 top_p: 1,
                 frequency_penalty: 0,

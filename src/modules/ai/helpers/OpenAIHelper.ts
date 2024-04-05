@@ -16,7 +16,7 @@ export class OpenAIHelper {
 
         messages.push({ "role": "user", "content": message });
 
-        const response = await this.module.app.openai.chat.completions.create({
+        const requestOptions = {
             model: "gpt-4",
             messages,
             temperature: 1,
@@ -25,7 +25,9 @@ export class OpenAIHelper {
             frequency_penalty: 0,
             presence_penalty: 0,
             ...options,
-        });
+        };
+
+        const response = await this.module.app.openai.chat.completions.create(requestOptions);
 
         const firstChoice = response.choices[0];
 
