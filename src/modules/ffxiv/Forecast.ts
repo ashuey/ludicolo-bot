@@ -22,11 +22,13 @@ export class Forecast {
         const now = new Date();
         const startTime = this.getStartTime(now.getTime());
         this.forecast = [];
-        const startedAt = new Date(startTime);
-        this.forecast.push({
-            name: this.eorzeaWeather.getWeather(startedAt),
-            startedAt,
-        });
+        for (let time = startTime; time < (startTime + (ET_EIGHT_HOURS * 1)); time += ET_EIGHT_HOURS) {
+            const startedAt = new Date(time);
+            this.forecast.push({
+                name: this.eorzeaWeather.getWeather(new Date(time)),
+                startedAt,
+            });
+        }
     }
 
     findNext(weather: string): ForecastEntry | undefined {

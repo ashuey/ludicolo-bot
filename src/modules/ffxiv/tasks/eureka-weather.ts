@@ -6,6 +6,8 @@ import * as console from "node:console";
 // TODO: This whole thing is kind of a mess
 
 const CHANNEL_ID = "1234701925698506792"; // TODO: Don't hardcode this
+//  const CHANNEL_ID = "1107395046900236388"; // DEV
+
 
 let lastSentCrab = 0;
 let lastSentCassie = 0;
@@ -36,26 +38,38 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
     const nextSkoll = pyrosForecast.findNext("blizzards");
 
     if (nextKingArthro && lastSentCrab !== nextKingArthro.startedAt.getTime()) {
-        const arthroTimestamp =Math.floor(nextKingArthro.startedAt.getTime() / 1000);
-        await channel.send(
-            `Next KA/Crab weather (Fog) is <t:${arthroTimestamp}:R> (<t:${arthroTimestamp}>)`
-        );
+        //console.log('sending ka');
+        const arthroTimestamp = Math.floor(nextKingArthro.startedAt.getTime() / 1000);
+        await channel.send({
+            content: `[PAGOS] Next KA/Crab weather (Fog) is <t:${arthroTimestamp}:R> (<t:${arthroTimestamp}>)`,
+            files: ['embeds/crabmap.png']
+        }).catch(err => {
+            console.error(err);
+        });
         lastSentCrab = nextKingArthro.startedAt.getTime();
     }
 
     if (nextCassie && lastSentCassie !== nextCassie.startedAt.getTime()) {
+        //console.log('sending cass');
         const cassieTimestamp = Math.floor(nextCassie.startedAt.getTime() / 1000);
-        await channel.send(
-            `Next Cassie weather (Blizzards) is <t:${cassieTimestamp}:R> (<t:${cassieTimestamp}>)`
-        );
+        await channel.send({
+            content: `[PAGOS] Next Cassie weather (Blizzards) is <t:${cassieTimestamp}:R> (<t:${cassieTimestamp}>)`,
+            files: ['embeds/cassiemap.png']
+        }).catch(err => {
+            console.error(err);
+        });
         lastSentCassie = nextCassie.startedAt.getTime();
     }
 
     if (nextSkoll && lastSentSkoll !== nextSkoll.startedAt.getTime()) {
+        //console.log('sending skoll');
         const skollTimestamp = Math.floor(nextSkoll.startedAt.getTime() / 1000);
-        await channel.send(
-            `Next Skoll weather (Blizzards) is <t:${skollTimestamp}:R> (<t:${skollTimestamp}>)`
-        );
+        await channel.send({
+            content: `[PYROS] Next Skoll weather (Blizzards) is <t:${skollTimestamp}:R> (<t:${skollTimestamp}>)`,
+            files: ['embeds/skollmap.png']
+        }).catch(err => {
+            console.error(err);
+        });
         lastSentSkoll = nextSkoll.startedAt.getTime();
     }
 }
