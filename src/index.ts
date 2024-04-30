@@ -24,6 +24,8 @@ import { ArtPromptModule } from "@/modules/artprompts";
 import OpenAI from "openai";
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { AIModule } from "@/modules/ai";
+import cron from "node-cron";
+import {FFXIVModule} from "@/modules/ffxiv";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -38,6 +40,7 @@ export class Application implements BaseApplication {
         ['dj_trivia', new DJTriviaModule()],
         ['art_prompts', new ArtPromptModule(this)],
         ['ai', new AIModule(this)],
+        ['ffxiv', new FFXIVModule(this)],
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;
@@ -91,6 +94,16 @@ export class Application implements BaseApplication {
         });
 
         await this.discord.login(this.config.discordToken);
+    }
+
+    public startCron() {
+        this.modules.forEach(([, module]) => {
+            if (module.scheduledTasks) {
+                module.scheduledTasks.forEach(([cronExpression, func]) => {
+                    cron.schedule(cronExpression, func);
+                });
+            }
+        });
     }
 
     protected newDiscordClient(): Client {
