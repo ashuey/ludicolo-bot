@@ -17,6 +17,7 @@ COPY package-lock.json package.json ./
 RUN npm ci --omit=dev
 COPY --from=pocketbase /pb /pb
 COPY --from=build /src/dist /src/dist
+COPY --from=build /src/embeds /src/embeds
 COPY .docker/docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh /pb/pocketbase
 EXPOSE 8080
