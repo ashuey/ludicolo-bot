@@ -1,12 +1,14 @@
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import EorzeaWeather from "eorzea-weather";
-import {Forecast} from "@/modules/ffxiv/Forecast";
+import {Forecast, ForecastEntry} from "@/modules/ffxiv/Forecast";
 import * as console from "node:console";
 
 // TODO: This whole thing is kind of a mess
 
 const CHANNEL_ID = "1234701925698506792"; // TODO: Don't hardcode this
 //  const CHANNEL_ID = "1107395046900236388"; // DEV
+
+export const TWENTY_MINUTES = 20 * 60 * 1000;
 
 
 let lastSentCrab = 0;
@@ -29,7 +31,6 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         return;
     }
 
-
     const pagosForecast = new Forecast(EorzeaWeather.ZONE_EUREKA_PAGOS);
     const pyrosForecast = new Forecast(EorzeaWeather.ZONE_EUREKA_PYROS);
 
@@ -37,7 +38,7 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
     const nextCassie = pagosForecast.findNext("blizzards");
     const nextSkoll = pyrosForecast.findNext("blizzards");
 
-    if (nextKingArthro && lastSentCrab !== nextKingArthro.startedAt.getTime()) {
+    if (nextKingArthro && forecastIsAlertable(nextKingArthro, lastSentCrab)) {
         //console.log('sending ka');
         const arthroTimestamp = Math.floor(nextKingArthro.startedAt.getTime() / 1000);
         await channel.send({
@@ -49,7 +50,7 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         lastSentCrab = nextKingArthro.startedAt.getTime();
     }
 
-    if (nextCassie && lastSentCassie !== nextCassie.startedAt.getTime()) {
+    if (nextCassie && forecastIsAlertable(nextCassie, lastSentCassie)) {
         //console.log('sending cass');
         const cassieTimestamp = Math.floor(nextCassie.startedAt.getTime() / 1000);
         await channel.send({
@@ -61,7 +62,7 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         lastSentCassie = nextCassie.startedAt.getTime();
     }
 
-    if (nextSkoll && lastSentSkoll !== nextSkoll.startedAt.getTime()) {
+    if (nextSkoll && forecastIsAlertable(nextSkoll, lastSentSkoll)) {
         //console.log('sending skoll');
         const skollTimestamp = Math.floor(nextSkoll.startedAt.getTime() / 1000);
         await channel.send({
@@ -72,4 +73,16 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         });
         lastSentSkoll = nextSkoll.startedAt.getTime();
     }
+}
+
+export function forecastIsAlertable(forecastEntry: ForecastEntry, lastSent: number): boolean {
+    if (lastSent === forecastEntry.startedAt.getTime()) {
+        return false;
+    }
+
+    if ((forecastEntry.startedAt.getTime() - (new Date).getTime()) > TWENTY_MINUTES) {
+        return false;
+    }
+
+    return true;
 }
