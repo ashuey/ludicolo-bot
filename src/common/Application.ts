@@ -4,6 +4,7 @@ import { ReadonlyCollection } from "@discordjs/collection";
 import { Command } from "@/common/Command";
 import { Client, REST } from "discord.js";
 import OpenAI from "openai";
+import PocketBase from "pocketbase/cjs";
 
 export interface Application {
     readonly config: Readonly<Configuration>;
@@ -12,4 +13,5 @@ export interface Application {
     readonly discord: Client;
     readonly rest: REST;
     readonly openai: OpenAI;
+    readonly pb: PocketBase;
 }

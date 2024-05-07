@@ -2,11 +2,11 @@ import { Command } from "commander";
 import { Application } from "@/index";
 
 export const start = (new Command('start'))
-    .action(() => {
+    .action(async () => {
         const app = new Application();
 
+        await app.loginToPocketBase();
         app.startCron();
 
-        // noinspection JSIgnoredPromiseFromCall
-        app.login();
+        await app.login();
     });

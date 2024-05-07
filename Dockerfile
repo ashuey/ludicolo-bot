@@ -21,4 +21,5 @@ COPY --from=build /src/embeds /src/embeds
 COPY .docker/docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh /pb/pocketbase
 EXPOSE 8080
-CMD [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "start" ]

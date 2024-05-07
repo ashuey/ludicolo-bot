@@ -26,6 +26,8 @@ import { ComponentHandler } from "@/common/ComponentHandler";
 import { AIModule } from "@/modules/ai";
 import cron from "node-cron";
 import {FFXIVModule} from "@/modules/ffxiv";
+import PocketBase from "pocketbase/cjs";
+import {Guild} from "@/common/models/Guild";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -47,6 +49,8 @@ export class Application implements BaseApplication {
 
     readonly componentHandlers: ReadonlyCollection<string, ComponentHandler>;
 
+    readonly pb: PocketBase;
+
     protected _discord: Client | undefined;
 
     protected _rest: REST | undefined;
@@ -57,6 +61,7 @@ export class Application implements BaseApplication {
         this.config = config;
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
+        this.pb = new PocketBase(config.pocketBaseUrl);
     }
 
     get discord(): Client {
@@ -91,9 +96,15 @@ export class Application implements BaseApplication {
     public async login() {
         this.discord.once(Events.ClientReady, c => {
             console.log(`Connected to gateway as ${c.user.tag}`);
+
+            this.firstTimeGuildSync();
         });
 
         await this.discord.login(this.config.discordToken);
+    }
+
+    public async loginToPocketBase() {
+        await this.pb.admins.authWithPassword(this.config.pocketBaseUsername, this.config.pocketBasePassword);
     }
 
     public startCron() {
@@ -212,6 +223,23 @@ export class Application implements BaseApplication {
             }
         } catch (e) {
             console.error(`Something went wrong while sending an error to the client: ${e}`);
+        }
+    }
+
+    protected async firstTimeGuildSync() {
+        const records = await this.pb.collection<Guild>('guilds').getFullList({
+            fields: 'discord_id'
+        });
+
+        const knownGuildIds = records.map(record => record.discord_id);
+
+        const guildIds = this.discord.guilds.cache.map(guild => guild.id);
+        const unknownGuildIds = guildIds.filter(guildId => !knownGuildIds.includes(guildId));
+
+        for (const guildId of unknownGuildIds) {
+            await this. pb.collection<Guild>('guilds').create({
+                discord_id: guildId,
+            });
         }
     }
 }

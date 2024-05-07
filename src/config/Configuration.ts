@@ -4,5 +4,7 @@ export interface Configuration {
     airNowApiKey: string;
     openAiApiKey: string;
     huggingFaceApiKey: string;
-    // pocketBasePath: string;
+    pocketBaseUrl: string;
+    pocketBaseUsername: string;
+    pocketBasePassword: string;
 }
