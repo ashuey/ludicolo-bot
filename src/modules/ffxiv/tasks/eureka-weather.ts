@@ -1,7 +1,8 @@
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import EorzeaWeather from "eorzea-weather";
-import {Forecast, ForecastEntry} from "@/modules/ffxiv/Forecast";
+import {Forecast} from "@/modules/ffxiv/Forecast";
 import * as console from "node:console";
+import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
 
 // TODO: This whole thing is kind of a mess
 

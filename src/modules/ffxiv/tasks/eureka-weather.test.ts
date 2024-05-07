@@ -1,5 +1,5 @@
 import {forecastIsAlertable, TWENTY_MINUTES} from "@/modules/ffxiv/tasks/eureka-weather";
-import {ForecastEntry} from "@/modules/ffxiv/Forecast";
+import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
 
 describe('eureka-weather', () => {
     it('twenty minutes is twenty minutes', () => {

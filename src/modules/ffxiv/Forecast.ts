@@ -1,12 +1,8 @@
 import EorzeaWeather from "eorzea-weather";
+import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
 
 const ET_ONE_HOUR = 175 * 1000;
 const ET_EIGHT_HOURS = 8 * ET_ONE_HOUR;
-
-export interface ForecastEntry {
-    name: string;
-    startedAt: Date;
-}
 
 export class Forecast {
     protected readonly eorzeaWeather: EorzeaWeather;
