@@ -28,6 +28,7 @@ import cron from "node-cron";
 import {FFXIVModule} from "@/modules/ffxiv";
 import PocketBase from "pocketbase/cjs";
 import {Guild} from "@/common/models/Guild";
+import {GuildConfigManager} from "@/common/guildConfig/GuildConfigManager";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -49,6 +50,8 @@ export class Application implements BaseApplication {
 
     readonly componentHandlers: ReadonlyCollection<string, ComponentHandler>;
 
+    readonly guildConfig: GuildConfigManager;
+
     readonly pb: PocketBase;
 
     protected _discord: Client | undefined;
@@ -62,6 +65,7 @@ export class Application implements BaseApplication {
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
         this.pb = new PocketBase(config.pocketBaseUrl);
+        this.guildConfig = new GuildConfigManager(this);
     }
 
     get discord(): Client {
