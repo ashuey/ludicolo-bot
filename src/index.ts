@@ -65,7 +65,7 @@ export class Application implements BaseApplication {
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
         this.pb = new PocketBase(config.pocketBaseUrl);
-        this.guildConfig = new GuildConfigManager(this);
+        this.guildConfig = new GuildConfigManager(this.pb);
     }
 
     get discord(): Client {
