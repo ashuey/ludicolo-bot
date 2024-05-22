@@ -1,15 +1,6 @@
 import {CleanupManager} from "@/modules/automod/CleanupManager";
 import PocketBase from "pocketbase/cjs";
-
-function mockFetch(code: number, body?: unknown) {
-    return jest.spyOn(global, 'fetch')
-        .mockImplementationOnce(() => Promise.resolve(
-            new Response(
-                body === undefined ? null : JSON.stringify(body),
-                {status: code}
-            )
-        ))
-}
+import {mockFetch} from "@/helpers/testing";
 
 describe('CleanupManager', () => {
     afterEach(() => {

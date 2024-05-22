@@ -1,20 +1,44 @@
-import {Application} from "@/common/Application";
-import {Guild} from "discord.js";
-import {GuildConfigMap} from "@/common/guildConfig/GuildConfigMap";
-import {recordGetOrMake} from "@/helpers/map";
+import {Guild} from "@/common/models/Guild";
+import PocketBase from "pocketbase/cjs";
+import {JSONValue} from "@/common/JSONValue";
 
 export class GuildConfigManager {
-    protected app: Application;
+    protected svc;
 
-    protected cache: Record<string, GuildConfigMap> = {};
-
-    constructor(app: Application) {
-        this.app = app;
+    constructor(pb: PocketBase) {
+        this.svc = pb.collection<Guild>('guilds');
     }
 
-    public for(guild: Guild | string): GuildConfigMap {
-        const guildId = typeof guild === "string" ? guild : guild.id;
+    async get<T = JSONValue, V extends JSONValue | undefined = undefined>(guildId: string, key: string, defVal: V): Promise<T | V> {
+        const guildData = await this.getGuildRecord(guildId);
 
-        return recordGetOrMake(this.cache, guildId, () => new GuildConfigMap(this.app, guildId));
+        if (!guildData) {
+            return defVal;
+        }
+
+        const existingConfig = guildData.settings;
+
+        if (typeof existingConfig !== "object" || Array.isArray(existingConfig) || existingConfig === null) {
+            return defVal;
+        }
+
+        return existingConfig[key] as T ?? defVal;
+    }
+
+    /*async set(guildId: string, key: string, val: JSONValue): Promise<void> {
+        //
+    }*/
+
+    protected async getGuildRecord(guildId: string): Promise<Guild | undefined> {
+        const result = await this.svc.getList(1, 1, {
+            filter: `discord_id="${guildId}"`,
+            skipTotal: true,
+        });
+
+        if (result.items.length === 0) {
+            return undefined;
+        }
+
+        return result.items[0];
     }
 }
