@@ -12,17 +12,26 @@ import {MoneyFate} from "@/modules/ffxiv/eurekaweather/MoneyFate";
 const CHANNEL_ID = "1234701925698506792"; // TODO: Don't hardcode this
 //const CHANNEL_ID = "1107395046900236388"; // DEV
 
-export const TWENTY_MINUTES = 20 * 60 * 1000;
+export const ONE_MINUTE = 60 * 1000;
+export const TWENTY_MINUTES = 20 * ONE_MINUTE;
+export const TWO_HOURS = TWENTY_MINUTES * 6;
 
 
 let lastSentCrab = 0;
 let lastSentCassie = 0;
 let lastSentSkoll = 0;
 
-function getEmbed(emoji: string, boss: string, ts: number, world: string, tp: string, color: ColorResolvable) {
+function getEmbed(emoji: string, boss: string, ts: number, world: string, tp: string, color: ColorResolvable, next: ForecastEntry, previous: ForecastEntry | undefined) {
+    const timeDiff = previous ? next.startedAt.getTime() - previous.startedAt.getTime() : Infinity;
+    const previousWarning = timeDiff < TWO_HOURS
+        ? `⚠️ Last spawn ${Math.floor(timeDiff / ONE_MINUTE)}m earlier\n`
+        : '';
+
     return new EmbedBuilder()
+        // eslint-disable-next-line no-irregular-whitespace
         .setTitle(`${emoji}  ${boss} Spawn Window`)
-        .setDescription(`🕛  <t:${ts}:R> (<t:${ts}:t>)\n\n\n🗺  ${world}  —  ${tp}`)
+        // eslint-disable-next-line no-irregular-whitespace
+        .setDescription(`🕛  <t:${ts}:R> (<t:${ts}:t>)\n\n\n${previousWarning}🗺  ${world}  —  ${tp}`)
         .setColor(color);
 }
 
@@ -53,9 +62,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         //console.log('sending ka');
         const arthroTimestamp = Math.floor(nextKingArthro.startedAt.getTime() / 1000);
         const arthroData = fateData[MoneyFate.KING_ARTHRO];
+        const arthroPrevious = pagosForecast.findPrevious(nextKingArthro);
         await channel.send({
             embeds: [
-                getEmbed(arthroData.emoji, arthroData.name, arthroTimestamp, "Eureka Pagos", "Geothermal Studies", arthroData.color)
+                getEmbed(arthroData.emoji, arthroData.name, arthroTimestamp, "Eureka Pagos", "Geothermal Studies", arthroData.color, nextKingArthro, arthroPrevious)
             ]
         }).catch(err => {
             console.error(err);
@@ -67,9 +77,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         //console.log('sending cass');
         const cassieTimestamp = Math.floor(nextCassie.startedAt.getTime() / 1000);
         const cassieData = fateData[MoneyFate.COPYCAT_CASSIE];
+        const cassiePrevious = pagosForecast.findPrevious(nextCassie);
         await channel.send({
             embeds: [
-                getEmbed(cassieData.emoji, cassieData.name, cassieTimestamp, "Eureka Pagos", "Gravitational Studies", cassieData.color)
+                getEmbed(cassieData.emoji, cassieData.name, cassieTimestamp, "Eureka Pagos", "Gravitational Studies", cassieData.color, nextCassie, cassiePrevious)
             ]
         }).catch(err => {
             console.error(err);
@@ -81,9 +92,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         //console.log('sending skoll');
         const skollTimestamp = Math.floor(nextSkoll.startedAt.getTime() / 1000);
         const skollData = fateData[MoneyFate.SKOLL];
+        const skollPrevious = pyrosForecast.findPrevious(nextSkoll);
         await channel.send({
             embeds: [
-                getEmbed(skollData.emoji, skollData.name, skollTimestamp, "Eureka Pyros", "Northpoint", skollData.color)
+                getEmbed(skollData.emoji, skollData.name, skollTimestamp, "Eureka Pyros", "Northpoint", skollData.color, nextSkoll, skollPrevious)
             ]
         }).catch(err => {
             console.error(err);
