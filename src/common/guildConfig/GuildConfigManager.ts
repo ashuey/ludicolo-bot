@@ -9,20 +9,20 @@ export class GuildConfigManager {
         this.svc = pb.collection<Guild>('guilds');
     }
 
-    async get<T = JSONValue, V extends JSONValue | undefined = undefined>(guildId: string, key: string, defVal: V): Promise<T | V> {
+    async get<T extends JSONValue = JSONValue>(guildId: string, key: string): Promise<T | undefined> {
         const guildData = await this.getGuildRecord(guildId);
 
         if (!guildData) {
-            return defVal;
+            return undefined;
         }
 
         const existingConfig = guildData.settings;
 
         if (typeof existingConfig !== "object" || Array.isArray(existingConfig) || existingConfig === null) {
-            return defVal;
+            return undefined;
         }
 
-        return existingConfig[key] as T ?? defVal;
+        return existingConfig[key] as T;
     }
 
     /*async set(guildId: string, key: string, val: JSONValue): Promise<void> {

@@ -53,7 +53,7 @@ describe('GuildConfigManager', () => {
             });
         });
 
-        it('returns default value when guild does not exist', async () => {
+        it('returns undefined when guild does not exist', async () => {
             mockFetch(200, {
                 "page": 1,
                 "perPage": 1,
@@ -66,34 +66,26 @@ describe('GuildConfigManager', () => {
             await expect(gcm.get("10000000", "foo")).resolves.toBeUndefined();
         });
 
-        describe('returns default value when guild settings are null or invalid', () => {
+        describe('returns undefined when guild settings are null or invalid', () => {
             const tests: [string, string, JSONValue][] = [
                 ["the root object can't be null", "890834029384", null],
                 ["the root object can't be a string", "02909128309", "rootObject"],
             ]
 
-            test.each(tests)("%p", async (testName, guildId, rootValue) => {
+            test.each(tests)("%p", async (_, guildId, rootValue) => {
                 mockGuildFetch(guildId, rootValue);
 
                 const gcm = new GuildConfigManager(new PocketBase());
-                await expect(gcm.get(guildId, "keyThatDoesntExist", testName)).resolves.toEqual(testName);
+                await expect(gcm.get(guildId, "keyThatDoesntExist")).resolves.toBeUndefined();
             })
         });
 
-        it('returns default value when the key does not exist', async () => {
+        it('returns undefined when the key does not exist', async () => {
             const guildId = "209838828374092";
             mockGuildFetch(guildId, { 'apple': 'mac', 'microsoft': 'pc' });
 
             const gcm = new GuildConfigManager(new PocketBase());
-            await expect(gcm.get(guildId, 'linux', 'linuxNoValue')).resolves.toEqual('linuxNoValue');
-        });
-
-        it('returns undefined if the default value is not provided', async () => {
-            const guildId = "1098908409783209";
-            mockGuildFetch(guildId, { 'delta': 'airline', 'applebees': 'restaurant' });
-
-            const gcm = new GuildConfigManager(new PocketBase());
-            await expect(gcm.get(guildId, 'wegmans')).resolves.toBeUndefined()
+            await expect(gcm.get(guildId, 'linux')).resolves.toBeUndefined();
         });
     });
 
