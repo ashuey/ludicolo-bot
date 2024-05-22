@@ -37,6 +37,32 @@ export class Forecast {
         );
     }
 
+    findPrevious(reference: ForecastEntry, maxLookback: number = 18): ForecastEntry | undefined {
+        let offset = 0;
+        let thisWeather = '';
+        let lastMatch: ForecastEntry | undefined = undefined;
+        let outOfCurrentWindow = false;
+
+        do {
+            offset += 1;
+            const startedAt = new Date(reference.startedAt.getTime() - (offset * ET_EIGHT_HOURS));
+            thisWeather = this.eorzeaWeather.getWeather(startedAt);
+
+            if (outOfCurrentWindow && thisWeather === reference.name) {
+                lastMatch = {
+                    name: thisWeather,
+                    startedAt,
+                }
+            }
+
+            if (!outOfCurrentWindow && thisWeather !== reference.name) {
+                outOfCurrentWindow = true;
+            }
+        } while (offset < maxLookback && (!outOfCurrentWindow || lastMatch === undefined || thisWeather === reference.name));
+
+        return lastMatch;
+    }
+
     current(): string {
         return this.eorzeaWeather.getWeather(new Date());
     }
