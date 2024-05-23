@@ -1,8 +1,10 @@
 import {SubcommandGroup} from "@/common/SubcommandGroup";
 import {SlashCommandSubcommandGroupBuilder} from "discord.js";
-import {ViewAutomodCommand} from "@/modules/automod/commands/cleanup/view";
+import {ViewCleanupAutomodCommand} from "@/modules/automod/commands/cleanup/view";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {Subcommand} from "@/common/Subcommand";
+import {EnableCleanupAutomodCommand} from "@/modules/automod/commands/cleanup/enable";
+import {DisableCleanupAutomodCommand} from "@/modules/automod/commands/cleanup/disable";
 
 export class CleanupGroup implements SubcommandGroup {
     readonly name = "cleanup";
@@ -10,7 +12,9 @@ export class CleanupGroup implements SubcommandGroup {
     readonly subcommands: Subcommand[] = [];
 
     constructor(module: ServiceProvider) {
-        this.subcommands.push(new ViewAutomodCommand(module));
+        this.subcommands.push(new EnableCleanupAutomodCommand(module));
+        this.subcommands.push(new DisableCleanupAutomodCommand(module));
+        this.subcommands.push(new ViewCleanupAutomodCommand(module));
     }
 
     build() {

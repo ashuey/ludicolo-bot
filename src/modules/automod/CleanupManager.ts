@@ -23,16 +23,37 @@ export class CleanupManager {
         return result.items.length > 0 ? result.items[0] : undefined;
     }
 
-    async enable(channelId: Snowflake, age: number): Promise<void> {
-        await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-            .create({
-                "discord_id": channelId,
-                "maximum_age": age,
-            });
+    async getAll(): Promise<AutomodCleanupChannel[]> {
+        return this.pb
+            .collection<AutomodCleanupChannel>('automod_cleanup_channels')
+            .getFullList();
+    }
+
+    async enable(channelId: Snowflake, age: number): Promise<boolean> {
+        return this.lock.acquire(channelId, async () => {
+            const current = await this.get(channelId);
+
+            if (current) {
+                await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
+                    .update(current.id, {
+                        "maximum_age": age,
+                    });
+
+                return false;
+            }
+
+            await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
+                .create({
+                    "discord_id": channelId,
+                    "maximum_age": age,
+                });
+
+            return true;
+        });
     }
 
     async disable(channelId: Snowflake): Promise<void> {
-        return this.lock.acquire(channelId, async() => {
+        return this.lock.acquire(channelId, async () => {
             const record = await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
                 .getFirstListItem(`discord_id="${channelId}"`);
             await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')

@@ -39,15 +39,7 @@ const componentInteractionRegex = /^com:\/\/(\w+\/\w+)$/;
 export class Application implements BaseApplication {
     readonly config: Readonly<Configuration>;
 
-    readonly modules: [string, Module][] = [
-        ['inspire', new InspireModule()],
-        ['air_quality', new AirQualityModule(this)],
-        ['dj_trivia', new DJTriviaModule()],
-        ['art_prompts', new ArtPromptModule(this)],
-        ['ai', new AIModule(this)],
-        ['ffxiv', new FFXIVModule(this)],
-        ['automod', new AutomodModule(this)],
-    ];
+    readonly modules: [string, Module][];
 
     readonly commands: ReadonlyCollection<string, Command>;
 
@@ -67,11 +59,21 @@ export class Application implements BaseApplication {
 
     constructor() {
         this.config = config;
+        this.pb = new PocketBase(config.pocketBaseUrl);
+        this.lockManager = new LockManager();
+
+        this.modules = [
+            ['inspire', new InspireModule()],
+            ['air_quality', new AirQualityModule(this)],
+            ['dj_trivia', new DJTriviaModule()],
+            ['art_prompts', new ArtPromptModule(this)],
+            ['ai', new AIModule(this)],
+            ['ffxiv', new FFXIVModule(this)],
+            ['automod', new AutomodModule(this)],
+        ];
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
-        this.pb = new PocketBase(config.pocketBaseUrl);
         this.guildConfig = new GuildConfigManager(this.pb);
-        this.lockManager = new LockManager();
     }
 
     get discord(): Client {

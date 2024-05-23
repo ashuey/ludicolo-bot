@@ -1,8 +1,11 @@
 import {Subcommand} from "@/common/Subcommand";
-import {ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
+import {bold, ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
+import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
+import {fmtError, fmtSuccess} from "@/helpers/formatters";
+import {format} from "@lukeed/ms";
 
-export class ViewAutomodCommand implements Subcommand {
+export class ViewCleanupAutomodCommand implements Subcommand {
     protected readonly module: ServiceProvider;
 
     readonly name = 'view';
@@ -17,7 +20,23 @@ export class ViewAutomodCommand implements Subcommand {
     }
 
     async execute(interaction: ChatInputCommandInteraction) {
-        return interaction.reply("ok");
+        if (!interaction.inGuild()) {
+            throw new GuildOnlyError();
+        }
+
+        const currentStatus = await this.module.cleanup.get(interaction.channelId);
+
+        if (!currentStatus) {
+            return interaction.reply({
+                content: fmtError("Auto-cleanup is not currently enabled in this channel."),
+                ephemeral: true
+            });
+        }
+
+        return interaction.reply({
+            content: fmtSuccess(`Auto-cleanup is enabled in this channel.\n\n${bold('Maximum age:')} ${format(currentStatus.maximum_age)}`),
+            ephemeral: true
+        });
     }
 
 }
