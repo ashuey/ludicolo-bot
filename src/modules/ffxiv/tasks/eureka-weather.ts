@@ -21,17 +21,22 @@ let lastSentCrab = 0;
 let lastSentCassie = 0;
 let lastSentSkoll = 0;
 
-function getEmbed(emoji: string, boss: string, ts: number, world: string, tp: string, color: ColorResolvable, next: ForecastEntry, previous: ForecastEntry | undefined) {
+function getEmbed(emoji: string, boss: string, ts: number, world: string, tp: string, color: ColorResolvable, next: ForecastEntry, previous: ForecastEntry | undefined, previousEnd: ForecastEntry | undefined) {
     const timeDiff = previous ? next.startedAt.getTime() - previous.startedAt.getTime() : Infinity;
     const previousWarning = timeDiff < TWO_HOURS
-        ? `⚠️ Last spawn ${Math.floor(timeDiff / ONE_MINUTE)}m earlier\n`
+        ? `⚠️ Last spawn ${Math.floor(timeDiff / ONE_MINUTE)}m earlier\n\n`
+        : '';
+
+    const endTimeDiff = previousEnd ? next.startedAt.getTime() - Forecast.getEndTime(previousEnd).getTime() : Infinity;
+    const freeWindowMessage = endTimeDiff > TWO_HOURS
+        ? `✅ Guaranteed Spawn. Last window ended ${Math.floor(endTimeDiff / ONE_MINUTE)}m earlier\n\n`
         : '';
 
     return new EmbedBuilder()
         // eslint-disable-next-line no-irregular-whitespace
-        .setTitle(`${emoji}  ${boss} Spawn Window`)
+        .setTitle(`${emoji} ${emoji} ${emoji}  ${boss} Spawn Window ${emoji} ${emoji} ${emoji}`)
         // eslint-disable-next-line no-irregular-whitespace
-        .setDescription(`🕛  <t:${ts}:R> (<t:${ts}:t>)\n\n\n${previousWarning}🗺  ${world}  —  ${tp}`)
+        .setDescription(`🕛  <t:${ts}:R> (<t:${ts}:t>)\n\n${freeWindowMessage}${previousWarning}🗺  ${world}  —  ${tp}`)
         .setColor(color);
 }
 
@@ -63,9 +68,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         const arthroTimestamp = Math.floor(nextKingArthro.startedAt.getTime() / 1000);
         const arthroData = fateData[MoneyFate.KING_ARTHRO];
         const arthroPrevious = pagosForecast.findPrevious(nextKingArthro);
+        const arthroPreviousEnd = pagosForecast.findPrevious(nextKingArthro, false);
         await channel.send({
             embeds: [
-                getEmbed(arthroData.emoji, arthroData.name, arthroTimestamp, "Eureka Pagos", "Geothermal Studies", arthroData.color, nextKingArthro, arthroPrevious)
+                getEmbed(arthroData.emoji, arthroData.name, arthroTimestamp, "Eureka Pagos", "Geothermal Studies", arthroData.color, nextKingArthro, arthroPrevious, arthroPreviousEnd)
             ]
         }).catch(err => {
             console.error(err);
@@ -78,9 +84,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         const cassieTimestamp = Math.floor(nextCassie.startedAt.getTime() / 1000);
         const cassieData = fateData[MoneyFate.COPYCAT_CASSIE];
         const cassiePrevious = pagosForecast.findPrevious(nextCassie);
+        const cassiePreviousEnd = pagosForecast.findPrevious(nextCassie, false);
         await channel.send({
             embeds: [
-                getEmbed(cassieData.emoji, cassieData.name, cassieTimestamp, "Eureka Pagos", "Gravitational Studies", cassieData.color, nextCassie, cassiePrevious)
+                getEmbed(cassieData.emoji, cassieData.name, cassieTimestamp, "Eureka Pagos", "Gravitational Studies", cassieData.color, nextCassie, cassiePrevious, cassiePreviousEnd)
             ]
         }).catch(err => {
             console.error(err);
@@ -93,9 +100,10 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         const skollTimestamp = Math.floor(nextSkoll.startedAt.getTime() / 1000);
         const skollData = fateData[MoneyFate.SKOLL];
         const skollPrevious = pyrosForecast.findPrevious(nextSkoll);
+        const skollPreviousEnd = pyrosForecast.findPrevious(nextSkoll, false);
         await channel.send({
             embeds: [
-                getEmbed(skollData.emoji, skollData.name, skollTimestamp, "Eureka Pyros", "Northpoint", skollData.color, nextSkoll, skollPrevious)
+                getEmbed(skollData.emoji, skollData.name, skollTimestamp, "Eureka Pyros", "Northpoint", skollData.color, nextSkoll, skollPrevious, skollPreviousEnd)
             ]
         }).catch(err => {
             console.error(err);

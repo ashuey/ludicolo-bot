@@ -82,7 +82,21 @@ describe('Forecast', () => {
             const previous = f.findPrevious({
                 name: 'fake-weather',
                 startedAt: new Date(1716405600000),
-            }, 18);
+            }, true, 18);
+
+            expect(previous).toBeUndefined();
+            expect(mock).toHaveBeenCalledTimes(18);
+        });
+
+        it('looks back at 18 windows when startOfWindow is false', () => {
+            const f = new ForecastTest(EorzeaWeather.ZONE_EUREKA_PAGOS);
+
+            const mock = jest.spyOn(f.getEorzeaWeather(), 'getWeather');
+
+            const previous = f.findPrevious({
+                name: 'fake-weather',
+                startedAt: new Date(1716405600000),
+            }, false, 18);
 
             expect(previous).toBeUndefined();
             expect(mock).toHaveBeenCalledTimes(18);
@@ -97,6 +111,21 @@ describe('Forecast', () => {
                 name: 'Thunder',
                 startedAt: new Date(1716428000000), // Thu May 23 2024 01:33:20 GMT+0000
             });
+
+            expect(previousThunder).toBeDefined();
+            expect(previousThunder?.name).toBe('Thunder');
+            expect(previousThunder?.startedAt.getTime()).toBe(expectedTime);
+        });
+
+        it('find the previous weather window when startOfWindow is false', () => {
+            const expectedTime = 1716416800000; // Wed May 22 2024 22:26:40 GMT+0000
+
+            const f = new Forecast(EorzeaWeather.ZONE_EUREKA_PAGOS);
+
+            const previousThunder = f.findPrevious({
+                name: 'Thunder',
+                startedAt: new Date(1716428000000), // Thu May 23 2024 01:33:20 GMT+0000
+            }, false);
 
             expect(previousThunder).toBeDefined();
             expect(previousThunder?.name).toBe('Thunder');
@@ -118,8 +147,23 @@ describe('Forecast', () => {
             expect(previousThunder?.startedAt.getTime()).toBe(expectedTime);
         });
 
+        it('find the previous weather window during a double when startOfWindow is false', () => {
+            const expectedTime = 1716407000000; // Wed May 22 2024 19:43:20 GMT+0000
+
+            const f = new Forecast(EorzeaWeather.ZONE_EUREKA_PAGOS);
+
+            const previousThunder = f.findPrevious({
+                name: 'Heat Waves',
+                startedAt: new Date(1716423800000), // Thu May 23 2024 00:23:20 GMT+0000
+            }, false);
+
+            expect(previousThunder).toBeDefined();
+            expect(previousThunder?.name).toBe('Heat Waves');
+            expect(previousThunder?.startedAt.getTime()).toBe(expectedTime);
+        });
+
         it('find the previous weather window when the previous window is a double', () => {
-            const expectedTime = 1716418200000; // Thu May 23 2024 00:23:20 GMT+0000
+            const expectedTime = 1716418200000; // Wed May 22 2024 22:50:00 GMT+0000
 
             const f = new Forecast(EorzeaWeather.ZONE_EUREKA_PAGOS);
 
@@ -127,6 +171,21 @@ describe('Forecast', () => {
                 name: 'Fog',
                 startedAt: new Date(1716430800000), // Thu May 23 2024 02:20:00 GMT+0000
             });
+
+            expect(previousThunder).toBeDefined();
+            expect(previousThunder?.name).toBe('Fog');
+            expect(previousThunder?.startedAt.getTime()).toBe(expectedTime);
+        });
+
+        it('find the previous weather window when the previous window is a double and startOfWindow is false', () => {
+            const expectedTime = 1716419600000; // Wed May 22 2024 23:13:20 GMT+0000
+
+            const f = new Forecast(EorzeaWeather.ZONE_EUREKA_PAGOS);
+
+            const previousThunder = f.findPrevious({
+                name: 'Fog',
+                startedAt: new Date(1716430800000), // Thu May 23 2024 02:20:00 GMT+0000
+            }, false);
 
             expect(previousThunder).toBeDefined();
             expect(previousThunder?.name).toBe('Fog');

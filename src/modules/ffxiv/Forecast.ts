@@ -37,7 +37,7 @@ export class Forecast {
         );
     }
 
-    findPrevious(reference: ForecastEntry, maxLookback: number = 18): ForecastEntry | undefined {
+    findPrevious(reference: ForecastEntry, startOfWindow: boolean = true, maxLookback: number = 18): ForecastEntry | undefined {
         let offset = 0;
         let thisWeather = '';
         let lastMatch: ForecastEntry | undefined = undefined;
@@ -58,7 +58,7 @@ export class Forecast {
             if (!outOfCurrentWindow && thisWeather !== reference.name) {
                 outOfCurrentWindow = true;
             }
-        } while (offset < maxLookback && (!outOfCurrentWindow || lastMatch === undefined || thisWeather === reference.name));
+        } while (offset < maxLookback && (!outOfCurrentWindow || lastMatch === undefined || (startOfWindow && thisWeather === reference.name)));
 
         return lastMatch;
     }
@@ -71,6 +71,10 @@ export class Forecast {
         const bell = (msec / ET_ONE_HOUR) % 24;
         return msec - Math.round(ET_ONE_HOUR * bell);
     };
+
+    static getEndTime(entry: ForecastEntry): Date {
+        return new Date(entry.startedAt.getTime() + ET_EIGHT_HOURS - 1);
+    }
 }
 
 

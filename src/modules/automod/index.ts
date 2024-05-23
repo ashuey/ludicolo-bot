@@ -3,7 +3,7 @@ import {Application} from "@/common/Application";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {CleanupManager} from "@/modules/automod/CleanupManager";
 import {AutomodCommand} from "@/modules/automod/commands/automod";
-import {LockResource} from "@/common/LockResource";
+import AsyncLock from "async-lock";
 
 export class AutomodModule implements Module, ServiceProvider {
     readonly commands = [
@@ -16,6 +16,7 @@ export class AutomodModule implements Module, ServiceProvider {
 
     constructor(app: Application) {
         this.app = app;
-        this.cleanup = new CleanupManager(app.pb, app.locks.for(LockResource.AutomodCleanupChannels));
+        // TODO: Fix
+        this.cleanup = new CleanupManager(app.pb, new AsyncLock()); // app.locks.for(LockResource.AutomodCleanupChannels));
     }
 }
