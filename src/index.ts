@@ -29,6 +29,8 @@ import {FFXIVModule} from "@/modules/ffxiv";
 import PocketBase from "pocketbase/cjs";
 import {Guild} from "@/common/models/Guild";
 import {GuildConfigManager} from "@/common/guildConfig/GuildConfigManager";
+import {AutomodModule} from "@/modules/automod";
+import {LockManager} from "@/LockManager";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -44,6 +46,7 @@ export class Application implements BaseApplication {
         ['art_prompts', new ArtPromptModule(this)],
         ['ai', new AIModule(this)],
         ['ffxiv', new FFXIVModule(this)],
+        ['automod', new AutomodModule(this)],
     ];
 
     readonly commands: ReadonlyCollection<string, Command>;
@@ -53,6 +56,8 @@ export class Application implements BaseApplication {
     readonly guildConfig: GuildConfigManager;
 
     readonly pb: PocketBase;
+
+    protected readonly lockManager: LockManager;
 
     protected _discord: Client | undefined;
 
@@ -66,6 +71,7 @@ export class Application implements BaseApplication {
         this.componentHandlers = this.buildComponentHandlerCollection();
         this.pb = new PocketBase(config.pocketBaseUrl);
         this.guildConfig = new GuildConfigManager(this.pb);
+        this.lockManager = new LockManager();
     }
 
     get discord(): Client {
@@ -95,6 +101,10 @@ export class Application implements BaseApplication {
         }
 
         return this._openai;
+    }
+
+    get locks(): LockManager {
+        return this.lockManager;
     }
 
     public async login() {

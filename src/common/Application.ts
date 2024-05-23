@@ -5,6 +5,7 @@ import { Command } from "@/common/Command";
 import { Client, REST } from "discord.js";
 import OpenAI from "openai";
 import PocketBase from "pocketbase/cjs";
+import {LockManager} from "@/LockManager";
 
 export interface Application {
     readonly config: Readonly<Configuration>;
@@ -14,4 +15,5 @@ export interface Application {
     readonly rest: REST;
     readonly openai: OpenAI;
     readonly pb: PocketBase;
+    readonly locks: LockManager;
 }

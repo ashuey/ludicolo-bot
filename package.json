@@ -9,7 +9,9 @@
     },
     "dependencies": {
         "@huggingface/inference": "^2.6.4",
+        "@types/async-lock": "^1.4.2",
         "@types/node-cron": "^3.0.11",
+        "async-lock": "^1.4.1",
         "axios": "^1.6.2",
         "bufferutil": "^4.0.8",
         "cheerio": "^1.0.0-rc.12",

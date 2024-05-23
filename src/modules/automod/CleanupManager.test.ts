@@ -1,11 +1,58 @@
 import {CleanupManager} from "@/modules/automod/CleanupManager";
 import PocketBase from "pocketbase/cjs";
 import {mockFetch} from "@/helpers/testing";
+import AsyncLock from "async-lock";
 
 describe('CleanupManager', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     })
+
+    it('gets channel entries', async () => {
+        const discordId = '0298350298340234';
+
+        const mock = mockFetch(200, {
+            "page": 1,
+            "perPage": 1,
+            "totalPages": -1,
+            "totalItems": -1,
+            "items": [
+                {
+                    "id": "RECORD_ID",
+                    "collectionId": "t2s2qdel611fqc5",
+                    "collectionName": "automod_cleanup_channels",
+                    "created": "2022-01-01 01:00:00.123Z",
+                    "updated": "2022-01-01 23:59:59.456Z",
+                    "discord_id": discordId,
+                    "maximum_age": 123
+                }
+            ]
+        });
+
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
+
+        await expect(mgr.get(discordId)).resolves.toBeDefined();
+
+        expect(mock).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns undefined when asked to get a channel with no entry', async () => {
+        const discordId = '23094802938409234';
+
+        const mock = mockFetch(200, {
+            "page": 1,
+            "perPage": 30,
+            "totalPages": -1,
+            "totalItems": -1,
+            "items": [],
+        });
+
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
+
+        await expect(mgr.get(discordId)).resolves.toBeUndefined();
+
+        expect(mock).toHaveBeenCalledTimes(1);
+    });
 
     it('should enable cleanup', async () => {
         const discordId = '892569254307207483';
@@ -21,7 +68,7 @@ describe('CleanupManager', () => {
             "maximum_age": age
         });
 
-        const mgr = new CleanupManager(new PocketBase());
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
         await expect(mgr.enable(discordId, age)).resolves.toBeUndefined();
 
         expect(mock).toHaveBeenCalledTimes(1);
@@ -49,7 +96,7 @@ describe('CleanupManager', () => {
             }
         });
 
-        const mgr = new CleanupManager(new PocketBase());
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
         await expect(mgr.enable(discordId, age)).rejects.toThrow();
 
         expect(mock).toHaveBeenCalledTimes(1);
@@ -65,7 +112,7 @@ describe('CleanupManager', () => {
             "data": {}
         });
 
-        const mgr = new CleanupManager(new PocketBase());
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
         await expect(async () => {
             await mgr.enable(discordId, age);
         }).rejects.toThrow();
@@ -96,7 +143,7 @@ describe('CleanupManager', () => {
         });
         mockFetch(204);
 
-        const mgr = new CleanupManager(new PocketBase());
+        const mgr = new CleanupManager(new PocketBase(), new AsyncLock());
         await expect(mgr.disable(discordId)).resolves.toBeUndefined()
 
         expect(mock).toHaveBeenCalledTimes(2);

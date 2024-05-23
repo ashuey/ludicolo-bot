@@ -1,4 +1,4 @@
-import {parseHumanSpan} from "@/helpers/parsers";
+import {ParseError, parseHumanSpan} from "@/helpers/parsers";
 
 describe('parsers', () => {
     describe('parseHumanSpan', () => {
@@ -28,6 +28,10 @@ describe('parsers', () => {
 
         test.each(tests)("parses %p correctly", (span, expected) => {
             expect(parseHumanSpan(span)).toBe(expected);
+        })
+
+        it('throws ParseError for invalid units', () => {
+            expect(() => parseHumanSpan('4x')).toThrow(ParseError);
         })
     })
 })

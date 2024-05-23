@@ -6,3 +6,4 @@ node_modules
 /oldsrc
 .DS_Store
 .mise.*.local.toml
+/coverage
