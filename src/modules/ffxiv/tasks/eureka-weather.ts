@@ -12,7 +12,7 @@ const zoneNames = {
     [EorzeaWeather.ZONE_EUREKA_PYROS]: 'Eureka Pyros',
 }
 
-const CHANNEL_ID = "1234701925698506792"; // TODO: Don't hardcode this
+const CHANNEL_ID = "1243567403313528912"; // TODO: Don't hardcode this
 //const CHANNEL_ID = "1107395046900236388"; // DEV
 
 export const ONE_MINUTE = 60 * 1000;
