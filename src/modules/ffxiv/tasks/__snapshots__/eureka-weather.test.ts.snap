@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`eureka-weather refactor snapshots Returns the correct resonse when time is 1716460123534 1`] = `[]`;
+
+exports[`eureka-weather refactor snapshots Returns the correct resonse when time is 1716483013917 1`] = `
+[
+  [
+    {
+      "embeds": [
+        {
+          "color": 7447510,
+          "description": "🕛  <t:1716484000:R> (<t:1716484000:t>)
+
+🗺  Eureka Pyros  —  Northpoint",
+          "title": "🐺 🐺 🐺  Skoll Spawn Window 🐺 🐺 🐺",
+        },
+      ],
+    },
+  ],
+]
+`;
+
+exports[`eureka-weather refactor snapshots Returns the correct resonse when time is 1716487212135 1`] = `
+[
+  [
+    {
+      "embeds": [
+        {
+          "color": 11396636,
+          "description": "🕛  <t:1716488200:R> (<t:1716488200:t>)
+
+✅ Guaranteed Spawn. Last window ended 233m earlier
+
+🗺  Eureka Pagos  —  Gravitational Studies",
+          "title": "🪴 🪴 🪴  Copycat Cassie Spawn Window 🪴 🪴 🪴",
+        },
+      ],
+    },
+  ],
+]
+`;
+
+exports[`eureka-weather refactor snapshots Returns the correct resonse when time is 1716488596352 1`] = `
+[
+  [
+    {
+      "embeds": [
+        {
+          "color": 16741376,
+          "description": "🕛  <t:1716489600:R> (<t:1716489600:t>)
+
+⚠️ Last spawn 116m earlier
+
+🗺  Eureka Pagos  —  Geothermal Studies",
+          "title": "🦀 🦀 🦀  King Arthro Spawn Window 🦀 🦀 🦀",
+        },
+      ],
+    },
+  ],
+]
+`;

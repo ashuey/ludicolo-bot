@@ -1,5 +1,11 @@
-import {forecastIsAlertable, TWENTY_MINUTES} from "@/modules/ffxiv/tasks/eureka-weather";
+import {
+    forecastIsAlertable,
+    resetLastSent,
+    sendEurekaWeather,
+    TWENTY_MINUTES
+} from "@/modules/ffxiv/tasks/eureka-weather";
 import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
+import {ApplicationProvider} from "@/common/ApplicationProvider";
 
 describe('eureka-weather', () => {
     it('twenty minutes is twenty minutes', () => {
@@ -50,5 +56,48 @@ describe('eureka-weather', () => {
 
             expect(forecastIsAlertable(forecast, 1714749600000)).toBe(false);
         });
+    });
+
+    describe('refactor snapshots', () => {
+        beforeAll(() => {
+            jest.useFakeTimers();
+        });
+
+        afterAll(() => {
+            jest.useRealTimers();
+            jest.restoreAllMocks();
+            resetLastSent();
+        });
+
+        const tests: [number, number][] = [
+            [1716460123534, 0],
+            [1716483013917, 1],
+            [1716487212135, 1],
+            [1716488596352, 1],
+        ];
+
+        test.each(tests)("Returns the correct resonse when time is %p", async (ts, sendTimes) => {
+            jest.setSystemTime(ts);
+
+            const sendMock = jest.fn((_) => Promise.resolve());
+
+            const mockModule = {
+                app: {
+                    discord: {
+                        channels: {
+                            fetch: () => Promise.resolve({
+                                isTextBased: () => true,
+                                send: sendMock,
+                            })
+                        }
+                    }
+                }
+            }
+
+            await sendEurekaWeather(mockModule as unknown as ApplicationProvider);
+
+            expect(sendMock).toHaveBeenCalledTimes(sendTimes);
+            expect(sendMock.mock.calls).toMatchSnapshot();
+        })
     })
 });

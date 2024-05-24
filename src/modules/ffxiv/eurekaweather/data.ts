@@ -7,6 +7,7 @@ export const fateData: Record<MoneyFate, MoneyFateData> = {
     [MoneyFate.KING_ARTHRO]: {
         zone: EorzeaWeather.ZONE_EUREKA_PAGOS,
         name: 'King Arthro',
+        aetherite: 'Geothermal Studies',
         weather: WEATHER_FOG,
         emoji: '🦀',
         color: '#ff7400'
@@ -14,6 +15,7 @@ export const fateData: Record<MoneyFate, MoneyFateData> = {
     [MoneyFate.COPYCAT_CASSIE]: {
         zone: EorzeaWeather.ZONE_EUREKA_PAGOS,
         name: 'Copycat Cassie',
+        aetherite: 'Gravitational Studies',
         weather: WEATHER_BLIZZARDS,
         emoji: '🪴',
         color: '#ade61c'
@@ -21,6 +23,7 @@ export const fateData: Record<MoneyFate, MoneyFateData> = {
     [MoneyFate.SKOLL]: {
         zone: EorzeaWeather.ZONE_EUREKA_PYROS,
         name: 'Skoll',
+        aetherite: 'Northpoint',
         weather: WEATHER_BLIZZARDS,
         emoji: '🐺',
         color: '#71A3D6'
