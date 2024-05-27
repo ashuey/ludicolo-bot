@@ -73,7 +73,7 @@ export class Application implements BaseApplication {
         ];
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
-        this.guildConfig = new GuildConfigManager(this.pb);
+        this.guildConfig = new GuildConfigManager(this.pb, this.lockManager.for('guild'));
     }
 
     get discord(): Client {

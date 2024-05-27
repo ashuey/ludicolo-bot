@@ -62,7 +62,7 @@ export async function runCleanup(module: ServiceProvider) {
             } while (deletableFiltered === 0);
 
             console.log(`[${channel.guild.name}] cleaning up ${messagesToDelete.length} messages in ${channel.name}`)
-            // await channel.bulkDelete(messagesToDelete);
+            await channel.bulkDelete(messagesToDelete);
         } catch (e) {
             console.error(`Error while processing channel cleanup record (${record.id}): ${e}`);
         }

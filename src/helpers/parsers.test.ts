@@ -33,5 +33,14 @@ describe('parsers', () => {
         it('throws ParseError for invalid units', () => {
             expect(() => parseHumanSpan('4x')).toThrow(ParseError);
         })
+
+        it('throws ParseError if the number comes back as NaN', () => {
+            jest.spyOn(global, 'parseInt')
+                .mockImplementation(() => NaN);
+
+            expect(() => parseHumanSpan('2h')).toThrow(ParseError);
+
+            jest.restoreAllMocks();
+        })
     })
 })
