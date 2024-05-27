@@ -43,7 +43,7 @@ async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
 
         const timeDiff = previous ? nextWindow.startedAt.getTime() - previous.startedAt.getTime() : Infinity;
         const previousWarning = timeDiff < TWO_HOURS
-            ? `❕ Last spawn ${Math.floor(timeDiff / ONE_MINUTE)}m earlier\n\n`
+            ? `⚠️ Last spawn ${Math.floor(timeDiff / ONE_MINUTE)}m earlier\n\n`
             : '';
 
         const endTimeDiff = previousEnd ? nextWindow.startedAt.getTime() - Forecast.getEndTime(previousEnd).getTime() : Infinity;
