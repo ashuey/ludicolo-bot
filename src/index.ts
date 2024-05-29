@@ -1,7 +1,7 @@
 import { InspireModule } from "@/modules/inspire";
 import { Module } from "@/common/Module";
 import { Configuration } from "@/config/Configuration";
-import { config } from "@/config";
+import { getConfig } from "@/config";
 import {
     ChatInputCommandInteraction,
     Client,
@@ -58,8 +58,8 @@ export class Application implements BaseApplication {
     protected _openai: OpenAI | undefined;
 
     constructor() {
-        this.config = config;
-        this.pb = new PocketBase(config.pocketBaseUrl);
+        this.config = getConfig();
+        this.pb = new PocketBase(this.config.pocketBaseUrl);
         this.lockManager = new LockManager();
 
         this.modules = [
@@ -253,7 +253,7 @@ export class Application implements BaseApplication {
         const unknownGuildIds = guildIds.filter(guildId => !knownGuildIds.includes(guildId));
 
         for (const guildId of unknownGuildIds) {
-            await this. pb.collection<Guild>('guilds').create({
+            await this.pb.collection<Guild>('guilds').create({
                 discord_id: guildId,
             });
         }
