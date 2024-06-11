@@ -5,6 +5,8 @@ import { Application } from "@/common/Application";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
 
 export class ArtPromptModule implements Module, ApplicationProvider {
+    readonly name = 'art_prompts';
+
     readonly commands = [
         new ArtPromptCommand(),
     ];

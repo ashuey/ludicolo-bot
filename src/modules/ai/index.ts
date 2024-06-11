@@ -7,6 +7,8 @@ import { HfInference } from "@huggingface/inference";
 import {XIVInspire} from "@/modules/ai/commands/XIVInspire";
 
 export class AIModule implements Module, HuggingFaceProvider, ApplicationProvider {
+    readonly name = 'ai';
+    
     readonly commands = [
         new AICommand(this),
         new XIVInspire(this),

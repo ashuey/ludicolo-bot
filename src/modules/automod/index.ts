@@ -8,6 +8,8 @@ import {ScheduledTask} from "@/common/ScheduledTask";
 import {runCleanup} from "@/modules/automod/tasks/run-cleanup";
 
 export class AutomodModule implements Module, ServiceProvider {
+    readonly name = 'automod';
+
     readonly scheduledTasks: [string, ScheduledTask][] = [
         ['0 */20 * * * *', () => runCleanup(this)],
     ];

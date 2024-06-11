@@ -48,7 +48,7 @@ async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
 
         const endTimeDiff = previousEnd ? nextWindow.startedAt.getTime() - Forecast.getEndTime(previousEnd).getTime() : Infinity;
         const freeWindowMessage = endTimeDiff > TWO_HOURS
-            ? `✅ Guaranteed Spawn. Last window ended ${Math.floor(endTimeDiff / ONE_MINUTE)}m earlier\n\n`
+            ? `✅ Guaranteed Spawn. Last window ended ${previous ? `${Math.floor(endTimeDiff / ONE_MINUTE)}m` : 'Over 6 hours'} earlier\n\n`
             : '';
 
         const zoneName = zoneNames[thisFateData.zone] ?? '';

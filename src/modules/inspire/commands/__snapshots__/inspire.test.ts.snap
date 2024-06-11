@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InspireCommand test execute of InspireCommand for failure 1`] = `
+[
+  [
+    {
+      "content": "Sorry, we're running low on inspiration. (An error occurred)",
+      "ephemeral": true,
+    },
+  ],
+]
+`;
+
+exports[`InspireCommand test execute of InspireCommand for success 1`] = `
+[
+  [
+    {
+      "files": [
+        "SAMPLE-IMAGE-URL",
+      ],
+    },
+  ],
+]
+`;

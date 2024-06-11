@@ -5,6 +5,8 @@ import { AirNow } from "@/modules/airquality/airnow";
 import { AirNowProvider } from "@/modules/airquality/AirNowProvider";
 
 export class AirQualityModule implements Module, AirNowProvider {
+    readonly name = 'air_quality';
+
     readonly commands = [
         new AQICommand(this),
     ];

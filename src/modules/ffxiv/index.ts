@@ -4,6 +4,8 @@ import {sendEurekaWeather} from "@/modules/ffxiv/tasks/eureka-weather";
 import {ScheduledTask} from "@/common/ScheduledTask";
 
 export class FFXIVModule implements Module {
+    readonly name = 'ffxiv';
+
     readonly scheduledTasks: [string, ScheduledTask][] = [
         ['*/6 * * * * *', () => sendEurekaWeather(this)],
     ];
