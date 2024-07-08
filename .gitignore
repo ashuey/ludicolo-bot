@@ -7,3 +7,4 @@ node_modules
 .DS_Store
 .mise.*.local.toml
 /coverage
+/src/modules/ffxiv/users.ts

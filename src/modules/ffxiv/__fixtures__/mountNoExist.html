@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-us" class="en-us">
+<head>
+<meta charset="utf-8">
+<title>FINAL FANTASY XIV, The Lodestone</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+
+<link href="https://lds-img.finalfantasyxiv.com/h/O/j6AmOTJpuivCJmdZnMBDHLB61A.css" rel="stylesheet">
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+$(function(){
+	$.fn.js_press = function(){
+		return this.each(function(){
+			$(this).on('touchstart mousedown',function(){
+				$(this).addClass('press');
+			});
+			$(this).on('touchend mouseup mouseout',function(){
+				$(this).removeClass('press');
+			});
+		});
+	};
+	$('.js__btn_press, .ldst__bg a, .ldst__bg select, .ldst__bg input[type="submit"]').js_press();
+});
+</script>
+
+</head>
+<body>
+<header id="header" class="l__header js--global_header l__header--block">
+	<div class="l__header__logo--block">
+		
+			<img src="https://lds-img.finalfantasyxiv.com/h/x/PcmXlah5PfO67ebcVZg0h_JTrY.png" width="140" height="45" alt="">
+		
+	</div>
+</header>
+
+
+<div class="ldst__bg parts__space--ldst">
+	<div class="parts__logo">
+		
+			<img src="https://lds-img.finalfantasyxiv.com/h/o/CWL4hVSXkMuT0zX6zNFbtMraaE.png" width="180" height="32" alt="The Lodestone">
+		
+	</div>
+
+	<h1 class="heading--md">Page not found.</h1>
+	<p class="parts__text">The page you are searching for has either been removed, or the designated URL address is incorrect. </p>
+
+	<a href="/lodestone/" class="btn__color">Main Site</a>
+</div>
+
+<div class="footer">
+	<footer class="l__footer l__footer__error">
+		<div class="l__footer__inner">
+			
+				<div class="l__footer__logo">
+					<img src="https://lds-img.finalfantasyxiv.com/h/l/xyai_6mIZpuTtVR4OO0xoR_DdI.png" width="280" height="32" alt="">
+				</div>
+				<p class="l__footer__copyright--text">&copy; 2010 - <script>document.write(new Date().getFullYear())</script> <a href="https://na.square-enix.com/us/home" target="_blank">SQUARE ENIX</a> CO., LTD. All Rights Reserved.</p>
+			
+		</div>
+	</footer>
+</div>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KK989P"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KK989P');</script>
+<!-- End Google Tag Manager -->
+
+</body>
+</html>

@@ -1,3 +1,18 @@
 import pino from "pino";
 
-export const logger = pino();
+let level = "debug";
+let transport = undefined;
+
+if (process.env["NODE_ENV"] === "development") {
+    transport = pino.transport({
+        target: 'pino-pretty'
+    })
+}
+
+if (process.env["NODE_ENV"] === "test") {
+    level = "warn";
+}
+
+export const logger = pino({
+    level,
+}, transport);

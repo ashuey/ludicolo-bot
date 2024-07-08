@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-us" class="en-us">
+<head>
+<meta charset="utf-8">
+<title>FINAL FANTASY XIV, The Lodestone</title>
+<link href="https://lds-img.finalfantasyxiv.com/h/F/409Sy1SlwCpsg6jlSQy_fJ73UM.css" rel="stylesheet">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+$(function(){
+	$.fn.js_press = function(){
+		return this.each(function(){
+			$(this).on('touchstart mousedown',function(){
+				$(this).addClass('press');
+			});
+			$(this).on('touchend mouseup mouseout',function(){
+				$(this).removeClass('press');
+			});
+		});
+	};
+	$('.js__btn_press, .ldst__bg a, .ldst__bg select, .ldst__bg input[type="submit"]').js_press();
+});
+</script>
+</head>
+<body class="error__body">
+<div class="brand"><div class="brand__section">
+	<div class="brand__logo">
+		<a href="https://na.square-enix.com/us/home" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/h/L/cxcD5kjeM52JRVwrrzIF4dZNe0.png" width="130" height="14" alt="SQUARE ENIX"></a>
+	</div>
+</div></div>
+<div class="error__bg">
+
+	<div class="error__logo"><a href="/lodestone/">
+		
+			<img src="https://lds-img.finalfantasyxiv.com/h/v/PG_-_mThtjcT-BkUGrw3mnFV8A.png" width="340" height="140" alt="The Lodestone">
+		
+	</a></div>
+
+	<div class="ldst__window ldst__error">
+		<h1 class="error__heading">Page not found.</h1>
+		<p class="error__text">The page you are searching for has either been removed, or the designated URL address is incorrect. </p>
+
+		<a href="/lodestone/" class="btn__color">Main Site</a>
+	</div>
+</div>
+
+<footer class="l__footer">
+	<div class="l__footer__inner">
+		
+			<div class="l__footer__logo">
+				<img src="https://lds-img.finalfantasyxiv.com/h/L/EbtcXqPUGzsVYdi23FpUR25oH4.png" width="320" height="32" alt="">
+			</div>
+			<div class="l__footer__copyright">
+				<p>&copy; 2010 - <script>document.write(new Date().getFullYear())</script> <a href="https://na.square-enix.com/us/home" target="_blank">SQUARE ENIX</a> CO., LTD. All Rights Reserved.</p>
+			</div>
+		
+	</div>
+</footer>
+
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KK989P"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KK989P');</script>
+<!-- End Google Tag Manager -->
+
+</body>
+</html>
+

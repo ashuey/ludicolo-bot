@@ -1,11 +1,11 @@
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import {Forecast} from "@/modules/ffxiv/Forecast";
-import * as console from "node:console";
 import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
 import {EmbedBuilder, TextBasedChannel} from "discord.js";
 import {fateData} from "@/modules/ffxiv/eurekaweather/data";
 import {MoneyFate} from "@/modules/ffxiv/eurekaweather/MoneyFate";
 import EorzeaWeather from "eorzea-weather";
+import {logger} from "@/logger";
 
 const zoneNames = {
     [EorzeaWeather.ZONE_EUREKA_PAGOS]: 'Eureka Pagos',
@@ -63,7 +63,7 @@ async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
                 .setColor(thisFateData.color))
             ]
         }).catch(err => {
-            console.error(err);
+            logger.error(err);
         });
         lastSent[fate] = nextWindow.startedAt.getTime();
     }
@@ -72,16 +72,16 @@ async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
 export async function sendEurekaWeather(module: ApplicationProvider) {
     const channel = await module.app.discord.channels.fetch(CHANNEL_ID)
         .catch(err => {
-            console.error(`Error while fetching eureka weather channel: ${err}`);
+            logger.error(`Error while fetching eureka weather channel: ${err}`);
         });
 
     if (!channel) {
-        console.warn(`Channel for Eureka weather was not found`);
+        logger.warn(`Channel for Eureka weather was not found`);
         return;
     }
 
     if (!channel.isTextBased()) {
-        console.warn(`Channel for Eureka weather is not text-based: ${channel.name}`);
+        logger.warn(`Channel for Eureka weather is not text-based: ${channel.name}`);
         return;
     }
 

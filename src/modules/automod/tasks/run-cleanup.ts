@@ -1,9 +1,9 @@
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
-import * as console from "node:console";
 import {FetchMessagesOptions, Message} from "discord.js";
+import {logger} from "@/logger";
 
 export async function runCleanup(module: ServiceProvider) {
-    console.log("RUNNING CLEANUP");
+    logger.info("Running Cleanup");
     const records = await module.cleanup.getAll();
     const now = new Date().getTime()
 
@@ -13,17 +13,17 @@ export async function runCleanup(module: ServiceProvider) {
             const channel = await module.app.discord.channels.fetch(record.discord_id);
 
             if (!channel) {
-                console.error(`Error while fetching channel: ${record.discord_id}`);
+                logger.error(`Error while fetching channel: ${record.discord_id}`);
                 continue;
             }
 
             if (!channel.isTextBased()) {
-                console.error(`Channel ${record.discord_id} is not text-based`);
+                logger.error(`Channel ${record.discord_id} is not text-based`);
                 continue;
             }
 
             if (channel.isDMBased()) {
-                console.error(`Channel ${record.discord_id} is a DM channel`);
+                logger.error(`Channel ${record.discord_id} is a DM channel`);
                 continue;
             }
 
@@ -61,10 +61,17 @@ export async function runCleanup(module: ServiceProvider) {
                 })
             } while (deletableFiltered === 0);
 
-            console.log(`[${channel.guild.name}] cleaning up ${messagesToDelete.length} messages in ${channel.name}`)
-            await channel.bulkDelete(messagesToDelete);
+            logger.info(`[${channel.guild.name}] cleaning up ${messagesToDelete.length} messages in ${channel.name}`);
+            const messageBatches = [];
+            while (messagesToDelete.length > 0) {
+                messageBatches.push(messagesToDelete.splice(0, 100));
+            }
+            for (const [batchNo, batch] of messageBatches.entries()) {
+                logger.debug(`[${channel.guild.name}] Batch ${batchNo + 1}: ${batch.length} messages to delete`);
+                await channel.bulkDelete(batch);
+            }
         } catch (e) {
-            console.error(`Error while processing channel cleanup record (${record.id}): ${e}`);
+            logger.error(`Error while processing channel cleanup record (${record.id}): ${e}`);
         }
     }
 }

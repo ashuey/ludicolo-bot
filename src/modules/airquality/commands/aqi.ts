@@ -9,6 +9,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Forecast } from "@/modules/airquality/airnow/Forecast";
 import { Observation } from "@/modules/airquality/airnow/Observation";
 import { betterPollutantNames } from "@/modules/airquality/airnow/pollutants";
+import {logger} from "@/logger";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -121,7 +122,7 @@ export class AQICommand implements Command {
         const [obResult, observations] = await this.module.airNow.currentObservation(String(zip));
 
         if (!obResult) {
-            console.warn(`Error getting air quality observations: ${observations}`);
+            logger.warn(`Error getting air quality observations: ${observations}`);
 
             return null;
         }
@@ -142,7 +143,7 @@ export class AQICommand implements Command {
         const [fResult, forecasts] = await this.module.airNow.forecasts(String(zip), dateString);
 
         if (!fResult) {
-            console.warn(`Error getting air quality forecasts for ${dateString}: ${forecasts}`);
+            logger.warn(`Error getting air quality forecasts for ${dateString}: ${forecasts}`);
 
             return null;
         }

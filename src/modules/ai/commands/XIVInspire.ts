@@ -4,6 +4,7 @@ import {ApplicationProvider} from "@/common/ApplicationProvider";
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
 import axios from "axios";
 import {composeInspirationImage} from "@/modules/ai/helpers/composeImage";
+import {logger} from "@/logger";
 
 const userPrompts = [
     'inspire me',
@@ -43,11 +44,11 @@ export class XIVInspire implements Command {
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
 
-        console.log(`${interaction.user.username} requested FFXIV inspiration`);
+        logger.info(`${interaction.user.username} requested FFXIV inspiration`);
 
         const userPrompt = getUserPrompt();
 
-        console.log(`UserPrompt> ${userPrompt}`);
+        logger.debug(`UserPrompt> ${userPrompt}`);
 
         const result = await this.openAiHelper.simpleGpt4(
             userPrompt,
@@ -61,11 +62,11 @@ export class XIVInspire implements Command {
             }
         );
 
-        console.log(`ChatGPT> ${result}`);
+        logger.debug(`ChatGPT> ${result}`);
 
         const cleanedInspiration = this.cleanResult(result);
 
-        console.log(`Cleaned> ${cleanedInspiration}`);
+        logger.debug(`Cleaned> ${cleanedInspiration}`);
 
         const buffer = await this.getBackgroundImage(cleanedInspiration);
 

@@ -3,6 +3,7 @@ import { MessageComponentInteraction } from "discord.js";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
 import { APIError } from "openai";
 import { fmtError } from "@/helpers/formatters";
+import {logger} from "@/logger";
 
 const POLICY_VIOLATION_ERROR = "content_policy_violation";
 
@@ -39,7 +40,7 @@ export class DrawPromptHandler implements ComponentHandler {
             return interaction.reply(noCanDoMsg);
         }
 
-        console.log(`Drawing '${prompt}' for ${interaction.user.username}`);
+        logger.info(`Drawing '${prompt}' for ${interaction.user.username}`);
 
         await Promise.all([
             interaction.message.edit({components: []}),
@@ -62,7 +63,7 @@ export class DrawPromptHandler implements ComponentHandler {
                 throw e;
             }
 
-            console.error(`Open AI error: ${e}`);
+            logger.error(`Open AI error: ${e}`);
 
             switch (e.code) {
                 case POLICY_VIOLATION_ERROR:

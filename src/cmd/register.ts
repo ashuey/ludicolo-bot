@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { Routes, RESTPutAPIApplicationCommandsResult } from "discord.js";
 import { Application } from "@/index";
+import {logger} from "@/logger";
 
 export const register = (new Command('register'))
     .action(async () => {
@@ -21,5 +22,5 @@ export const register = (new Command('register'))
             { body: commandData }
         ) as RESTPutAPIApplicationCommandsResult;
 
-        console.log(`Successfully reloaded ${response.length} application (/) commands.`);
+        logger.info(`Successfully reloaded ${response.length} application (/) commands.`);
     });

@@ -1,6 +1,7 @@
 import { Command } from "@/common/Command";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { inspiroBot } from "@/modules/inspire/inspirobot";
+import {logger} from "@/logger";
 
 export class InspireCommand implements Command {
     build() {
@@ -19,7 +20,7 @@ export class InspireCommand implements Command {
             });
         }
 
-        console.debug(`Bestowing inspiration upon ${interaction.user.username}: ${result}`);
+        logger.info(`Bestowing inspiration upon ${interaction.user.username}: ${result}`);
 
         return interaction.reply({ files: [result] });
     }

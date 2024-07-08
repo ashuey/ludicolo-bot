@@ -1,7 +1,6 @@
 import {Application} from "./index";
 import {ChatInputCommandInteraction, Client, Interaction, REST} from "discord.js";
 import cron from "node-cron";
-import {GuildConfigManager} from "@/common/guildConfig/GuildConfigManager";
 import {Command} from "@/common/Command";
 import OpenAI from "openai";
 import {LockManager} from "@/LockManager";
@@ -86,17 +85,6 @@ describe("Application", () => {
         expect(createMock).toHaveBeenCalledWith({discord_id: newGuildId});
     });
 
-    it("should log in to PocketBase", async () => {
-        const app = new Application();
-        const spy = jest.spyOn(app.pb.admins, "authWithPassword")
-            .mockImplementation(() => Promise.resolve() as never);
-        await app.loginToPocketBase();
-        expect(spy).toHaveBeenCalledWith(
-            app.config.pocketBaseUsername,
-            app.config.pocketBasePassword
-        );
-    });
-
     it("should start cron jobs for each module", () => {
         const app = new Application();
         const spy = jest.spyOn(cron, "schedule")
@@ -160,11 +148,6 @@ describe("Application", () => {
         } as unknown as ChatInputCommandInteraction;
         await app.testHandleInteractionCreate(interaction);
         expect(interaction.reply).toHaveBeenCalledTimes(1);
-    });
-
-    it("should get guild config", async () => {
-        const app = new Application();
-        expect(app.guildConfig).toBeInstanceOf(GuildConfigManager);
     });
 
 });

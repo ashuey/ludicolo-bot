@@ -28,9 +28,9 @@ import cron from "node-cron";
 import {FFXIVModule} from "@/modules/ffxiv";
 import PocketBase from "pocketbase/cjs";
 import {Guild} from "@/common/models/Guild";
-import {GuildConfigManager} from "@/common/guildConfig/GuildConfigManager";
 import {AutomodModule} from "@/modules/automod";
 import {LockManager} from "@/LockManager";
+import {logger} from "@/logger";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -44,8 +44,6 @@ export class Application implements BaseApplication {
     readonly commands: ReadonlyCollection<string, Command>;
 
     readonly componentHandlers: ReadonlyCollection<string, ComponentHandler>;
-
-    readonly guildConfig: GuildConfigManager;
 
     readonly pb: PocketBase;
 
@@ -73,7 +71,6 @@ export class Application implements BaseApplication {
         ];
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
-        this.guildConfig = new GuildConfigManager(this.pb, this.lockManager.for('guild'));
     }
 
     get discord(): Client {
@@ -111,7 +108,7 @@ export class Application implements BaseApplication {
 
     public async login() {
         this.discord.once(Events.ClientReady, c => {
-            console.log(`Connected to gateway as ${c.user.tag}`);
+            logger.info(`Connected to gateway as ${c.user.tag}`);
 
             this.firstTimeGuildSync();
         });
@@ -179,7 +176,7 @@ export class Application implements BaseApplication {
         const command = this.commands.get(interaction.commandName);
 
         if (!command) {
-            console.error(`No command matching ${interaction.commandName} was found.`);
+            logger.warn(`No command matching ${interaction.commandName} was found.`);
             await interaction.reply('There was an error while executing this command!');
             return;
         }
@@ -209,8 +206,8 @@ export class Application implements BaseApplication {
         const handler = this.componentHandlers.get(handlerKey);
 
         if (!handler) {
-            console.error(`No component handler matching ${handlerKey} was registered.`);
-            console.log(`Registered handlers: ${[...this.componentHandlers.keys()].join(", ")}`);
+            logger.warn(`No component handler matching ${handlerKey} was registered.`);
+            logger.debug(`Registered handlers: ${[...this.componentHandlers.keys()].join(", ")}`);
             await interaction.reply('There was an error while processing your request!');
             return;
         }
@@ -228,7 +225,7 @@ export class Application implements BaseApplication {
         if (error instanceof RuntimeError && error.isPublic) {
             message = error.message;
         } else {
-            console.error(error);
+            logger.warn(error);
         }
 
         try {
@@ -238,7 +235,7 @@ export class Application implements BaseApplication {
                 await interaction.reply({content: fmtError(message), ephemeral: true});
             }
         } catch (e) {
-            console.error(`Something went wrong while sending an error to the client: ${e}`);
+            logger.error(`Something went wrong while sending an error to the client: ${e}`);
         }
     }
 

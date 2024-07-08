@@ -2,7 +2,11 @@ import { textGeneration } from "@/modules/ai/huggingFace";
 import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
 
 export class HuggingFaceHelper {
-    constructor(protected readonly module: HuggingFaceProvider) {}
+    protected readonly module: HuggingFaceProvider;
+
+    constructor(module: HuggingFaceProvider) {
+        this.module = module;
+    }
 
     public async textGeneration(prompt: string, iterations = 2): Promise<string> {
         for (let i = 0; i < iterations; i++) {
