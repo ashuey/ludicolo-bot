@@ -1,6 +1,6 @@
 import pino from "pino";
 
-let level = "debug";
+let level = "trace";
 let transport = undefined;
 
 if (process.env["NODE_ENV"] === "development") {

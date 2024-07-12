@@ -31,6 +31,7 @@ import {Guild} from "@/common/models/Guild";
 import {AutomodModule} from "@/modules/automod";
 import {LockManager} from "@/LockManager";
 import {logger} from "@/logger";
+import {SimpleMemoryCache} from "@/common/cache/SimpleMemoryCache";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -46,6 +47,8 @@ export class Application implements BaseApplication {
     readonly componentHandlers: ReadonlyCollection<string, ComponentHandler>;
 
     readonly pb: PocketBase;
+
+    readonly cache: SimpleMemoryCache;
 
     protected readonly lockManager: LockManager;
 
@@ -71,6 +74,9 @@ export class Application implements BaseApplication {
         ];
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
+        this.cache = new SimpleMemoryCache();
+        const cacheCleanupInterval = setInterval(() => this.cache.cleanup(), 600000);
+        cacheCleanupInterval.unref();
     }
 
     get discord(): Client {

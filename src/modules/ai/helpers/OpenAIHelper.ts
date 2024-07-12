@@ -17,7 +17,7 @@ export class OpenAIHelper {
         messages.push({ "role": "user", "content": message });
 
         const requestOptions = {
-            model: "gpt-4",
+            model: "gpt-4o",
             messages,
             temperature: 1,
             max_tokens: 1900,
