@@ -8,3 +8,4 @@ node_modules
 .mise.*.local.toml
 /coverage
 /src/modules/ffxiv/users.ts
+/src/modules/ai/commands/ai/badWritingInputs.ts

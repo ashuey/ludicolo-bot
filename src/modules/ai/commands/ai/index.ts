@@ -8,6 +8,7 @@ import { HuggingFaceHelper } from "@/modules/ai/helpers/HuggingFaceHelper";
 import {chefUriangerEmbed, swedishChefEmbed} from "@/modules/ai/commands/ai/embeds";
 import { fmtAi, truncate } from "@/helpers/formatters";
 import {logger} from "@/logger";
+import {badWritingInputs} from "@/modules/ai/commands/ai/badWritingInputs";
 
 enum SUBCOMMANDS {
     RECIPE = 'recipe',
@@ -15,7 +16,8 @@ enum SUBCOMMANDS {
     RECIPE_NONSENSE = 'recipe_nonsense',
     BEAKER = 'beaker',
     URIANGER = 'urianger',
-    CHEF_URIANGER = 'chef_urianger'
+    CHEF_URIANGER = 'chef_urianger',
+    BAD_WRITING = 'bad_writing'
 }
 
 export class AICommand implements Command {
@@ -35,6 +37,9 @@ export class AICommand implements Command {
         return (new SlashCommandBuilder())
             .setName('ai')
             .setDescription('Generates (usually low-quality) AI responses')
+            .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.BAD_WRITING)
+                .setDescription('Generates an atrocious opening sentence to the worst novel never written'))
             .addSubcommand(cmd => cmd
                 .setName(SUBCOMMANDS.RECIPE)
                 .setDescription('Generates a recipe from a title')
@@ -79,6 +84,8 @@ export class AICommand implements Command {
         await interaction.deferReply();
 
         switch (interaction.options.getSubcommand()) {
+            case SUBCOMMANDS.BAD_WRITING:
+                return await this.badWritingSubcommand(interaction);
             case SUBCOMMANDS.RECIPE:
                 return await this.recipeSubcommand(interaction);
             case SUBCOMMANDS.SWEDISH_CHEF:
@@ -94,6 +101,23 @@ export class AICommand implements Command {
             default:
                 throw new UnknownSubcommandError();
         }
+    }
+
+    protected async badWritingSubcommand(interaction: ChatInputCommandInteraction) {
+        const result = await this.openAiHelper.simpleGpt4(
+            'Write one more novel opening like these.',
+            badWritingInputs.join("\n"),
+            {
+                model: "gpt-3.5-turbo",
+                temperature: 1.17,
+                max_tokens: 1024,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0.88,
+            }
+        )
+
+        return interaction.editReply(truncate(fmtAi(result)));
     }
 
     protected async recipeSubcommand(interaction: ChatInputCommandInteraction) {
