@@ -1,12 +1,12 @@
-import { Command } from "@/common/Command";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
-import { HuggingFaceProvider } from "@/modules/ai/HuggingFaceProvider";
-import { ApplicationProvider } from "@/common/ApplicationProvider";
-import { OpenAIHelper } from "@/modules/ai/helpers/OpenAIHelper";
-import { HuggingFaceHelper } from "@/modules/ai/helpers/HuggingFaceHelper";
+import {Command} from "@/common/Command";
+import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {UnknownSubcommandError} from "@/common/errors/UnknownSubcommandError";
+import {HuggingFaceProvider} from "@/modules/ai/HuggingFaceProvider";
+import {ApplicationProvider} from "@/common/ApplicationProvider";
+import {OpenAIHelper} from "@/modules/ai/helpers/OpenAIHelper";
+import {HuggingFaceHelper} from "@/modules/ai/helpers/HuggingFaceHelper";
 import {chefUriangerEmbed, swedishChefEmbed} from "@/modules/ai/commands/ai/embeds";
-import { fmtAi, truncate } from "@/helpers/formatters";
+import {fmtAi, truncate} from "@/helpers/formatters";
 import {logger} from "@/logger";
 import {badWritingInputs} from "@/modules/ai/commands/ai/badWritingInputs";
 
@@ -105,8 +105,8 @@ export class AICommand implements Command {
 
     protected async badWritingSubcommand(interaction: ChatInputCommandInteraction) {
         const result = await this.openAiHelper.simpleGpt4(
-            'Write one more novel opening like these.',
             badWritingInputs.join("\n"),
+            'WRITE MORE SENTENCES LIKE THESE',
             {
                 model: "gpt-3.5-turbo",
                 temperature: 1.17,
@@ -117,7 +117,9 @@ export class AICommand implements Command {
             }
         )
 
-        return interaction.editReply(truncate(fmtAi(result)));
+        const resultStr = result.split('\n')[0] ?? '';
+
+        return interaction.editReply(truncate(fmtAi(resultStr)));
     }
 
     protected async recipeSubcommand(interaction: ChatInputCommandInteraction) {
