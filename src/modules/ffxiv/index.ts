@@ -7,11 +7,13 @@ import {sendEurekaWeather} from "@/modules/ffxiv/tasks/eureka-weather";
 import {MsqCommand} from "@/modules/ffxiv/cmd/msq";
 import {DynamisCommand} from "@/modules/ffxiv/cmd/dynamis";
 import {ThunderGodCommand} from "@/modules/ffxiv/cmd/thundergod";
+import {XIVCommand} from "@/modules/ffxiv/cmd/xiv";
 
 export class FFXIVModule implements Module {
     readonly name = 'ffxiv';
 
     readonly commands = [
+        new XIVCommand(),
         new CrabSimCommand(),
         new MsqCommand(),
         new DynamisCommand(),

@@ -1,9 +1,9 @@
 [tools]
-node = "20.14"
+node = "20.16.0"
 flyctl = "latest"
 
 [tasks.clean]
-run = 'rm -rf dist'
+run = 'rm -rf dist && rm -rf coverage'
 
 [tasks.build]
 run = 'node_modules/.bin/tsc --project tsconfig.json'
