@@ -1,14 +1,15 @@
 import {Cache} from "@/common/cache/Cache";
+import {BaseCache} from "@/common/cache/BaseCache";
 
 const SECOND = 1000;
 
-export class SimpleMemoryCache implements Cache {
+export class SimpleMemoryCache extends BaseCache implements Cache {
     protected data = new Map<string, [number, unknown]>();
 
-    get(key: string, _default: unknown = undefined): unknown {
+    get<T = unknown>(key: string): T | undefined {
         const record = this.data.get(key);
 
-        return (!!record && this.isFresh(record)) ? record[1] : _default;
+        return (!!record && this.isFresh(record)) ? record[1] as T : undefined;
     }
 
     set(key: string, value: unknown, ttl: number): void {
@@ -21,21 +22,6 @@ export class SimpleMemoryCache implements Cache {
 
     clear(): void {
         this.data.clear();
-    }
-
-    getMultiple(keys: string[], _default: unknown): Record<string, unknown> {
-        return keys.reduce((result,key)=> {
-            result[key] = this.get(key, _default);
-            return result;
-        },{} as Record<string, unknown>);
-    }
-
-    setMultiple(values: Record<string, unknown>, ttl: number): void {
-        Object.entries(values).forEach(([key, value]) => this.set(key, value, ttl));
-    }
-
-    deleteMultiple(keys: string[]): void {
-        keys.forEach((key: string) => this.delete(key));
     }
 
     has(key: string): boolean {

@@ -21,8 +21,8 @@ describe('SimpleMemoryCache', () => {
         expect(cache.get(testKey)).toEqual(testValue);
     });
 
-    it('returns default value for nonexistent key', () => {
-        expect(cache.get(testKey, 'default')).toEqual('default');
+    it('returns undefined for nonexistent key', () => {
+        expect(cache.get(testKey)).toBeUndefined();
     });
 
     it('deletes a key', () => {
@@ -39,7 +39,7 @@ describe('SimpleMemoryCache', () => {
 
     it('retrieves multiple keys', () => {
         cache.set(testKey, testValue, testTTL);
-        const result = cache.getMultiple([testKey], 'default');
+        const result = cache.getMultiple([testKey]);
         expect(result[testKey]).toEqual(testValue);
     });
 

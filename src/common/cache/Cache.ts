@@ -1,10 +1,10 @@
 export interface Cache {
-    get(key: string, _default: unknown): unknown;
-    set(key: string, value: unknown, ttl: number): void;
+    get<T = unknown>(key: string): T | undefined;
+    set<T = unknown>(key: string, value: T, ttl: number): void;
     delete(key: string): void;
     clear(): void;
-    getMultiple(keys: string[], _default: unknown): Record<string, unknown>;
-    setMultiple(values: Record<string, unknown>, ttl: number): void;
+    getMultiple<T = unknown>(keys: string[]): Record<string, T | undefined>;
+    setMultiple<T = unknown>(values: Record<string, T>, ttl: number): void;
     deleteMultiple(keys: string[]): void;
     has(key: string): boolean;
 }
