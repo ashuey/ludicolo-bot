@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`aqi command returns the expected response 1`] = `
+{
+  "color": 58368,
+  "description": "🟢  Good",
+  "fields": [
+    {
+      "inline": true,
+      "name": "Air Quality Index",
+      "value": "37",
+    },
+    {
+      "inline": true,
+      "name": "Primary Pollutant",
+      "value": "Fine Particles",
+    },
+    {
+      "name": "Forecast",
+      "value": "**Today:** 🟢 Good
+**Tomorrow:** 🟡 Moderate",
+    },
+  ],
+  "footer": {
+    "icon_url": undefined,
+    "text": "Data provided by AirNow.gov",
+  },
+  "timestamp": "2024-07-26T18:00:00.000Z",
+  "title": "Air Quality in Eastern Lake Ontario Region",
+}
+`;
