@@ -1,0 +1,3 @@
+[submodule "src/modules/ffxiv/lodestone/lodestone-css-selectors"]
+	path = src/modules/ffxiv/lodestone/lodestone-css-selectors
+	url = https://github.com/xivapi/lodestone-css-selectors.git

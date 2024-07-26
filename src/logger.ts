@@ -10,7 +10,7 @@ if (process.env["NODE_ENV"] === "development") {
 }
 
 if (process.env["NODE_ENV"] === "test") {
-    level = "warn";
+    level = "silent";
 }
 
 export const logger = pino({

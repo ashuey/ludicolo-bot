@@ -1,8 +1,7 @@
-import axios, { AxiosInstance } from "axios";
 import { Result } from "@/common/Result";
 import { AtomFeed } from "@/modules/djtrivia/Atom";
 import dayjs from "dayjs";
-import { load } from "cheerio";
+import {JSDOM} from "jsdom";
 
 export interface DJTriviaHint {
     published: dayjs.Dayjs,
@@ -13,34 +12,32 @@ export interface DJTriviaHint {
 export class DJTrivia {
     static readonly ENDPOINT = "https://cod.djtrivia.com/feeds/posts/default?alt=json";
 
-    protected readonly http: AxiosInstance;
-
-    constructor() {
-        this.http = axios.create({
-            timeout: 2000,
-            validateStatus: () => true,
-        });
-    }
-
     public async getLatest(): Promise<Result<DJTriviaHint>> {
-        const result = await this.http.get<AtomFeed>(DJTrivia.ENDPOINT);
+        const result = await fetch(DJTrivia.ENDPOINT, { signal: AbortSignal.timeout(5000) });
 
         if (result.status < 200 || result.status >= 300) {
             return [false, new Error(`HTTP Error ${result.status}`)];
         }
 
-        const latest = result.data.feed.entry[0];
+        const body: AtomFeed = await result.json();
+
+        const latest = body.feed.entry[0];
 
         if (!latest) {
             return [false, new Error('No entries found')];
         }
 
-        const content = load(latest.content.$t.replaceAll('&nbsp;', ' '));
+        const dom = new JSDOM(latest.content.$t.replaceAll('&nbsp;', ' '));
+        const node = dom.window.document.querySelector('p');
+
+        if (!node) {
+            return [false, new Error('Entry body did not contain expected markup')];
+        }
 
         return [true, {
             published: dayjs(latest.published.$t),
             title: latest.title.$t,
-            content: content('p').text(),
+            content: node.textContent ?? '',
         }];
     }
 }
