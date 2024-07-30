@@ -3,12 +3,10 @@ import {UnknownSubcommandError} from "@/common/errors/UnknownSubcommandError";
 
 describe('AICommand', () => {
     const mockApp = {};
-    const mockHuggingFace = {};
     let cmd: AICommand;
 
     beforeEach(() => {
         cmd = new AICommand({
-            huggingFace: mockHuggingFace as never,
             app: mockApp as never,
         });
 
