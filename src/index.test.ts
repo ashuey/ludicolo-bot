@@ -1,8 +1,8 @@
-import {Application} from "./index";
 import {ChatInputCommandInteraction, Client, Interaction, REST} from "discord.js";
 import cron from "node-cron";
+import { OpenAI } from "openai";
+import {Application} from "./index";
 import {Command} from "@/common/Command";
-import OpenAI from "openai";
 import {LockManager} from "@/LockManager";
 import {mockPocketBase} from "@/helpers/testing";
 import {ComponentHandler} from "@/common/ComponentHandler";

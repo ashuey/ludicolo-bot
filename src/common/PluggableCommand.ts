@@ -1,5 +1,5 @@
-import {Command} from "@/common/Command";
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {Command} from "@/common/Command";
 import {Subcommand} from "@/common/Subcommand";
 import {SubcommandGroup} from "@/common/SubcommandGroup";
 import {SubcommandGroupRegistration} from "@/common/SubcommandGroupRegistration";

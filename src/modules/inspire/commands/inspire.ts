@@ -1,5 +1,5 @@
-import { Command } from "@/common/Command";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Command } from "@/common/Command";
 import { inspiroBot } from "@/modules/inspire/inspirobot";
 import {logger} from "@/logger";
 

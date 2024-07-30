@@ -1,5 +1,5 @@
-import {Subcommand} from "@/common/Subcommand";
 import {ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
+import {Subcommand} from "@/common/Subcommand";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
 import {fmtSuccess} from "@/helpers/formatters";

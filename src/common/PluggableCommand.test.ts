@@ -1,10 +1,10 @@
-import {PluggableCommand} from "@/common/PluggableCommand";
 import {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
     SlashCommandSubcommandGroupBuilder
 } from "discord.js";
+import {PluggableCommand} from "@/common/PluggableCommand";
 import {Subcommand} from "@/common/Subcommand";
 import {SubcommandGroup} from "@/common/SubcommandGroup";
 import {UnknownSubcommandError} from "@/common/errors/UnknownSubcommandError";

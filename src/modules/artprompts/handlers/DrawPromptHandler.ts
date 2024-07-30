@@ -1,7 +1,7 @@
-import { ComponentHandler } from "@/common/ComponentHandler";
 import { MessageComponentInteraction } from "discord.js";
-import { ApplicationProvider } from "@/common/ApplicationProvider";
 import { APIError } from "openai";
+import { ComponentHandler } from "@/common/ComponentHandler";
+import { ApplicationProvider } from "@/common/ApplicationProvider";
 import { fmtError } from "@/helpers/formatters";
 import {logger} from "@/logger";
 

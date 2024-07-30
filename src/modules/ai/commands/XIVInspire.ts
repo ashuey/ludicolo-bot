@@ -1,8 +1,8 @@
+import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import axios from "axios";
 import {Command} from "@/common/Command";
 import {OpenAIHelper} from "@/modules/ai/helpers/OpenAIHelper";
 import {ApplicationProvider} from "@/common/ApplicationProvider";
-import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import axios from "axios";
 import {composeInspirationImage} from "@/modules/ai/helpers/composeImage";
 import {logger} from "@/logger";
 

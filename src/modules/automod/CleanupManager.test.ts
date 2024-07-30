@@ -1,7 +1,7 @@
-import {CleanupManager} from "@/modules/automod/CleanupManager";
 import PocketBase from "pocketbase/cjs";
-import {mockFetch} from "@/helpers/testing";
 import AsyncLock from "async-lock";
+import {CleanupManager} from "@/modules/automod/CleanupManager";
+import {mockFetch} from "@/helpers/testing";
 
 describe('CleanupManager', () => {
     afterEach(() => {

@@ -79,7 +79,7 @@ describe('eureka-weather', () => {
         test.each(tests)("Returns the correct resonse when time is %p", async (ts, sendTimes) => {
             jest.setSystemTime(ts);
 
-            const sendMock = jest.fn((_) => Promise.resolve());
+            const sendMock = jest.fn(() => Promise.resolve());
 
             const mockModule = {
                 app: {

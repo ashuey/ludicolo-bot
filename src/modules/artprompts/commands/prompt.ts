@@ -1,9 +1,9 @@
-import { Command } from "@/common/Command";
 import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, SlashCommandBuilder, ButtonStyle } from "discord.js";
+import Markov from 'markov-strings'
+import { Command } from "@/common/Command";
 import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { choose } from "@/helpers/random";
-import Markov from 'markov-strings'
 import {corpusSmall} from "@/modules/artprompts/data/corpus_small";
 import {curatedPrompts} from "@/modules/artprompts/data/curated_prompts";
 

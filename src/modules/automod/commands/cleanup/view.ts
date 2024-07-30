@@ -1,9 +1,9 @@
-import {Subcommand} from "@/common/Subcommand";
 import {bold, ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
+import {format} from "@lukeed/ms";
+import {Subcommand} from "@/common/Subcommand";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
 import {fmtError, fmtSuccess} from "@/helpers/formatters";
-import {format} from "@lukeed/ms";
 
 export class ViewCleanupAutomodCommand implements Subcommand {
     protected readonly module: ServiceProvider;

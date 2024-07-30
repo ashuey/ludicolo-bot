@@ -1,5 +1,5 @@
-import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {FetchMessagesOptions, Message} from "discord.js";
+import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {logger} from "@/logger";
 
 export async function runCleanup(module: ServiceProvider) {

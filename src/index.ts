@@ -1,7 +1,3 @@
-import { InspireModule } from "@/modules/inspire";
-import { Module } from "@/common/Module";
-import { Configuration } from "@/config/Configuration";
-import { getConfig } from "@/config";
 import {
     ChatInputCommandInteraction,
     Client,
@@ -14,6 +10,13 @@ import {
     REST,
 } from "discord.js";
 import { ReadonlyCollection } from "@discordjs/collection";
+import { OpenAI } from "openai";
+import * as cron from "node-cron";
+import PocketBase from "pocketbase/cjs";
+import { InspireModule } from "@/modules/inspire";
+import { Module } from "@/common/Module";
+import { Configuration } from "@/config/Configuration";
+import { getConfig } from "@/config";
 import { Command } from "@/common/Command";
 import { Application as BaseApplication } from "@/common/Application";
 import { RuntimeError } from "@/common/errors/RuntimeError";
@@ -21,12 +24,9 @@ import { fmtError } from "@/helpers/formatters";
 import { AirQualityModule } from "@/modules/airquality";
 import { DJTriviaModule } from "@/modules/djtrivia";
 import { ArtPromptModule } from "@/modules/artprompts";
-import OpenAI from "openai";
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { AIModule } from "@/modules/ai";
-import cron from "node-cron";
 import {FFXIVModule} from "@/modules/ffxiv";
-import PocketBase from "pocketbase/cjs";
 import {Guild} from "@/common/models/Guild";
 import {AutomodModule} from "@/modules/automod";
 import {LockManager} from "@/LockManager";

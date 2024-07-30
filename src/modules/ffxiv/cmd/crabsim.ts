@@ -1,4 +1,3 @@
-import {Command} from "@/common/Command";
 import {
     ActionRowBuilder,
     ButtonBuilder, ButtonStyle,
@@ -7,6 +6,7 @@ import {
     MessageComponentInteraction,
     SlashCommandBuilder
 } from "discord.js";
+import {Command} from "@/common/Command";
 import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
 import {fmtError} from "@/helpers/formatters";
 import {ComponentHandler} from "@/common/ComponentHandler";

@@ -1,7 +1,7 @@
-import { Result } from "@/common/Result";
-import { AtomFeed } from "@/modules/djtrivia/Atom";
 import dayjs from "dayjs";
 import {JSDOM} from "jsdom";
+import { Result } from "@/common/Result";
+import { AtomFeed } from "@/modules/djtrivia/Atom";
 
 export interface DJTriviaHint {
     published: dayjs.Dayjs,

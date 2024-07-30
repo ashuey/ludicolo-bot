@@ -1,5 +1,5 @@
-import {Command} from "@/common/Command";
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {Command} from "@/common/Command";
 
 export class DynamisCommand implements Command {
     build() {

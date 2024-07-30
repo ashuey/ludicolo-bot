@@ -1,9 +1,9 @@
-import {Subcommand} from "@/common/Subcommand";
 import {ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
+import {format} from "@lukeed/ms";
+import {Subcommand} from "@/common/Subcommand";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
 import {fmtSuccess} from "@/helpers/formatters";
-import {format} from "@lukeed/ms";
 import {parseHumanSpan} from "@/helpers/parsers";
 
 export class EnableCleanupAutomodCommand implements Subcommand {

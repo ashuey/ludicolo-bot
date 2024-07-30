@@ -1,7 +1,7 @@
-import { Command } from "@/common/Command";
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { djTrivia } from "@/modules/djtrivia/djtrivia";
 import dayjs from "dayjs";
+import { Command } from "@/common/Command";
+import { djTrivia } from "@/modules/djtrivia/djtrivia";
 import {logger} from "@/logger";
 
 export class TriviaHintCommand implements Command {

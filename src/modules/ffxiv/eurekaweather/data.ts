@@ -1,5 +1,5 @@
-import {MoneyFate} from "@/modules/ffxiv/eurekaweather/MoneyFate";
 import EorzeaWeather from "eorzea-weather";
+import {MoneyFate} from "@/modules/ffxiv/eurekaweather/MoneyFate";
 import {WEATHER_BLIZZARDS, WEATHER_FOG} from "@/modules/ffxiv/weather";
 import {MoneyFateData} from "@/modules/ffxiv/eurekaweather/MoneyFateData";
 

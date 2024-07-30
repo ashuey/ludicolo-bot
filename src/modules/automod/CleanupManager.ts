@@ -1,7 +1,7 @@
 import {Snowflake} from "discord.js";
 import PocketBase from "pocketbase/cjs";
-import {AutomodCleanupChannel} from "@/modules/automod/models/AutomodCleanupChannel";
 import AsyncLock from "async-lock";
+import {AutomodCleanupChannel} from "@/modules/automod/models/AutomodCleanupChannel";
 
 export class CleanupManager {
     protected readonly pb: PocketBase;

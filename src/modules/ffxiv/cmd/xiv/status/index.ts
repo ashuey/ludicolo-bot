@@ -1,5 +1,5 @@
-import {Subcommand} from "@/common/Subcommand";
 import {ChatInputCommandInteraction, SlashCommandSubcommandBuilder} from "discord.js";
+import {Subcommand} from "@/common/Subcommand";
 import {getStatusData} from "@/modules/ffxiv/cmd/xiv/status/upstream";
 import {fmtError} from "@/helpers/formatters";
 import {StatusInformation} from "@/modules/ffxiv/cmd/xiv/status/StatusInformation";

@@ -1,5 +1,5 @@
-import {LockManager} from "@/LockManager";
 import AsyncLock from "async-lock";
+import {LockManager} from "@/LockManager";
 
 describe('LockManager', () => {
     it('returns an instance of AsyncLock', () => {

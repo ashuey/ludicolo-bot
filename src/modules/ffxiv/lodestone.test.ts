@@ -1,6 +1,6 @@
-import {getAchievements, getMounts, LODESTONE_RESULT} from "@/modules/ffxiv/lodestone";
 import fs from "fs";
 import path from "path";
+import {getAchievements, getMounts, LODESTONE_RESULT} from "@/modules/ffxiv/lodestone";
 import {mockFetch} from "@/helpers/testing";
 
 describe('lodestone', () => {

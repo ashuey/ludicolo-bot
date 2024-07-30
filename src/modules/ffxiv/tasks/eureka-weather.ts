@@ -1,10 +1,10 @@
+import {EmbedBuilder, TextBasedChannel} from "discord.js";
+import EorzeaWeather from "eorzea-weather";
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import {Forecast} from "@/modules/ffxiv/Forecast";
 import {ForecastEntry} from "@/modules/ffxiv/weather/ForecastEntry";
-import {EmbedBuilder, TextBasedChannel} from "discord.js";
 import {fateData} from "@/modules/ffxiv/eurekaweather/data";
 import {MoneyFate} from "@/modules/ffxiv/eurekaweather/MoneyFate";
-import EorzeaWeather from "eorzea-weather";
 import {logger} from "@/logger";
 
 const zoneNames = {
@@ -95,6 +95,7 @@ export function forecastIsAlertable(forecastEntry: ForecastEntry, lastSent: numb
         return false;
     }
 
+    // noinspection RedundantIfStatementJS
     if ((forecastEntry.startedAt.getTime() - (new Date).getTime()) > TWENTY_MINUTES) {
         return false;
     }

@@ -1,6 +1,6 @@
+import { OpenAI } from "openai";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { ApplicationProvider } from "@/common/ApplicationProvider";
-import OpenAI from "openai";
 import ChatCompletionMessageParam = OpenAI.ChatCompletionMessageParam;
 import {GptRequestOptions} from "@/modules/ai/helpers/GptRequestOptions";
 

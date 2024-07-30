@@ -1,5 +1,5 @@
-import {SubcommandGroup} from "@/common/SubcommandGroup";
 import {SlashCommandSubcommandGroupBuilder} from "discord.js";
+import {SubcommandGroup} from "@/common/SubcommandGroup";
 import {ViewCleanupAutomodCommand} from "@/modules/automod/commands/cleanup/view";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 import {Subcommand} from "@/common/Subcommand";

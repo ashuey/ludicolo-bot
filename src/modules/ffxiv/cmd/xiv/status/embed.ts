@@ -1,5 +1,5 @@
-import {Dc, Global, Region, Server, StatusInformation} from "@/modules/ffxiv/cmd/xiv/status/StatusInformation";
 import {EmbedBuilder} from "discord.js";
+import {Dc, Global, Region, Server, StatusInformation} from "@/modules/ffxiv/cmd/xiv/status/StatusInformation";
 
 export function buildStatusEmbed(data: StatusInformation) {
     return new EmbedBuilder()

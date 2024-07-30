@@ -1,5 +1,5 @@
-import {Command} from "@/common/Command";
 import {ChatInputCommandInteraction, EmbedBuilder, Guild, SlashCommandBuilder} from "discord.js";
+import {Command} from "@/common/Command";
 import {GuildOnlyError} from "@/common/errors/GuildOnlyError";
 import {fmtError} from "@/helpers/formatters";
 import {getAchievements, getMounts, LODESTONE_RESULT} from "@/modules/ffxiv/lodestone";

@@ -1,5 +1,5 @@
-import {Command} from "@/common/Command";
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {Command} from "@/common/Command";
 import {UnknownSubcommandError} from "@/common/errors/UnknownSubcommandError";
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import {OpenAIHelper} from "@/modules/ai/helpers/OpenAIHelper";

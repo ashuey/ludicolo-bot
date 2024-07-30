@@ -1,5 +1,5 @@
-import {Forecast} from "@/modules/ffxiv/Forecast";
 import EorzeaWeather from "eorzea-weather";
+import {Forecast} from "@/modules/ffxiv/Forecast";
 
 class ForecastTest extends Forecast {
     getEorzeaWeather() {

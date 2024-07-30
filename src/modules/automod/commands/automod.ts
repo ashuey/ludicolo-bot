@@ -1,5 +1,5 @@
-import {PluggableCommand} from "@/common/PluggableCommand";
 import {SlashCommandBuilder, PermissionFlagsBits} from "discord.js";
+import {PluggableCommand} from "@/common/PluggableCommand";
 import {CleanupGroup} from "@/modules/automod/commands/cleanup";
 import {ServiceProvider} from "@/modules/automod/ServiceProvider";
 

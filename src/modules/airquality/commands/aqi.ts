@@ -1,11 +1,11 @@
-import { Command } from "@/common/Command";
 import { bold, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { AirNowProvider } from "@/modules/airquality/AirNowProvider";
-import { AirQualityColors } from "@/modules/airquality/airnow/colors";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { AirQualityColors } from "@/modules/airquality/airnow/colors";
+import { AirNowProvider } from "@/modules/airquality/AirNowProvider";
+import { Command } from "@/common/Command";
 import { Forecast } from "@/modules/airquality/airnow/Forecast";
 import { Observation } from "@/modules/airquality/airnow/Observation";
 import { betterPollutantNames } from "@/modules/airquality/airnow/pollutants";
