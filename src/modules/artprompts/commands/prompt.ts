@@ -1,11 +1,11 @@
 import { Command } from "@/common/Command";
 import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, SlashCommandBuilder, ButtonStyle } from "discord.js";
 import { UnknownSubcommandError } from "@/common/errors/UnknownSubcommandError";
-import curatedPrompts from "@/modules/artprompts/data/curated_prompts.json"
-import corpusSmall from "@/modules/artprompts/data/corpus_small.json";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { choose } from "@/helpers/random";
 import Markov from 'markov-strings'
+import {corpusSmall} from "@/modules/artprompts/data/corpus_small";
+import {curatedPrompts} from "@/modules/artprompts/data/curated_prompts";
 
 enum SUBCOMMANDS {
     RANDOM = 'random',

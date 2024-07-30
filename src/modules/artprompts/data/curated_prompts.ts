@@ -1,4 +1,4 @@
-[
+export const curatedPrompts = [
     "Overgrown Cemetary",
     "Moth Bitten Library",
     "Devious Dining",
@@ -133,4 +133,4 @@
     "Fox+Light",
     "Tattoos+Prince",
     "Stars+Eyepatch"
-]
+];

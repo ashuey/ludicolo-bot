@@ -1,4 +1,4 @@
-[
+export const corpusSmall = [
     "Whimsical Underwater Wonderland",
     "Electric Cactus Rollercoaster",
     "Classic leather belt",
@@ -1468,4 +1468,4 @@
     "A monocle twirling in the wavy spiral of infinity lullabies",
     "Forks dialoguing about existential fear in a jelly castle",
     "Dice trying on earrings in the shadow of cheerful dilemma"
-]
+];
