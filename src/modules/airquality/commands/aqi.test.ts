@@ -28,7 +28,15 @@ class AirNowTest extends AirNow {
 }
 
 describe('aqi command', () => {
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+    })
+
     it('returns the expected response', async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(1722020988000) // Friday, July 26, 2024 3:09:48 PM GMT-04:00
+
         const replyFn = jest.fn();
         const airNow = new AirNowTest('');
         airNow.setupTests()
