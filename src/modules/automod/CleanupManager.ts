@@ -1,63 +1,40 @@
-import {Snowflake} from "discord.js";
-import PocketBase from "pocketbase/cjs";
-import AsyncLock from "async-lock";
-import {AutomodCleanupChannel} from "@/modules/automod/models/AutomodCleanupChannel";
+import { Snowflake } from "discord.js";
+import { Knex } from "knex";
+import { AutomodCleanupChannel } from "@/modules/automod/models/AutomodCleanupChannel";
+import { CLEANUP_CHANNELS_TABLE } from "@/modules/automod/tables";
 
 export class CleanupManager {
-    protected readonly pb: PocketBase;
+    protected readonly db: Knex;
 
-    protected readonly lock: AsyncLock;
-
-    constructor(pb: PocketBase, lock: AsyncLock) {
-        this.pb = pb;
-        this.lock = lock;
+    constructor(db: Knex) {
+        this.db = db;
     }
 
     async get(channelId: Snowflake): Promise<AutomodCleanupChannel | undefined> {
-        const result = await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-            .getList(1, 1, {
-                filter: `discord_id="${channelId}"`,
-                skipTotal: true,
-            });
-
-        return result.items.length > 0 ? result.items[0] : undefined;
+        return this.db<AutomodCleanupChannel>(CLEANUP_CHANNELS_TABLE)
+            .where('discord_id', channelId)
+            .first();
     }
 
     async getAll(): Promise<AutomodCleanupChannel[]> {
-        return this.pb
-            .collection<AutomodCleanupChannel>('automod_cleanup_channels')
-            .getFullList();
+        return this.db<AutomodCleanupChannel>(CLEANUP_CHANNELS_TABLE);
     }
 
     async enable(channelId: Snowflake, age: number): Promise<boolean> {
-        return this.lock.acquire(channelId, async () => {
-            const current = await this.get(channelId);
+        await this.db<AutomodCleanupChannel>(CLEANUP_CHANNELS_TABLE)
+            .insert({
+                discord_id: channelId,
+                maximum_age: age,
+            })
+            .onConflict('discord_id')
+            .merge();
 
-            if (current) {
-                await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-                    .update(current.id, {
-                        "maximum_age": age,
-                    });
-
-                return false;
-            }
-
-            await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-                .create({
-                    "discord_id": channelId,
-                    "maximum_age": age,
-                });
-
-            return true;
-        });
+        return true;
     }
 
     async disable(channelId: Snowflake): Promise<void> {
-        return this.lock.acquire(channelId, async () => {
-            const record = await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-                .getFirstListItem(`discord_id="${channelId}"`);
-            await this.pb.collection<AutomodCleanupChannel>('automod_cleanup_channels')
-                .delete(record.id);
-        });
+        this.db<AutomodCleanupChannel>(CLEANUP_CHANNELS_TABLE)
+            .where('discord_id', channelId)
+            .del();
     }
 }

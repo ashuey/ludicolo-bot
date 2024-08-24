@@ -1,6 +1,4 @@
-import StrictRecordModel from "@/common/models/StrictRecordModel";
-
-export interface AutomodCleanupChannel extends StrictRecordModel {
+export interface AutomodCleanupChannel {
     discord_id: string;
     maximum_age: number;
 }

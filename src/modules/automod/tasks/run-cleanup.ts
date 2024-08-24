@@ -7,6 +7,10 @@ export async function runCleanup(module: ServiceProvider) {
     const records = await module.cleanup.getAll();
     const now = new Date().getTime()
 
+    if (records.length === 0) {
+        logger.info("Found no cleanup records");
+    }
+
     for (const record of records) {
         try {
             const cutoff = now - record.maximum_age;
@@ -71,7 +75,7 @@ export async function runCleanup(module: ServiceProvider) {
                 await channel.bulkDelete(batch);
             }
         } catch (e) {
-            logger.error(`Error while processing channel cleanup record (${record.id}): ${e}`);
+            logger.error(`Error while processing channel cleanup record (${record.discord_id}): ${e}`);
         }
     }
 }

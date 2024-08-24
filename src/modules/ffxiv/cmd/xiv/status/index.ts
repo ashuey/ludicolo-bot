@@ -8,9 +8,6 @@ import {buildStatusEmbed} from "@/modules/ffxiv/cmd/xiv/status/embed";
 export class StatusCommand implements Subcommand {
     readonly name = 'status';
 
-    constructor() {
-    }
-
     build() {
         return (new SlashCommandSubcommandBuilder())
             .setDescription('Gets XIV server status information.')

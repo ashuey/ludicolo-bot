@@ -1,11 +1,12 @@
-import {Module} from "@/common/Module";
-import {Application} from "@/common/Application";
-import {ServiceProvider} from "@/modules/automod/ServiceProvider";
-import {CleanupManager} from "@/modules/automod/CleanupManager";
-import {AutomodCommand} from "@/modules/automod/commands/automod";
-import {LockResource} from "@/common/LockResource";
-import {ScheduledTask} from "@/common/ScheduledTask";
-import {runCleanup} from "@/modules/automod/tasks/run-cleanup";
+import { Knex } from "knex";
+import { Module } from "@/common/Module";
+import { Application } from "@/common/Application";
+import { ServiceProvider } from "@/modules/automod/ServiceProvider";
+import { CleanupManager } from "@/modules/automod/CleanupManager";
+import { AutomodCommand } from "@/modules/automod/commands/automod";
+import { ScheduledTask } from "@/common/ScheduledTask";
+import { runCleanup } from "@/modules/automod/tasks/run-cleanup";
+import { create_cleanup_channels_table } from "@/modules/automod/migrations/create_cleanup_channels_table";
 
 export class AutomodModule implements Module, ServiceProvider {
     readonly name = 'automod';
@@ -18,12 +19,16 @@ export class AutomodModule implements Module, ServiceProvider {
         new AutomodCommand(this),
     ];
 
+    readonly migrations: [string, Knex.Migration['up']][] = [
+        ['create_cleanup_channels_table', create_cleanup_channels_table]
+    ]
+
     readonly app: Application;
 
     readonly cleanup: CleanupManager;
 
     constructor(app: Application) {
         this.app = app;
-        this.cleanup = new CleanupManager(app.pb, app.locks.for(LockResource.AutomodCleanupChannels));
+        this.cleanup = new CleanupManager(app.db);
     }
 }

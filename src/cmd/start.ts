@@ -11,7 +11,8 @@ export const start = (new Command('start'))
     .action(async ({ cron }: StartCommandArgs) => {
         const app = new Application();
 
-        await app.loginToPocketBase();
+        await app.migrate();
+
         if (cron) {
             app.startCron();
         } else {

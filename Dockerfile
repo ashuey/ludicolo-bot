@@ -1,9 +1,3 @@
-FROM alpine:latest as pocketbase
-ARG PB_VERSION=0.22.13
-RUN apk add --no-cache unzip ca-certificates
-ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
-RUN unzip /tmp/pb.zip -d /pb/
-
 FROM node:20.14 as build
 WORKDIR /src
 COPY package-lock.json package.json ./
@@ -14,11 +8,8 @@ RUN node_modules/.bin/tsc --project tsconfig.json
 FROM node:20.14
 WORKDIR /src
 COPY package-lock.json package.json ./
-RUN npm ci --omit=dev
-COPY --from=pocketbase /pb /pb
+RUN mkdir data && npm ci --omit=dev
 COPY --from=build /src/dist /src/dist
-COPY .docker/docker-entrypoint.sh /
-RUN chmod 755 /docker-entrypoint.sh /pb/pocketbase
 EXPOSE 8080
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "node", "/src/dist/cmd/index.js" ]
 CMD [ "start" ]

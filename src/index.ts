@@ -12,7 +12,7 @@ import {
 import { ReadonlyCollection } from "@discordjs/collection";
 import { OpenAI } from "openai";
 import * as cron from "node-cron";
-import PocketBase from "pocketbase/cjs";
+import { knex, Knex } from "knex";
 import { InspireModule } from "@/modules/inspire";
 import { Module } from "@/common/Module";
 import { Configuration } from "@/config/Configuration";
@@ -26,12 +26,14 @@ import { DJTriviaModule } from "@/modules/djtrivia";
 import { ArtPromptModule } from "@/modules/artprompts";
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { AIModule } from "@/modules/ai";
-import {FFXIVModule} from "@/modules/ffxiv";
-import {Guild} from "@/common/models/Guild";
-import {AutomodModule} from "@/modules/automod";
-import {LockManager} from "@/LockManager";
-import {logger} from "@/logger";
-import {SimpleMemoryCache} from "@/common/cache/SimpleMemoryCache";
+import { FFXIVModule } from "@/modules/ffxiv";
+import { AutomodModule } from "@/modules/automod";
+import { LockManager } from "@/LockManager";
+import { logger } from "@/logger";
+import { SimpleMemoryCache } from "@/common/cache/SimpleMemoryCache";
+import { MigrationSource } from "@/common/MigrationSource";
+import { SystemModule } from "@/common/systemModule";
+import { GUILDS_TABLE } from "@/common/tables";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -46,7 +48,7 @@ export class Application implements BaseApplication {
 
     readonly componentHandlers: ReadonlyCollection<string, ComponentHandler>;
 
-    readonly pb: PocketBase;
+    readonly db: Knex;
 
     readonly cache: SimpleMemoryCache;
 
@@ -58,12 +60,21 @@ export class Application implements BaseApplication {
 
     protected _openai: OpenAI | undefined;
 
+    protected migrationSource: MigrationSource;
+
     constructor() {
         this.config = getConfig();
-        this.pb = new PocketBase(this.config.pocketBaseUrl);
+        this.db = knex({
+            client: 'better-sqlite3',
+            connection: {
+                filename: this.config.databasePath,
+            },
+            useNullAsDefault: true,
+        })
         this.lockManager = new LockManager();
 
         this.modules = [
+            ['_system', new SystemModule()],
             ['inspire', new InspireModule()],
             ['air_quality', new AirQualityModule(this)],
             ['dj_trivia', new DJTriviaModule()],
@@ -72,8 +83,10 @@ export class Application implements BaseApplication {
             ['ffxiv', new FFXIVModule(this)],
             ['automod', new AutomodModule(this)],
         ];
+
         this.commands = this.buildCommandCollection();
         this.componentHandlers = this.buildComponentHandlerCollection();
+        this.migrationSource = new MigrationSource(this);
         this.cache = new SimpleMemoryCache();
         const cacheCleanupInterval = setInterval(() => this.cache.cleanup(), 600000);
         cacheCleanupInterval.unref();
@@ -122,8 +135,12 @@ export class Application implements BaseApplication {
         await this.discord.login(this.config.discordToken);
     }
 
-    public async loginToPocketBase() {
-        await this.pb.admins.authWithPassword(this.config.pocketBaseUsername, this.config.pocketBasePassword);
+    public async migrate() {
+        logger.info(`Running migrations`);
+
+        await this.db.migrate.latest({
+            migrationSource: this.migrationSource,
+        });
     }
 
     public startCron() {
@@ -246,19 +263,17 @@ export class Application implements BaseApplication {
     }
 
     protected async firstTimeGuildSync() {
-        const records = await this.pb.collection<Guild>('guilds').getFullList({
-            fields: 'discord_id'
-        });
-
-        const knownGuildIds = records.map(record => record.discord_id);
-
-        const guildIds = this.discord.guilds.cache.map(guild => guild.id);
-        const unknownGuildIds = guildIds.filter(guildId => !knownGuildIds.includes(guildId));
-
-        for (const guildId of unknownGuildIds) {
-            await this.pb.collection<Guild>('guilds').create({
-                discord_id: guildId,
-            });
+        for (const guild of this.discord.guilds.cache.values()) {
+            await this.db(GUILDS_TABLE)
+                .insert({
+                    discord_id: guild.id,
+                    settings: {}
+                })
+                .onConflict('discord_id')
+                .ignore();
         }
+
+        const all = await this.db(GUILDS_TABLE);
+        all.forEach(gr => logger.info(gr, 'guild record'));
     }
 }

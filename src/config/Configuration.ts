@@ -3,7 +3,5 @@ export interface Configuration {
     discordApplicationId: string;
     airNowApiKey: string;
     openAiApiKey: string;
-    pocketBaseUrl: string;
-    pocketBaseUsername: string;
-    pocketBasePassword: string;
+    databasePath: string;
 }

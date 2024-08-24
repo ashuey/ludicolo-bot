@@ -9,3 +9,5 @@ node_modules
 /coverage
 /src/modules/ffxiv/users.ts
 /src/modules/ai/commands/ai/badWritingInputs.ts
+/local-system.db
+data/system.db
