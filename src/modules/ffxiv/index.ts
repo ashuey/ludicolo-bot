@@ -26,7 +26,7 @@ export class FFXIVModule implements Module {
 
     readonly scheduledTasks: [string, ScheduledTask][] = [
         ['*/6 * * * * *', () => sendEurekaWeather(this)],
-        ['*/5 * * * * *', () => this.alerts.refresh()],
+        ['* * * * * *', () => this.alerts.heartbeat()],
     ];
 
     readonly componentHandlers: [string, ComponentHandler][] = [
