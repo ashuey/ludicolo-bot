@@ -92,6 +92,10 @@ export class Application implements BaseApplication {
         cacheCleanupInterval.unref();
     }
 
+    get isProduction() {
+        return this.config.env === "production";
+    }
+
     get discord(): Client {
         if (!this._discord) {
             this._discord = this.newDiscordClient()
@@ -151,6 +155,14 @@ export class Application implements BaseApplication {
                 });
             }
         });
+    }
+
+    public async bootstrapModules() {
+        for (const [,module] of this.modules) {
+            if (module.bootstrap) {
+                await module.bootstrap();
+            }
+        }
     }
 
     protected newDiscordClient(): Client {
@@ -272,8 +284,5 @@ export class Application implements BaseApplication {
                 .onConflict('discord_id')
                 .ignore();
         }
-
-        const all = await this.db(GUILDS_TABLE);
-        all.forEach(gr => logger.info(gr, 'guild record'));
     }
 }

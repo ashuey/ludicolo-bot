@@ -12,6 +12,7 @@ export const start = (new Command('start'))
         const app = new Application();
 
         await app.migrate();
+        await app.bootstrapModules();
 
         if (cron) {
             app.startCron();

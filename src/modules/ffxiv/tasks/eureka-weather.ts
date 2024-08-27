@@ -12,8 +12,8 @@ const zoneNames = {
     [EorzeaWeather.ZONE_EUREKA_PYROS]: 'Eureka Pyros',
 }
 
-const CHANNEL_ID = "1243567403313528912"; // TODO: Don't hardcode this
-//const CHANNEL_ID = "1107395046900236388"; // DEV
+const CHANNEL_ID_PROD = "1243567403313528912"; // TODO: Don't hardcode this
+const CHANNEL_ID = "1107395046900236388"; // DEV
 
 export const ONE_MINUTE = 60 * 1000;
 export const TWENTY_MINUTES = 20 * ONE_MINUTE;
@@ -70,7 +70,7 @@ async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
 }
 
 export async function sendEurekaWeather(module: ApplicationProvider) {
-    const channel = await module.app.discord.channels.fetch(CHANNEL_ID)
+    const channel = await module.app.discord.channels.fetch(module.app.isProduction ? CHANNEL_ID_PROD : CHANNEL_ID)
         .catch(err => {
             logger.error(`Error while fetching eureka weather channel: ${err}`);
         });

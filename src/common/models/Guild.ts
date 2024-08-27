@@ -1,7 +1,6 @@
-import StrictRecordModel from "@/common/models/StrictRecordModel";
 import {JSONValue} from "@/common/JSONValue";
 
-export interface Guild extends StrictRecordModel {
+export interface Guild {
     discord_id: string;
     settings: JSONValue;
 }

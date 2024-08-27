@@ -9,6 +9,7 @@ import { LockManager } from "@/LockManager";
 import { Cache } from "@/common/cache/Cache";
 
 export interface Application {
+    readonly isProduction: boolean;
     readonly config: Readonly<Configuration>;
     readonly modules: [string, Module][];
     readonly commands: ReadonlyCollection<string, Command>;

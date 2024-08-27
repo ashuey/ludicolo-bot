@@ -9,4 +9,5 @@ export interface Module {
     readonly componentHandlers?: [string, ComponentHandler][];
     readonly scheduledTasks?: [string, ScheduledTask][];
     readonly migrations?: [string, Knex.Migration['up']][];
+    bootstrap?: () => Promise<unknown>
 }
