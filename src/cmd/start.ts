@@ -20,5 +20,11 @@ export const start = (new Command('start'))
             logger.warn("Started without cron functionality");
         }
 
+        process.on('SIGINT', () => {
+            logger.info("Shutting down...");
+            app.shutdown();
+            process.exit();
+        });
+
         await app.login();
     });

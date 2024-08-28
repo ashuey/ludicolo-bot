@@ -165,6 +165,14 @@ export class Application implements BaseApplication {
         }
     }
 
+    public shutdown() {
+        for (const [,module] of this.modules) {
+            if (module.shutdown) {
+                module.shutdown();
+            }
+        }
+    }
+
     protected newDiscordClient(): Client {
         const client = (new Client({intents: [GatewayIntentBits.Guilds]}));
         client.on(Events.InteractionCreate, interaction => this.handleInteractionCreate(interaction));

@@ -11,7 +11,7 @@ import { ThunderGodCommand } from "@/modules/ffxiv/cmd/thundergod";
 import { XIVCommand } from "@/modules/ffxiv/cmd/xiv";
 import { create_static_data_table } from "@/modules/ffxiv/migrations/create_static_data_table";
 import { StaticDataManager } from "@/modules/ffxiv/lib/staticdata";
-import { AlertsManager } from "@/modules/ffxiv/AlertsManager";
+import { AlertsManager } from "@/modules/ffxiv/alerts/AlertsManager";
 
 export class FFXIVModule implements Module {
     readonly name = 'ffxiv';
@@ -26,7 +26,7 @@ export class FFXIVModule implements Module {
 
     readonly scheduledTasks: [string, ScheduledTask][] = [
         ['*/6 * * * * *', () => sendEurekaWeather(this)],
-        ['* * * * * *', () => this.alerts.heartbeat()],
+        ['*/30 * * * * *', () => this.alerts.heartbeat()],
     ];
 
     readonly componentHandlers: [string, ComponentHandler][] = [
@@ -51,5 +51,9 @@ export class FFXIVModule implements Module {
 
     async bootstrap() {
         this.alerts.connect();
+    }
+
+    shutdown() {
+        this.alerts.shutdown();
     }
 }

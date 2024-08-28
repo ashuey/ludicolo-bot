@@ -16,6 +16,7 @@ export interface PriceSnipeEvent {
     velocity: number;
     quantity: number;
     priceHome: number | null;
+    avgPriceHome: number | null;
 }
 
 export type MarketEventHandler = (e: PriceSnipeEvent) => unknown;
@@ -96,6 +97,10 @@ export class TataruClient {
             this.ws.ping();
             return;
         }
+    }
+
+    public shutdown() {
+        this.cleanup();
     }
 
     protected cleanup() {

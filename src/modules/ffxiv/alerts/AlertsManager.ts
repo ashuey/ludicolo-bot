@@ -1,13 +1,29 @@
 import { EmbedBuilder } from "discord.js";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import { PriceSnipeEvent, TataruClient } from "@/modules/ffxiv/lib/tataru/TataruClient";
 import { Application } from "@/common/Application";
 import { logger } from "@/logger";
+import { GuildAlertConfig } from "@/modules/ffxiv/alerts/GuildAlertConfig";
+
+dayjs.extend(timezone);
 
 // TODO: Don't hardcode
 const alertChannels = ['1277359699703894046'];
 const alertChannelsProd = ['1277776716772937799'];
-const alertChannelsGilgamesh = ['1277709841661689990'];
-const alertChannelsGilgameshProd = ['1277776772364238938'];
+
+const alertConfig: GuildAlertConfig = [
+    { role: '1278481042251972689' }, // aether-all
+    { role: '1278481076947521597', threshold: 10000 }, // aether-10k
+    { role: '1278481178386497576', threshold: 100000 }, // aether-100k
+    { role: '1278481216320045057', threshold: 1000000 }, // aether-1m
+    { role: '1278481385526657064', threshold: Infinity }, // aether-unknown
+    { role: '1278481241813024839', world: 'Gilgamesh' }, // gilgamesh-all
+    { role: '1278481262599999498', world: 'Gilgamesh', threshold: 10000 }, // gilgamesh-10k
+    { role: '1278481291133714472', world: 'Gilgamesh', threshold: 100000 }, // gilgamesh-100k
+    { role: '1278481320330264656', world: 'Gilgamesh', threshold: 1000000 }, // gilgamesh-1m
+    { role: '1278481354740203641', world: 'Gilgamesh', threshold: Infinity }, // gilgamesh-unknown
+]
 
 export class AlertsManager {
     static GilFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 0});
@@ -34,18 +50,19 @@ export class AlertsManager {
         this.tataru.heartbeat();
     }
 
+    shutdown() {
+        this.tataru.shutdown();
+    }
+
     protected async handle(e: PriceSnipeEvent) {
-        const hour = (new Date()).getHours();
+        const hour = dayjs().tz("America/New_York").hour();
 
         if (hour >= 2 && hour < 10) {
             logger.debug("Currently between 2:00am and 10:00am. Not sending an alert.");
             return;
         }
 
-        const channelsForAlert = this.app.isProduction ?
-            // TODO: Don't hardcode Gilgamesh check
-            (e.world === "Gilgamesh" ? [...alertChannelsProd, ...alertChannelsGilgameshProd] : [...alertChannelsProd])
-            : (e.world === "Gilgamesh" ? [...alertChannels, ...alertChannelsGilgamesh] : [...alertChannels]);
+        const channelsForAlert = this.app.isProduction ? alertChannelsProd : alertChannels;
         for (const channelId of channelsForAlert) {
             const channel = await this.app.discord.channels.fetch(channelId);
 
@@ -62,10 +79,27 @@ export class AlertsManager {
             const netProfit = this.expectedProfit(e);
 
             if (netProfit >= (this.isHomeWorld(e) ? 1000 : 10000)) {
+                const alertRoles = alertConfig.filter(c => {
+                    if (c.world && c.world !== e.world) {
+                        return false;
+                    }
+
+                    if (c.threshold && (netProfit < c.threshold)) {
+                        return false;
+                    }
+
+                    if (netProfit === Infinity && c.threshold && (c.threshold !== Infinity)) {
+                        return false;
+                    }
+
+                    return true;
+                }).map(c => `<@&${c.role}>`).join(' ') + ' ';
                 await channel.send({
-                    content: netProfit >= 100000 ? `<@&1277800607897489509>` : ' ',
+                    content: alertRoles,
                     embeds: [this.buildEmbed(e, netProfit)],
                 });
+            } else {
+                logger.debug(`Skipping alert for ${e.itemName}. Profitability too low (${netProfit}).`);
             }
         }
     }
@@ -88,7 +122,11 @@ export class AlertsManager {
                 },
                 {
                     name: "Gilgamesh Price",
-                    value: e.priceHome ? `${AlertsManager.GilFormatter.format(e.priceHome)} gil` : 'No Listings',
+                    value: `Min: ${
+                        e.priceHome ? `${AlertsManager.GilFormatter.format(e.priceHome)} gil` : 'No Listings'
+                    }\nAvg: ${
+                        e.avgPriceHome ? `${AlertsManager.GilFormatter.format(e.avgPriceHome)} gil` : 'Unknown'
+                    }`,
                     inline: true
                 },
                 {

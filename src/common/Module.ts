@@ -10,4 +10,5 @@ export interface Module {
     readonly scheduledTasks?: [string, ScheduledTask][];
     readonly migrations?: [string, Knex.Migration['up']][];
     bootstrap?: () => Promise<unknown>
+    shutdown?: () => void;
 }

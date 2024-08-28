@@ -19,4 +19,5 @@ export interface Application {
     readonly openai: OpenAI;
     readonly locks: LockManager;
     readonly db: Knex;
+    shutdown(): void;
 }
