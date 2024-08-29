@@ -57,8 +57,8 @@ export class AlertsManager {
     protected async handle(e: PriceSnipeEvent) {
         const hour = dayjs().tz("America/New_York").hour();
 
-        if (hour >= 2 && hour < 10) {
-            logger.debug("Currently between 2:00am and 10:00am. Not sending an alert.");
+        if (hour >= 1 && hour < 10) {
+            logger.debug("Currently between 1:00am and 10:00am. Not sending an alert.");
             return;
         }
 
@@ -155,10 +155,15 @@ export class AlertsManager {
     protected expectedProfit(e: PriceSnipeEvent) {
         let netProfit = Infinity;
 
-        if (e.priceHome) {
+        const salePrice = Math.min(
+            e.priceHome ? e.priceHome - 1 :  Infinity,
+            e.avgPriceHome ?? Infinity
+        );
+
+        if (salePrice !== Infinity) {
             const listPrice = e.price * e.quantity
             const priceWithTax = listPrice + (0.05 * listPrice);
-            const priceYouListAt = (e.priceHome - 1) * e.quantity;
+            const priceYouListAt = (salePrice) * e.quantity;
             const sellerTax = priceYouListAt * 0.05;
             const saleProfit = priceYouListAt - sellerTax;
             netProfit = saleProfit - priceWithTax;

@@ -14,7 +14,8 @@ enum SUBCOMMANDS {
     BEAKER = 'beaker',
     URIANGER = 'urianger',
     CHEF_URIANGER = 'chef_urianger',
-    BAD_WRITING = 'bad_writing'
+    BAD_WRITING = 'bad_writing',
+    IMAGE = 'image'
 }
 
 export class AICommand implements Command {
@@ -64,6 +65,13 @@ export class AICommand implements Command {
                 .addStringOption(option => option
                     .setName('title')
                     .setDescription('Title of the recipe')
+                    .setRequired(true)))
+            .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.IMAGE)
+                .setDescription('Generates an image')
+                .addStringOption(option => option
+                    .setName('prompt')
+                    .setDescription('Image prompt')
                     .setRequired(true)));
     }
 
@@ -83,6 +91,8 @@ export class AICommand implements Command {
                 return await this.uriangerSubcommand(interaction);
             case SUBCOMMANDS.CHEF_URIANGER:
                 return await this.chefUriangerSubcommand(interaction);
+            case SUBCOMMANDS.IMAGE:
+                return await this.imageSubcommand(interaction);
             default:
                 throw new UnknownSubcommandError();
         }
@@ -160,5 +170,19 @@ export class AICommand implements Command {
         );
 
         return interaction.editReply({content: fmtAi(""), embeds: [chefUriangerEmbed(recipeTitle, messageContent)]});
+    }
+
+    protected async imageSubcommand(interaction: ChatInputCommandInteraction) {
+        const prompt = interaction.options.getString('prompt', true);
+
+        const imgUrl = await this.openAiHelper.simpleDallE3(`Draw this: ${prompt}`);
+
+        return interaction.editReply({
+            content: fmtAi(`Prompt: ${prompt}`),
+            files: [{
+                attachment: imgUrl,
+                name: "inspiration.png"
+            }]
+        })
     }
 }
