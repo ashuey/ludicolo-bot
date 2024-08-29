@@ -1,4 +1,4 @@
-import { Ingredient } from "@/modules/ffxiv/lib/staticdata/types/Ingredient";
+import { Ingredient } from "@/modules/ffxiv/crafting/craftsim/Ingredient";
 
 export interface Recipe {
     result: Ingredient;

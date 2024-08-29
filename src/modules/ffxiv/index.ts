@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import { Module } from "@/common/Module";
 import { Application } from "@/common/Application";
 import { ScheduledTask } from "@/common/ScheduledTask";
 import { CrabHitHandler, CrabSimCommand } from "@/modules/ffxiv/cmd/crabsim";
@@ -10,19 +9,14 @@ import { DynamisCommand } from "@/modules/ffxiv/cmd/dynamis";
 import { ThunderGodCommand } from "@/modules/ffxiv/cmd/thundergod";
 import { XIVCommand } from "@/modules/ffxiv/cmd/xiv";
 import { create_static_data_table } from "@/modules/ffxiv/migrations/create_static_data_table";
-import { StaticDataManager } from "@/modules/ffxiv/lib/staticdata";
 import { AlertsManager } from "@/modules/ffxiv/alerts/AlertsManager";
+import { ServiceProvider } from "@/modules/ffxiv/ServiceProvider";
+import { Command } from "@/common/Command";
 
-export class FFXIVModule implements Module {
+export class FFXIVModule implements ServiceProvider {
     readonly name = 'ffxiv';
 
-    readonly commands = [
-        new XIVCommand(),
-        new CrabSimCommand(),
-        new MsqCommand(),
-        new DynamisCommand(),
-        new ThunderGodCommand(),
-    ]
+    readonly commands: Command[];
 
     readonly scheduledTasks: [string, ScheduledTask][] = [
         ['*/6 * * * * *', () => sendEurekaWeather(this)],
@@ -39,14 +33,19 @@ export class FFXIVModule implements Module {
 
     public readonly app: Application;
 
-    public readonly staticData: StaticDataManager;
-
     public readonly alerts: AlertsManager;
 
     constructor(app: Application) {
         this.app = app;
-        this.staticData = new StaticDataManager(app.db);
         this.alerts = new AlertsManager(app);
+
+        this.commands = [
+            new XIVCommand(this),
+            new CrabSimCommand(),
+            new MsqCommand(),
+            new DynamisCommand(),
+            new ThunderGodCommand(),
+        ];
     }
 
     async bootstrap() {

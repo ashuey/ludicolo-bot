@@ -1,5 +1,6 @@
 import { WebSocket } from "ws";
 import { logger } from "@/logger";
+import { TataruRESTClient } from "@/modules/ffxiv/lib/tataru/TataruRESTClient";
 
 const TEN_SECONDS = 10000;
 const ONE_MINUTE = 60000;
@@ -30,12 +31,19 @@ export class TataruClient {
 
     protected handlers: MarketEventHandler[] = [];
 
-    protected lastMessage = 0;
+    protected _lastMessage = 0;
 
-    protected lastConnectionAttempt = 0;
+    protected _lastAlert = 0;
+
+    protected _lastConnectionAttempt = 0;
+
+    protected _lastError: string | undefined = undefined;
+
+    public readonly REST: TataruRESTClient;
 
     constructor(apiKey: string) {
         this.apiKey = apiKey;
+        this.REST = new TataruRESTClient(apiKey);
     }
 
     public connect() {
@@ -48,18 +56,22 @@ export class TataruClient {
                 'Authorization': `Bearer ${this.apiKey}`
             }
         });
-        this.lastConnectionAttempt = Date.now();
+        this._lastConnectionAttempt = Date.now();
         this.ws = ws;
 
-        ws.on('error', err => logger.warn(`TataruClient Error: ${err}`));
+        ws.on('error', err => {
+            this._lastError = String(err);
+            logger.warn(`TataruClient Error: ${err}`);
+        });
 
         ws.on('open', () => {
             logger.info(`Connected to ${ws.url}`);
-            this.lastMessage = Date.now();
+            this._lastMessage = Date.now();
         })
 
         ws.on('message', data => {
-            this.lastMessage = Date.now()
+            this._lastMessage = Date.now();
+            this._lastAlert = Date.now();
             const parsed = JSON.parse(String(data));
             logger.trace({ message: parsed }, 'TataruClient: Message')
             this.handlers.forEach(handler => handler(parsed));
@@ -71,7 +83,7 @@ export class TataruClient {
 
         ws.on('pong', () => {
             logger.trace('TataruClient Pong!');
-            this.lastMessage = Date.now();
+            this._lastMessage = Date.now();
         });
     }
 
@@ -81,18 +93,18 @@ export class TataruClient {
 
     public heartbeat() {
         // If no socket connection, or just connected, no need to check heartbeat
-        if (!this.ws || (Date.now() - this.lastConnectionAttempt) < TEN_SECONDS) {
+        if (!this.ws || (Date.now() - this._lastConnectionAttempt) < TEN_SECONDS) {
             return;
         }
 
-        if ((Date.now() - this.lastMessage) > THREE_MINUTES) {
+        if ((Date.now() - this._lastMessage) > THREE_MINUTES) {
             logger.warn("TataruClient: No messages in over 3 minutes. Reconnecting...");
             this.cleanup();
             this.connect();
             return;
         }
 
-        if ((Date.now() - this.lastMessage) > ONE_MINUTE) {
+        if ((Date.now() - this._lastMessage) > ONE_MINUTE) {
             logger.warn("TataruClient: No messages in over 1 minutes. Sending Ping...");
             this.ws.ping();
             return;
@@ -105,8 +117,27 @@ export class TataruClient {
 
     protected cleanup() {
         this.ws?.close();
-        this.lastMessage = 0;
-        this.lastConnectionAttempt = 0;
+        this._lastMessage = 0;
+        this._lastAlert = 0;
+        this._lastConnectionAttempt = 0;
         this.ws = undefined;
+    }
+
+    get lastConnectionAttempt() {
+        return this._lastConnectionAttempt;
+    }
+    get lastAlert() {
+        return this._lastAlert;
+    }
+    get lastMessage() {
+        return this._lastMessage;
+    }
+
+    get lastError() {
+        return this._lastError;
+    }
+
+    get readyState() {
+        return this.ws?.readyState
     }
 }

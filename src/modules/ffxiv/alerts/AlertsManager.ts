@@ -34,7 +34,7 @@ export class AlertsManager {
 
     protected readonly app: Application;
 
-    protected readonly tataru: TataruClient;
+    public readonly tataru: TataruClient;
 
     constructor(app: Application) {
         this.app = app;
@@ -52,6 +52,16 @@ export class AlertsManager {
 
     shutdown() {
         this.tataru.shutdown();
+    }
+
+    debug() {
+        return {
+            lastMessage: this.tataru.lastMessage,
+            lastAlert: this.tataru.lastAlert,
+            lastConnectionAttempt: this.tataru.lastConnectionAttempt,
+            readyState: this.tataru.readyState,
+            lastError: this.tataru.lastError,
+        }
     }
 
     protected async handle(e: PriceSnipeEvent) {

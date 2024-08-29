@@ -1,5 +1,12 @@
 export class RuntimeError {
-    constructor(public readonly message: string, public readonly isPublic = true) {}
+    public readonly message: string;
+
+    public readonly isPublic: boolean;
+
+    constructor(message: string, isPublic = true) {
+        this.isPublic = isPublic;
+        this.message = message;
+    }
 
     toString() {
         return `RuntimeError: ${this.message}`;
