@@ -44,6 +44,21 @@ export class OpenAIHelper {
         return messageContent;
     }
 
+    public async simpleDallE2(prompt: string): Promise<string[]> {
+        const response = await this.module.app.openai.images.generate({
+            model: "dall-e-2",
+            prompt,
+            n: 3,
+            size: "512x512",
+        });
+
+        if (response.data.length < 1) {
+            throw new RuntimeError(`Found no images in the response`, false);
+        }
+
+        return response.data.map(datum => datum.url as string);
+    }
+
     public async simpleDallE3(prompt: string): Promise<string> {
         const response = await this.module.app.openai.images.generate({
             model: "dall-e-3",

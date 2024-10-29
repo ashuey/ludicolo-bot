@@ -15,7 +15,8 @@ enum SUBCOMMANDS {
     URIANGER = 'urianger',
     CHEF_URIANGER = 'chef_urianger',
     BAD_WRITING = 'bad_writing',
-    IMAGE = 'image'
+    IMAGE = 'image',
+    IMAGE_LEGACY = 'image_legacy',
 }
 
 export class AICommand implements Command {
@@ -67,6 +68,13 @@ export class AICommand implements Command {
                     .setDescription('Title of the recipe')
                     .setRequired(true)))
             .addSubcommand(cmd => cmd
+                .setName(SUBCOMMANDS.IMAGE_LEGACY)
+                .setDescription('Generates an image with Dall-E 2')
+                .addStringOption(option => option
+                    .setName('prompt')
+                    .setDescription('Image prompt')
+                    .setRequired(true)))
+            .addSubcommand(cmd => cmd
                 .setName(SUBCOMMANDS.IMAGE)
                 .setDescription('Generates an image')
                 .addStringOption(option => option
@@ -91,6 +99,8 @@ export class AICommand implements Command {
                 return await this.uriangerSubcommand(interaction);
             case SUBCOMMANDS.CHEF_URIANGER:
                 return await this.chefUriangerSubcommand(interaction);
+            case SUBCOMMANDS.IMAGE_LEGACY:
+                return await this.imageLegacySubcommand(interaction);
             case SUBCOMMANDS.IMAGE:
                 return await this.imageSubcommand(interaction);
             default:
@@ -170,6 +180,20 @@ export class AICommand implements Command {
         );
 
         return interaction.editReply({content: fmtAi(""), embeds: [chefUriangerEmbed(recipeTitle, messageContent)]});
+    }
+
+    protected async imageLegacySubcommand(interaction: ChatInputCommandInteraction) {
+        const prompt = interaction.options.getString('prompt', true);
+
+        const images = await this.openAiHelper.simpleDallE2(prompt);
+
+        return interaction.editReply({
+            content: fmtAi(`Prompt: ${prompt}`),
+            files: images.map((imgUrl, idx) => ({
+                attachment: imgUrl,
+                name: `image${idx}.png`
+            }))
+        })
     }
 
     protected async imageSubcommand(interaction: ChatInputCommandInteraction) {
