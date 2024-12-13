@@ -7,6 +7,7 @@ import { AutomodCommand } from "@/modules/automod/commands/automod";
 import { ScheduledTask } from "@/common/ScheduledTask";
 import { runCleanup } from "@/modules/automod/tasks/run-cleanup";
 import { create_cleanup_channels_table } from "@/modules/automod/migrations/create_cleanup_channels_table";
+import { AddRoleToAllCommand } from "@/modules/automod/commands/add-role-to-all";
 
 export class AutomodModule implements Module, ServiceProvider {
     readonly name = 'automod';
@@ -17,6 +18,7 @@ export class AutomodModule implements Module, ServiceProvider {
 
     readonly commands = [
         new AutomodCommand(this),
+        new AddRoleToAllCommand(),
     ];
 
     readonly migrations: [string, Knex.Migration['up']][] = [
