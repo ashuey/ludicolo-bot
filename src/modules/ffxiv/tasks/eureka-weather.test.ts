@@ -86,7 +86,7 @@ describe('eureka-weather', () => {
                     discord: {
                         channels: {
                             fetch: () => Promise.resolve({
-                                isTextBased: () => true,
+                                isSendable: () => true,
                                 send: sendMock,
                             })
                         }

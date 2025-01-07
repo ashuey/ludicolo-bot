@@ -1,4 +1,4 @@
-import {EmbedBuilder, TextBasedChannel} from "discord.js";
+import { EmbedBuilder, SendableChannels } from "discord.js";
 import EorzeaWeather from "eorzea-weather";
 import {ApplicationProvider} from "@/common/ApplicationProvider";
 import {Forecast} from "@/modules/ffxiv/Forecast";
@@ -31,7 +31,7 @@ export function resetLastSent() {
     lastSent[MoneyFate.COPYCAT_CASSIE] = 0;
 }
 
-async function sendNmAlert(channel: TextBasedChannel, fate: MoneyFate) {
+async function sendNmAlert(channel: SendableChannels, fate: MoneyFate) {
     const thisFateData = fateData[fate];
     const forecast = new Forecast(thisFateData.zone);
     const nextWindow = forecast.findNext(thisFateData.weather);
@@ -80,7 +80,7 @@ export async function sendEurekaWeather(module: ApplicationProvider) {
         return;
     }
 
-    if (!channel.isTextBased()) {
+    if (!channel.isSendable()) {
         logger.warn(`Channel for Eureka weather is not text-based: ${channel.name}`);
         return;
     }

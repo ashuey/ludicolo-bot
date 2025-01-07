@@ -81,7 +81,7 @@ export class AlertsManager {
                 continue;
             }
 
-            if (!channel.isTextBased()) {
+            if (!channel.isSendable()) {
                 logger.warn(`Channel for XIV Alerts is not text-based: ${channel.name}`);
                 continue;
             }

@@ -7,6 +7,4 @@ export class DJTriviaModule implements Module {
     readonly commands = [
         new TriviaHintCommand(),
     ];
-
-    readonly migrations = [];
 }
