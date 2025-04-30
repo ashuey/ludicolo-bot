@@ -7,7 +7,5 @@ node_modules
 .DS_Store
 .mise.*.local.toml
 /coverage
-/src/modules/ffxiv/users.ts
-/src/modules/ai/commands/ai/badWritingInputs.ts
 /local-system.db
 data/system.db

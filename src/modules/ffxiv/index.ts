@@ -4,7 +4,6 @@ import { ScheduledTask } from "@/common/ScheduledTask";
 import { CrabHitHandler, CrabSimCommand } from "@/modules/ffxiv/cmd/crabsim";
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { sendEurekaWeather } from "@/modules/ffxiv/tasks/eureka-weather";
-import { MsqCommand } from "@/modules/ffxiv/cmd/msq";
 import { DynamisCommand } from "@/modules/ffxiv/cmd/dynamis";
 import { ThunderGodCommand } from "@/modules/ffxiv/cmd/thundergod";
 import { XIVCommand } from "@/modules/ffxiv/cmd/xiv";
@@ -42,7 +41,6 @@ export class FFXIVModule implements ServiceProvider {
         this.commands = [
             new XIVCommand(this),
             new CrabSimCommand(),
-            new MsqCommand(),
             new DynamisCommand(),
             new ThunderGodCommand(),
         ];
