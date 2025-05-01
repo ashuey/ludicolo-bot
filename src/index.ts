@@ -22,8 +22,6 @@ import { Application as BaseApplication } from "@/common/Application";
 import { RuntimeError } from "@/common/errors/RuntimeError";
 import { fmtError } from "@/helpers/formatters";
 import { AirQualityModule } from "@/modules/airquality";
-import { DJTriviaModule } from "@/modules/djtrivia";
-import { ArtPromptModule } from "@/modules/artprompts";
 import { ComponentHandler } from "@/common/ComponentHandler";
 import { AIModule } from "@/modules/ai";
 import { FFXIVModule } from "@/modules/ffxiv";
@@ -75,11 +73,9 @@ export class Application implements BaseApplication {
         this.lockManager = new LockManager();
 
         this.modules = [
-            ['_system', new SystemModule()],
+            ['_system', new SystemModule(this)],
             ['inspire', new InspireModule()],
             ['air_quality', new AirQualityModule(this)],
-            ['dj_trivia', new DJTriviaModule()],
-            ['art_prompts', new ArtPromptModule(this)],
             ['ai', new AIModule(this)],
             ['ffxiv', new FFXIVModule(this)],
             ['automod', new AutomodModule(this)],
