@@ -32,7 +32,6 @@ import { SimpleMemoryCache } from "@/common/cache/SimpleMemoryCache";
 import { MigrationSource } from "@/common/MigrationSource";
 import { SystemModule } from "@/common/systemModule";
 import { GUILDS_TABLE } from "@/common/tables";
-import { RandomModule } from "@/modules/random";
 
 type ReplyableInteraction = CommandInteraction | MessageComponentInteraction;
 
@@ -79,7 +78,6 @@ export class Application implements BaseApplication {
             ['ai', new AIModule(this)],
             ['ffxiv', new FFXIVModule(this)],
             ['automod', new AutomodModule(this)],
-            ['random', new RandomModule()],
         ];
 
         this.commands = this.buildCommandCollection();
